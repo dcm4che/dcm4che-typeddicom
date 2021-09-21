@@ -1,0 +1,86 @@
+// Auto generated
+package com.agfa.typeddicom.dataelements;
+
+import com.agfa.typeddicom.AttributesWrapper;
+import com.agfa.typeddicom.SequenceWrapper;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Sequence;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.data.VR;
+
+/**
+ * <strong>Name:</strong> {{name}}<br/>
+ * <strong>Keyword:</strong> {{keyword}}<br/>
+ * <strong>Tag:</strong> {{tag}}<br/>
+ * <strong>Value Representation:</strong> {{valueRepresentation}}<br/>
+ * <strong>Value Multiplicity:</strong> {{valueMultiplicity}}<br/>
+ * <strong>Comment:</strong> {{comment}}
+{{#retired}}
+ *
+ * @deprecated {{comment}}
+{{/retired}}
+ */
+{{#retired}}
+@Deprecated
+{{/retired}}
+public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{{/sequence}}{{^sequence}}AbstractDataElementWrapper{{/sequence}} {
+    public static final VR valueRepresentation = VR.{{valueRepresentation}};
+{{^sequence}}
+    public {{keyword}}(Object value, boolean bigEndian, org.dcm4che3.data.SpecificCharacterSet characterSet) {
+        super(value, bigEndian, characterSet);
+    }
+
+    @Override
+    public VR getValueRepresentation() {
+        return valueRepresentation;
+    }
+{{/sequence}}
+{{#sequence}}
+
+    public {{keyword}}(Sequence sequence) {
+        super(sequence, {{keyword}}.Item.class);
+    }
+
+
+    public static class Item extends AttributesWrapper {
+
+        public Item(Attributes attributes) {
+            super(attributes);
+        }
+
+{{#subDataElements}}
+        /**
+         * {{name}} <br/>
+         * {{attributeDescription}} <br/>
+         * <strong>Type:</strong> {{type}}
+         *
+         * @return the {{name}}
+         */
+        public {{attributeMetaInfo.keyword}} get{{attributeMetaInfo.keyword}}() {
+{{#attributeMetaInfo.sequence}}
+            return new {{attributeMetaInfo.keyword}}(getAttributes().getSequence({{attributeMetaInfo.tagConstant}}));
+{{/attributeMetaInfo.sequence}}
+{{^attributeMetaInfo.sequence}}
+            return new {{attributeMetaInfo.keyword}}(getAttributes().getValue({{attributeMetaInfo.tagConstant}}), getAttributes().bigEndian(), getAttributes().getSpecificCharacterSet());
+{{/attributeMetaInfo.sequence}}
+        }
+
+        /**
+         * {{name}} <br/>
+         * {{attributeDescription}} <br/>
+         * <strong>Type:</strong> {{type}}
+         *
+         * @param value the {{name}}
+         */
+        public void set{{attributeMetaInfo.keyword}}({{attributeMetaInfo.keyword}} value) {
+{{#attributeMetaInfo.sequence}}
+            getAttributes().setValue({{attributeMetaInfo.tagConstant}}, {{attributeMetaInfo.keyword}}.vr, value.getSequence());
+{{/attributeMetaInfo.sequence}}
+{{^attributeMetaInfo.sequence}}
+            getAttributes().setValue({{attributeMetaInfo.tagConstant}}, {{attributeMetaInfo.keyword}}.vr, value.getValue());
+{{/attributeMetaInfo.sequence}}
+        }
+{{/subDataElements}}
+    }
+{{/sequence}}
+}

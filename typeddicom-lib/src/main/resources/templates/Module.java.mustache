@@ -1,0 +1,48 @@
+package com.agfa.typeddicom.modules;
+
+{{#attributeMetaInfos}}
+import com.agfa.typeddicom.dataelements.{{dataElementMetaInfo.keyword}};
+{{/attributeMetaInfos}}
+import org.dcm4che3.data.Tag;
+
+/**
+ * {{name}}
+ *
+ * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/{{sectionId}}.html">DICOM Standard Part 3 - {{sectionId}}</a>
+ *
+ */
+public interface {{keyword}} extends Module {
+{{#attributeMetaInfos}}
+    /**
+     * {{name}} <br/>
+     * {{attributeDescription}} <br/>
+     * <strong>Type:</strong> {{type}}
+     *
+     * @return the {{name}}
+     */
+    default {{dataElementMetaInfo.keyword}} get{{dataElementMetaInfo.keyword}}() {
+    {{#dataElementMetaInfo.sequence}}
+        return new {{dataElementMetaInfo.keyword}}(getAttributes().getSequence({{dataElementMetaInfo.tagConstant}}));
+    {{/dataElementMetaInfo.sequence}}
+    {{^dataElementMetaInfo.sequence}}
+        return new {{dataElementMetaInfo.keyword}}(getAttributes().getValue({{dataElementMetaInfo.tagConstant}}), getAttributes().bigEndian(), getAttributes().getSpecificCharacterSet());
+    {{/dataElementMetaInfo.sequence}}
+    }
+
+    /**
+     * {{name}} <br/>
+     * {{attributeDescription}} <br/>
+     * <strong>Type:</strong> {{type}}
+     *
+     * @param value the {{name}}
+     */
+    default void set{{dataElementMetaInfo.keyword}}({{dataElementMetaInfo.keyword}} value) {
+    {{#dataElementMetaInfo.sequence}}
+        getAttributes().setValue({{dataElementMetaInfo.tagConstant}}, {{dataElementMetaInfo.keyword}}.valueRepresentation, value.getSequence());
+    {{/dataElementMetaInfo.sequence}}
+    {{^dataElementMetaInfo.sequence}}
+        getAttributes().setValue({{dataElementMetaInfo.tagConstant}}, {{dataElementMetaInfo.keyword}}.valueRepresentation, value.getValue());
+    {{/dataElementMetaInfo.sequence}}
+    }
+{{/attributeMetaInfos}}
+}
