@@ -4,16 +4,15 @@ import com.agfa.typeddicom.metamodel.DataElementMetaInfo;
 import com.agfa.typeddicom.metamodel.ModuleMetaInfo;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
-import com.github.mustachejava.MustacheFactory;
+import com.github.mustachejava.MustacheNotFoundException;
+import com.github.mustachejava.MustacheResolver;
+import com.github.mustachejava.reflect.ReflectionObjectHandler;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,19 +25,33 @@ import java.util.Set;
  */
 public class DicomXmlParser {
     private final SAXParser saxParser;
+    private final DefaultMustacheFactory mustacheFactory;
+    private final File dicomXmlDirectory;
+    private final File mustacheTemplateDirectory;
+    private final File javaOutputDirectory;
 
-    public DicomXmlParser() throws ParserConfigurationException, SAXException {
+    public DicomXmlParser(File dicomXmlDirectory, File mustacheTemplateDirectory, File javaOutputDirectory) throws ParserConfigurationException, SAXException {
+        this.dicomXmlDirectory = dicomXmlDirectory;
+        this.mustacheTemplateDirectory = mustacheTemplateDirectory;
+        this.javaOutputDirectory = javaOutputDirectory;
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         saxParser = saxParserFactory.newSAXParser();
+        MustacheResolver mustacheResolver = resourceName -> {
+            File mustacheFile = new File(mustacheTemplateDirectory, resourceName + ".java.mustache");
+            try {
+                return new FileReader(mustacheFile);
+            } catch (FileNotFoundException e) {
+                throw new MustacheNotFoundException(resourceName, e);
+            }
+        };
+        mustacheFactory = new DefaultMustacheFactory(mustacheResolver);
+        mustacheFactory.setObjectHandler(new MapMethodReflectionHandler());
     }
 
-    public void generateSources(File dicomXmlDirectory, File mustacheTemplateDirectory, File javaOutputDirectory) throws IOException, SAXException, ParserConfigurationException {
+    public void generateSources() throws IOException, SAXException {
         DicomPart06Handler handlerPart6 = new DicomPart06Handler();
         saxParser.parse(new File(dicomXmlDirectory, "part06.xml"), handlerPart6);
         Set<DataElementMetaInfo> dataElements = handlerPart6.getDataElements();
-
-        //Map<String, DataElementMetaInfo> dataElementMetaInfoMap = dataElements.stream()
-        //        .collect(Collectors.toMap(DataElementMetaInfo::getTag, Function.identity()));
 
         Map<String, Set<DataElementMetaInfo>> dataElementMetaInfoMap = new HashMap<>();
         for (DataElementMetaInfo dataElement : dataElements) {
@@ -54,14 +67,18 @@ public class DicomXmlParser {
         generateModuleClasses(modules, mustacheTemplateDirectory, javaOutputDirectory);
     }
 
-    private void generateDataElementWrapperClasses(Set<DataElementMetaInfo> attributeMetaInfoMap, File mustacheTemplateDirectory, File javaOutputDirectory) throws IOException {
-        MustacheFactory mustacheFactory = new DefaultMustacheFactory();
-        String mustacheFilename = "DataElement.java.mustache";
-        File mustacheFile = new File(mustacheTemplateDirectory, mustacheFilename);
-        Mustache mustache;
-        try (FileReader mustacheFileReader = new FileReader(mustacheFile)) {
-            mustache = mustacheFactory.compile(mustacheFileReader, mustacheFilename);
+    /**
+     * Extended reflection handler that can access map methods.
+     */
+    private static class MapMethodReflectionHandler extends ReflectionObjectHandler {
+        @Override
+        protected boolean areMethodsAccessible(Map<?, ?> map) {
+            return true;
         }
+    }
+
+    private void generateDataElementWrapperClasses(Set<DataElementMetaInfo> attributeMetaInfoMap, File mustacheTemplateDirectory, File javaOutputDirectory) throws IOException {
+        Mustache mustache = mustacheFactory.compile("DataElement");
         File dataElementDir = new File(javaOutputDirectory, "com/agfa/typeddicom/dataelements");
         //noinspection ResultOfMethodCallIgnored
         dataElementDir.mkdirs();
@@ -75,18 +92,12 @@ public class DicomXmlParser {
     }
 
     private void generateModuleClasses(Set<ModuleMetaInfo> moduleMetaInfoSet, File mustacheTemplateDirectory, File javaOutputDirectory) throws IOException {
-        MustacheFactory mustacheFactory = new DefaultMustacheFactory();
-        String mustacheFilename = "Module.java.mustache";
-        File mustacheFile = new File(mustacheTemplateDirectory, mustacheFilename);
-        Mustache mustache;
-        try (FileReader mustacheFileReader = new FileReader(mustacheFile)) {
-            mustache = mustacheFactory.compile(mustacheFileReader, mustacheFilename);
-        }
+        Mustache mustache = mustacheFactory.compile( "Module");
         File dataElementDir = new File(javaOutputDirectory, "com/agfa/typeddicom/modules");
         //noinspection ResultOfMethodCallIgnored
         dataElementDir.mkdirs();
         for (ModuleMetaInfo moduleMetaInfo : moduleMetaInfoSet) {
-            String filename = moduleMetaInfo.getKeyword() + ".java";
+            String filename = moduleMetaInfo.getKeyword() + "Module.java";
             File javaFile = new File(dataElementDir, filename);
             try (FileWriter javaFileWriter = new FileWriter(javaFile)) {
                 mustache.execute(javaFileWriter, moduleMetaInfo);

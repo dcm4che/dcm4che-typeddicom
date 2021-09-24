@@ -1,11 +1,8 @@
 package com.agfa.typeddicom.metamodel;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * TODO describe this class
@@ -13,8 +10,9 @@ import java.util.List;
  * @author (. @ agfa.com)
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 @RequiredArgsConstructor
-public class MacroMetaInfo implements Serializable {
+public class MacroMetaInfo extends DataElementMetaInfoContainer implements Serializable {
     private final String tableId;
-    private final List<AttributeMetaInfo> attributeMetaInfos = new ArrayList<>();
+
 }

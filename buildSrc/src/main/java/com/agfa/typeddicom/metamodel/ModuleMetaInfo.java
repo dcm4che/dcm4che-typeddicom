@@ -1,10 +1,7 @@
 package com.agfa.typeddicom.metamodel;
 
 import lombok.Data;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.EqualsAndHashCode;
 
 import static com.agfa.typeddicom.KeywordUtils.sanitizeAsJavaIdentifier;
 
@@ -14,11 +11,11 @@ import static com.agfa.typeddicom.KeywordUtils.sanitizeAsJavaIdentifier;
  * @author (. @ agfa.com)
  */
 @Data
-public class ModuleMetaInfo implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class ModuleMetaInfo extends DataElementMetaInfoContainer {
     private final String sectionId;
     private final String name;
     private final String keyword;
-    private final List<AttributeMetaInfo> attributeMetaInfos = new ArrayList<>();
 
     public ModuleMetaInfo(String sectionId, String name) {
         this.sectionId = sectionId;

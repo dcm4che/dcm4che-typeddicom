@@ -1,11 +1,13 @@
 // Auto generated
 package com.agfa.typeddicom.dataelements;
 
+{{#sequence}}
 import com.agfa.typeddicom.AttributesWrapper;
 import com.agfa.typeddicom.SequenceWrapper;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.Tag;
+{{/sequence}}
 import org.dcm4che3.data.VR;
 
 /**
@@ -14,7 +16,12 @@ import org.dcm4che3.data.VR;
  * <strong>Tag:</strong> {{tag}}<br/>
  * <strong>Value Representation:</strong> {{valueRepresentation}}<br/>
  * <strong>Value Multiplicity:</strong> {{valueMultiplicity}}<br/>
- * <strong>Comment:</strong> {{comment}}
+{{#comment}}
+ * <strong>Comment:</strong> {{.}}
+{{/comment}}
+{{#contextsOfAdditionalAttributeInfo}}
+{{> AdditionalAttributeInfoInContext}}
+{{/contextsOfAdditionalAttributeInfo}}
 {{#retired}}
  *
  * @deprecated {{comment}}
@@ -48,39 +55,9 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
             super(attributes);
         }
 
-{{#subDataElements}}
-        /**
-         * {{name}} <br/>
-         * {{attributeDescription}} <br/>
-         * <strong>Type:</strong> {{type}}
-         *
-         * @return the {{name}}
-         */
-        public {{attributeMetaInfo.keyword}} get{{attributeMetaInfo.keyword}}() {
-{{#attributeMetaInfo.sequence}}
-            return new {{attributeMetaInfo.keyword}}(getAttributes().getSequence({{attributeMetaInfo.tagConstant}}));
-{{/attributeMetaInfo.sequence}}
-{{^attributeMetaInfo.sequence}}
-            return new {{attributeMetaInfo.keyword}}(getAttributes().getValue({{attributeMetaInfo.tagConstant}}), getAttributes().bigEndian(), getAttributes().getSpecificCharacterSet());
-{{/attributeMetaInfo.sequence}}
-        }
-
-        /**
-         * {{name}} <br/>
-         * {{attributeDescription}} <br/>
-         * <strong>Type:</strong> {{type}}
-         *
-         * @param value the {{name}}
-         */
-        public void set{{attributeMetaInfo.keyword}}({{attributeMetaInfo.keyword}} value) {
-{{#attributeMetaInfo.sequence}}
-            getAttributes().setValue({{attributeMetaInfo.tagConstant}}, {{attributeMetaInfo.keyword}}.vr, value.getSequence());
-{{/attributeMetaInfo.sequence}}
-{{^attributeMetaInfo.sequence}}
-            getAttributes().setValue({{attributeMetaInfo.tagConstant}}, {{attributeMetaInfo.keyword}}.vr, value.getValue());
-{{/attributeMetaInfo.sequence}}
-        }
-{{/subDataElements}}
+{{#subAttributeMetaInfos}}
+{{> DataElementAccessors}}
+{{/subAttributeMetaInfos}}
     }
 {{/sequence}}
 }

@@ -4,9 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * TODO describe this class
@@ -14,10 +12,9 @@ import java.util.List;
  * @author Niklas Roth (niklas.roth@agfa.com)
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
-public class DataElementMetaInfo implements Serializable {
-    @EqualsAndHashCode.Exclude
-    private final List<AttributeMetaInfo> subAttributes = new ArrayList<>();
+public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     private String tag;
     private String name;
     private String keyword;
@@ -27,6 +24,9 @@ public class DataElementMetaInfo implements Serializable {
     private boolean retired = false;
     private String retiredSince = "";
     private String tagConstant;
+
+    @EqualsAndHashCode.Exclude
+    private final Map<AdditionalAttributeInfo, Set<String>> contextsOfAdditionalAttributeInfo = new HashMap<>();
 
     /**
      * Attention! Does not copy the subAttributes!
@@ -47,5 +47,11 @@ public class DataElementMetaInfo implements Serializable {
 
     public boolean isSequence() {
         return "SQ".equals(valueRepresentation);
+    }
+    
+    public void addAdditionalAttributeInfoForContext(AdditionalAttributeInfo additionalAttributeInfo, String context) {
+        this.contextsOfAdditionalAttributeInfo
+                .computeIfAbsent(additionalAttributeInfo, info -> new HashSet<>())
+                .add(context);
     }
 }

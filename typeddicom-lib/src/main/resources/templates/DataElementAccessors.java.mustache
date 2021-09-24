@@ -1,0 +1,24 @@
+    /**
+     *
+     * @return the {{name}} (see {@link {{keyword}}}
+     */
+    default {{keyword}} get{{keyword}}() {
+    {{#sequence}}
+        return new {{keyword}}(getAttributes().getSequence({{tagConstant}}));
+    {{/sequence}}
+    {{^sequence}}
+        return new {{keyword}}(getAttributes().getValue({{tagConstant}}), getAttributes().bigEndian(), getAttributes().getSpecificCharacterSet());
+    {{/sequence}}
+    }
+
+    /**
+     * @param value the {{name}} (see {@link {{keyword}}}
+     */
+    default void set{{keyword}}({{keyword}} value) {
+    {{#sequence}}
+        getAttributes().setValue({{tagConstant}}, {{keyword}}.valueRepresentation, value.getSequence());
+    {{/sequence}}
+    {{^sequence}}
+        getAttributes().setValue({{tagConstant}}, {{keyword}}.valueRepresentation, value.getValue());
+    {{/sequence}}
+    }

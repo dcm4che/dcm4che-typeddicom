@@ -24,8 +24,8 @@ class ProcessDicomXmlPlugin implements Plugin<Project> {
                     javaDirectory.deleteDir()
                 }
                 javaDirectory.mkdirs()
-                DicomXmlParser dicomXmlParser = new DicomXmlParser()
-                dicomXmlParser.generateSources(dicomXmlDirectory, mustacheTemplateDirectory, javaDirectory)
+                DicomXmlParser dicomXmlParser = new DicomXmlParser(dicomXmlDirectory, mustacheTemplateDirectory, javaDirectory)
+                dicomXmlParser.generateSources()
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.agfa.typeddicom;
 
-import com.agfa.typeddicom.metamodel.AttributeMetaInfo;
+import com.agfa.typeddicom.metamodel.AdditionalAttributeInfo;
 import com.agfa.typeddicom.metamodel.DataElementMetaInfo;
 import com.agfa.typeddicom.metamodel.MacroMetaInfo;
 import com.agfa.typeddicom.metamodel.ModuleMetaInfo;
@@ -89,7 +89,7 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
                 this.currentModuleTable = new ModuleTable(this.currentSectionId, moduleName);
             }
             if (recordedText.trim().contains("Macro Attributes")) {
-                this.currentMacro = new MacroTable(this.currentTableId);
+                this.currentMacro = new MacroTable(recordedText, this.currentTableId);
             }
         } else if ((this.currentModuleTable != null || this.currentMacro != null) && "table".equals(qName)) {
             // table ends (add module meta info to set)
@@ -124,13 +124,13 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
         for (ModuleTable moduleTable : moduleTables) {
             ModuleMetaInfo module = new ModuleMetaInfo(moduleTable.getSectionId(), moduleTable.getName());
             for (TableEntry moduleTableEntry : moduleTable.getTableEntries()) {
-                module.getAttributeMetaInfos().addAll(resolveMacrosRecursively(moduleTableEntry));
+                module.addDataElementMetaInfo(resolveMacrosRecursively(moduleTableEntry, module.getName() + " Module"));
             }
             modules.add(module);
         }
     }
 
-    private List<AttributeMetaInfo> resolveMacrosRecursively(TableEntry tableEntry) {
+    private Iterable<DataElementMetaInfo> resolveMacrosRecursively(TableEntry tableEntry, String context) {
         if (tableEntry instanceof MacroTableEntry macroTableEntry) {
             MacroMetaInfo macroMetaInfo = macros.get(((MacroTableEntry) tableEntry).getTableId());
             if (macroMetaInfo == null) {
@@ -142,28 +142,28 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
                 macroMetaInfo = new MacroMetaInfo(macroTable.getTableId());
                 macros.put(macroMetaInfo.getTableId(), macroMetaInfo);
                 for (TableEntry macroSubEntry : macroTable.getTableEntries()) {
-                    macroMetaInfo.getAttributeMetaInfos().addAll(resolveMacrosRecursively(macroSubEntry));
+                    macroMetaInfo.addDataElementMetaInfo(resolveMacrosRecursively(macroSubEntry, context + " > " + macroTable.getName()));
                 }
             }
-            return macroMetaInfo.getAttributeMetaInfos();
+            return macroMetaInfo.getSubDataElementMetaInfos();
         } else if (tableEntry instanceof AttributeTableEntry attributeTableEntry) {
             Set<DataElementMetaInfo> dataElementMetaInfos = this.dataElementMetaInfos.get(attributeTableEntry.getTag());
             if (dataElementMetaInfos == null) {
                 System.out.println("Invalid attribute tag: " + attributeTableEntry.getTag());
                 return Collections.emptyList();
             }
-            List<AttributeMetaInfo> attributeMetaInfos = new ArrayList<>();
+            List<DataElementMetaInfo> attributeMetaInfos = new ArrayList<>();
             for (DataElementMetaInfo dataElementMetaInfo : dataElementMetaInfos) {
-                AttributeMetaInfo attributeMetaInfo = new AttributeMetaInfo(
+                AdditionalAttributeInfo additionalAttributeInfo = new AdditionalAttributeInfo(
                         attributeTableEntry.getName(),
-                        dataElementMetaInfo,
                         attributeTableEntry.getType(),
                         attributeTableEntry.getAttributeDescription()
                 );
+                dataElementMetaInfo.addAdditionalAttributeInfoForContext(additionalAttributeInfo, context);
                 for (TableEntry subTableEntry : attributeTableEntry.getSubTableEntries()) {
-                    dataElementMetaInfo.getSubAttributes().addAll(resolveMacrosRecursively(subTableEntry));
+                    dataElementMetaInfo.addDataElementMetaInfo(resolveMacrosRecursively(subTableEntry, context + " > " + dataElementMetaInfo.getKeyword()));
                 }
-                attributeMetaInfos.add(attributeMetaInfo);
+                attributeMetaInfos.add(dataElementMetaInfo);
             }
 
             return attributeMetaInfos;
