@@ -8,10 +8,10 @@ import org.dcm4che3.data.Tag;
 /**
  * {{name}}
  *
- * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/{{sectionId}}.html">DICOM Standard Part 3 - {{sectionId}}</a>
+ * @see <a href="{{href}}">DICOM Standard Part 3 - {{name}}</a>
  *
  */
-public interface {{keyword}}Module extends Module {
+public interface {{keyword}} extends Module {
 {{#subDataElementMetaInfos}}
 {{> DataElementAccessors}}
 {{/subDataElementMetaInfos}}

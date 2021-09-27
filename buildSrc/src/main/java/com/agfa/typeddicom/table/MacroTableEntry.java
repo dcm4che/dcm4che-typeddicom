@@ -1,6 +1,8 @@
 package com.agfa.typeddicom.table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,23 +12,19 @@ import java.util.List;
  *
  * @author (. @ agfa.com)
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class MacroTableEntry implements TableEntry {
+public class MacroTableEntry extends TableEntry {
     private final String tableId;
     private final String additionalInfo;
-    private List<TableEntry> subTableEntries = new ArrayList<>();
 
-    public MacroTableEntry(String tableId) {
-        this(tableId, "");
+    public MacroTableEntry(String href, String tableId) {
+        this(href, tableId, "");
     }
 
-    public MacroTableEntry(String tableId, String additionalInfo) {
+    public MacroTableEntry(String href, String tableId, String additionalInfo) {
+        super(href);
         this.tableId = tableId;
         this.additionalInfo = additionalInfo;
-    }
-
-    @Override
-    public List<TableEntry> getSubTableEntries() {
-        return this.subTableEntries;
     }
 }

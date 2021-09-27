@@ -97,7 +97,7 @@ public class DicomXmlParser {
         //noinspection ResultOfMethodCallIgnored
         dataElementDir.mkdirs();
         for (ModuleMetaInfo moduleMetaInfo : moduleMetaInfoSet) {
-            String filename = moduleMetaInfo.getKeyword() + "Module.java";
+            String filename = moduleMetaInfo.getKeyword() + ".java";
             File javaFile = new File(dataElementDir, filename);
             try (FileWriter javaFileWriter = new FileWriter(javaFile)) {
                 mustache.execute(javaFileWriter, moduleMetaInfo);

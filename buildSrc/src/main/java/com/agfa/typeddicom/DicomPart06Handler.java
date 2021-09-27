@@ -56,6 +56,7 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        super.startElement(uri, localName, qName, attributes);
         if ("caption".equals(qName)) {
             startRecordingText();
         } else if (inAttributeRegistryTable && "tbody".equals(qName)) {
@@ -71,6 +72,7 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
+        super.endElement(uri, localName, qName);
         if ("caption".equals(qName)) {
             String recordedText = getRecordedText();
             if (recordedText.startsWith("Registry of DICOM ") && !recordedText.equals("Registry of DICOM Unique Identifiers (UIDs) (Normative)")) {
@@ -139,6 +141,16 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
 
     public Set<DataElementMetaInfo> getDataElements() {
         return dataElements;
+    }
+
+    @Override
+    public String getBaseHrefUrl() {
+        return "http://dicom.nema.org/medical/dicom/current/output/html/part03.html";
+    }
+
+    @Override
+    protected String getLabelPrefix() {
+        return "DICOM Standard Part 6";
     }
 
     private String getTagConstant(String keyword, String tag) {

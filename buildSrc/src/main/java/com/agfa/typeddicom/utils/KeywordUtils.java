@@ -1,4 +1,4 @@
-package com.agfa.typeddicom;
+package com.agfa.typeddicom.utils;
 
 import java.util.regex.Pattern;
 

@@ -49,15 +49,17 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
     }
 
 
-    public static class Item extends AttributesWrapper {
+    public interface ItemInterface extends SequenceItem {
+{{#subDataElementMetaInfos}}
+{{> DataElementAccessors}}
+{{/subDataElementMetaInfos}}
+    }
+
+    public static class Item extends AttributesWrapper implements {{keyword}}.ItemInterface{
 
         public Item(Attributes attributes) {
             super(attributes);
         }
-
-{{#subAttributeMetaInfos}}
-{{> DataElementAccessors}}
-{{/subAttributeMetaInfos}}
     }
 {{/sequence}}
 }

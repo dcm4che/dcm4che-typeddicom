@@ -26,7 +26,7 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     private String tagConstant;
 
     @EqualsAndHashCode.Exclude
-    private final Map<AdditionalAttributeInfo, Set<String>> contextsOfAdditionalAttributeInfo = new HashMap<>();
+    private final Map<AdditionalAttributeInfo, Set<Context>> contextsOfAdditionalAttributeInfo = new HashMap<>();
 
     /**
      * Attention! Does not copy the subAttributes!
@@ -49,7 +49,7 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
         return "SQ".equals(valueRepresentation);
     }
     
-    public void addAdditionalAttributeInfoForContext(AdditionalAttributeInfo additionalAttributeInfo, String context) {
+    public void addAdditionalAttributeInfoForContext(AdditionalAttributeInfo additionalAttributeInfo, Context context) {
         this.contextsOfAdditionalAttributeInfo
                 .computeIfAbsent(additionalAttributeInfo, info -> new HashSet<>())
                 .add(context);
