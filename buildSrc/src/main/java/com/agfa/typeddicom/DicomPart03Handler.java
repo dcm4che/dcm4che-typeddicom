@@ -265,25 +265,4 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
     public Set<ModuleMetaInfo> getModules() {
         return modules;
     }
-
-//     private void includeMacro() {
-//         MacroMetaInfo macro = macros.get(referencedMacroTable);
-//         if (macro == null) {
-//             System.out.println("Invalid Macro reference: " + referencedMacroTable);
-//         }
-//         List<AttributeMetaInfo> attributeMetaInfos = macro.getAttributeMetaInfos();
-//         for (AttributeMetaInfo attributeMetaInfo : attributeMetaInfos) {
-//             addTableEntry(attributeMetaInfo);
-//         }
-//         recursivelyFixSequenceAncestryWhenAddingThroughMacro(attributeMetaInfos.get(attributeMetaInfos.size() - 1));
-//     }
-//
-//     private void recursivelyFixSequenceAncestryWhenAddingThroughMacro(AttributeMetaInfo attributeMetaInfo) {
-//         DataElementMetaInfo dataElementMetaInfos = attributeMetaInfo.getDataElementMetaInfo();
-//         if (dataElementMetaInfos.isSequence()) {
-//             this.sequenceAncestors.add(attributeMetaInfo.getDataElementMetaInfo());
-//             List<AttributeMetaInfo> subDataElements = dataElementMetaInfos.getSubDataElements();
-//             recursivelyFixSequenceAncestryWhenAddingThroughMacro(subDataElements.get(subDataElements.size() - 1));
-//         }
-//     }
 }

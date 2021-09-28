@@ -1,4 +1,4 @@
-package com.agfa.typeddicom.dataelements;
+package com.agfa.typeddicom.valuerepresentations;
 
 public interface StringDataElementWrapper extends DataElementWrapper {
     default String getString() {

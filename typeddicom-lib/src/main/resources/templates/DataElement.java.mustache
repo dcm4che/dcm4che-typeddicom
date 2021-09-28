@@ -8,7 +8,13 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.Tag;
 {{/sequence}}
+{{^sequence}}
+import com.agfa.typeddicom.valuerepresentations.AbstractDataElementWrapper;
+import com.agfa.typeddicom.valuerepresentations.{{valueRepresentationWrapper}};
+import java.util.TimeZone;
+{{/sequence}}
 import org.dcm4che3.data.VR;
+
 
 /**
  * <strong>Name:</strong> {{name}}<br/>
@@ -30,11 +36,12 @@ import org.dcm4che3.data.VR;
 {{#retired}}
 @Deprecated
 {{/retired}}
-public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{{/sequence}}{{^sequence}}AbstractDataElementWrapper{{/sequence}} {
+public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{{/sequence}}{{^sequence}}AbstractDataElementWrapper implements {{valueRepresentationWrapper}}{{/sequence}} {
     public static final VR valueRepresentation = VR.{{valueRepresentation}};
+
 {{^sequence}}
-    public {{keyword}}(Object value, boolean bigEndian, org.dcm4che3.data.SpecificCharacterSet characterSet) {
-        super(value, bigEndian, characterSet);
+    public {{keyword}}(Object value, boolean bigEndian, org.dcm4che3.data.SpecificCharacterSet characterSet, TimeZone timeZone) {
+        super(value, bigEndian, characterSet, timeZone);
     }
 
     @Override

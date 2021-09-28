@@ -1,7 +1,9 @@
-package com.agfa.typeddicom.dataelements;
+package com.agfa.typeddicom.valuerepresentations;
 
 import org.dcm4che3.data.SpecificCharacterSet;
 import org.dcm4che3.data.VR;
+
+import java.util.TimeZone;
 
 /**
  * TODO describe this class
@@ -14,6 +16,8 @@ public interface DataElementWrapper {
     boolean bigEndian();
 
     VR getValueRepresentation();
+    
+    TimeZone getTimeZone();
 
     SpecificCharacterSet getSpecificCharacterSet();
 }

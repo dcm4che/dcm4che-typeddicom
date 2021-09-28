@@ -4,7 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * TODO describe this class
@@ -27,6 +30,7 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
 
     @EqualsAndHashCode.Exclude
     private final Map<AdditionalAttributeInfo, Set<Context>> contextsOfAdditionalAttributeInfo = new HashMap<>();
+    private String valueRepresentationWrapper;
 
     /**
      * Attention! Does not copy the subAttributes!
@@ -37,7 +41,8 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
         this.setTag(other.getTag());
         this.setName(other.getName());
         this.setKeyword(other.getKeyword());
-        this.setValueRepresentation(other.getValueRepresentation());
+        this.valueRepresentation = other.valueRepresentation;
+        this.valueRepresentationWrapper = other.valueRepresentationWrapper;
         this.setValueMultiplicity(other.getValueMultiplicity());
         this.setComment(other.getComment());
         this.setRetired(other.isRetired());
@@ -48,10 +53,20 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     public boolean isSequence() {
         return "SQ".equals(valueRepresentation);
     }
-    
+
     public void addAdditionalAttributeInfoForContext(AdditionalAttributeInfo additionalAttributeInfo, Context context) {
         this.contextsOfAdditionalAttributeInfo
                 .computeIfAbsent(additionalAttributeInfo, info -> new HashSet<>())
                 .add(context);
+    }
+
+    public void setValueRepresentationWrapper(Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap, Map<String, ValueRepresentationMetaInfo> multiValueRepresentationsMap) {
+        if (!valueRepresentation.equals("SQ")) {
+            if (getValueMultiplicity().equals("1")) {
+                this.valueRepresentationWrapper = valueRepresentationsMap.get(valueRepresentation).keyword();
+            } else {
+                this.valueRepresentationWrapper = multiValueRepresentationsMap.get(valueRepresentation).keyword();
+            }
+        }
     }
 }

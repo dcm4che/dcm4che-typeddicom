@@ -7,7 +7,7 @@
         return new {{keyword}}(getAttributes().getSequence({{tagConstant}}));
     {{/sequence}}
     {{^sequence}}
-        return new {{keyword}}(getAttributes().getValue({{tagConstant}}), getAttributes().bigEndian(), getAttributes().getSpecificCharacterSet());
+        return new {{keyword}}(getAttributes().getValue({{tagConstant}}), getAttributes().bigEndian(), getAttributes().getSpecificCharacterSet(), getAttributes().getTimeZone());
     {{/sequence}}
     }
 
