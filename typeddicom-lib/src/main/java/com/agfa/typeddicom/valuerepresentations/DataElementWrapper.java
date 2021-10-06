@@ -19,5 +19,5 @@ public interface DataElementWrapper {
     
     TimeZone getTimeZone();
 
-    SpecificCharacterSet getSpecificCharacterSet();
+    SpecificCharacterSet getCharacterSet();
 }

@@ -1,3 +1,6 @@
+import com.agfa.typeddicom.dataelements.DisplayedAreaSelectionSequence;
+import com.agfa.typeddicom.dataelements.PresentationPixelAspectRatio;
+import com.agfa.typeddicom.dataelements.PresentationPixelSpacing;
 import com.agfa.typeddicom.iods.GrayscaleSoftcopyPresentationStateIOD;
 import com.agfa.typeddicom.modules.DisplayedAreaModule;
 import org.dcm4che3.data.Attributes;
@@ -22,7 +25,11 @@ public class SimpleTest {
     @Test
     public void testSimpleStuff() throws IOException {
         Attributes attributes = readDicomFile("GSPS.dcm");
-        DisplayedAreaModule grayscaleSoftcopyPresentationState = new GrayscaleSoftcopyPresentationStateIOD(attributes);
-        double[] pps = grayscaleSoftcopyPresentationState.getDisplayedAreaSelectionSequence().get(0).getPresentationPixelSpacing().getDoubles();
+        GrayscaleSoftcopyPresentationStateIOD grayscaleSoftcopyPresentationState = new GrayscaleSoftcopyPresentationStateIOD(attributes);
+        System.out.println(grayscaleSoftcopyPresentationState.getSOPClassUID().getString());
+        DisplayedAreaSelectionSequence displayedAreaSelectionSequence = grayscaleSoftcopyPresentationState.getDisplayedAreaSelectionSequence();
+        DisplayedAreaSelectionSequence.Item displayedAreaSelectionSequenceItem = displayedAreaSelectionSequence.get(0);
+        PresentationPixelAspectRatio presentationPixelAspectRatio = displayedAreaSelectionSequenceItem.getPresentationPixelAspectRatio();
+        int[] par = presentationPixelAspectRatio.getInts();
     }
 }

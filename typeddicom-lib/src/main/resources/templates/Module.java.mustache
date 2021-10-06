@@ -4,7 +4,6 @@ package com.agfa.typeddicom.modules;
 {{#subDataElementMetaInfos}}
 import com.agfa.typeddicom.dataelements.{{keyword}};
 {{/subDataElementMetaInfos}}
-import org.dcm4che3.data.Tag;
 
 /**
  * {{name}}
@@ -12,8 +11,5 @@ import org.dcm4che3.data.Tag;
  * @see <a href="{{href}}">DICOM Standard Part 3 - {{name}}</a>
  *
  */
-public interface {{keyword}} extends Module {
-{{#subDataElementMetaInfos}}
-{{> DataElementAccessors}}
-{{/subDataElementMetaInfos}}
+public interface {{keyword}} extends {{implementsContainsInterfaces}} {
 }

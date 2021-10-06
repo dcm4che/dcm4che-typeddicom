@@ -1,7 +1,5 @@
 package com.agfa.typeddicom.metamodel;
 
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +9,6 @@ import java.util.stream.Collectors;
  *
  * @author (. @ agfa.com)
  */
-@Data
 public class InformationObjectDefinitionMetaInfo {
     private final String name;
     private final String keyword;
@@ -24,5 +21,17 @@ public class InformationObjectDefinitionMetaInfo {
     
     public String getImplementsModules() {
         return moduleReferences.stream().map(ref -> ref.moduleMetaInfo().getKeyword()).collect(Collectors.joining(", "));
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public List<IODModuleReference> getModuleReferences() {
+        return moduleReferences;
     }
 }

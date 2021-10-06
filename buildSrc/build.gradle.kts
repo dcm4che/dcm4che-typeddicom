@@ -1,6 +1,6 @@
+
 plugins {
     `kotlin-dsl`
-    id("io.freefair.lombok") version "6.2.0"
 }
 
 repositories {
@@ -13,8 +13,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.codehaus.groovy:groovy-all:3.0.7")
-
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.5")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.5")
 

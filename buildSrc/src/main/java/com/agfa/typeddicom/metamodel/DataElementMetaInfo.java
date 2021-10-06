@@ -1,22 +1,12 @@
 package com.agfa.typeddicom.metamodel;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * TODO describe this class
  *
  * @author Niklas Roth (niklas.roth@agfa.com)
  */
-@Data
-@EqualsAndHashCode(callSuper=false)
-@NoArgsConstructor
 public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     private String tag;
     private String name;
@@ -28,9 +18,11 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     private String retiredSince = "";
     private String tagConstant;
 
-    @EqualsAndHashCode.Exclude
     private final Map<AdditionalAttributeInfo, Set<Context>> contextsOfAdditionalAttributeInfo = new HashMap<>();
     private String valueRepresentationWrapper;
+
+    public DataElementMetaInfo() {
+    }
 
     /**
      * Attention! Does not copy the subAttributes!
@@ -68,5 +60,103 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
                 this.valueRepresentationWrapper = multiValueRepresentationsMap.get(valueRepresentation).keyword();
             }
         }
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public String getValueRepresentation() {
+        return valueRepresentation;
+    }
+
+    public String getValueMultiplicity() {
+        return valueMultiplicity;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public boolean isRetired() {
+        return retired;
+    }
+
+    public String getRetiredSince() {
+        return retiredSince;
+    }
+
+    public String getTagConstant() {
+        return tagConstant;
+    }
+
+    public Map<AdditionalAttributeInfo, Set<Context>> getContextsOfAdditionalAttributeInfo() {
+        return contextsOfAdditionalAttributeInfo;
+    }
+
+    public String getValueRepresentationWrapper() {
+        return valueRepresentationWrapper;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public void setValueRepresentation(String valueRepresentation) {
+        this.valueRepresentation = valueRepresentation;
+    }
+
+    public void setValueMultiplicity(String valueMultiplicity) {
+        this.valueMultiplicity = valueMultiplicity;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void setRetired(boolean retired) {
+        this.retired = retired;
+    }
+
+    public void setRetiredSince(String retiredSince) {
+        this.retiredSince = retiredSince;
+    }
+
+    public void setTagConstant(String tagConstant) {
+        this.tagConstant = tagConstant;
+    }
+
+    public void setValueRepresentationWrapper(String valueRepresentationWrapper) {
+        this.valueRepresentationWrapper = valueRepresentationWrapper;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DataElementMetaInfo that = (DataElementMetaInfo) o;
+        return retired == that.retired && Objects.equals(tag, that.tag) && Objects.equals(name, that.name) && Objects.equals(keyword, that.keyword) && Objects.equals(valueRepresentation, that.valueRepresentation) && Objects.equals(valueMultiplicity, that.valueMultiplicity) && Objects.equals(comment, that.comment) && Objects.equals(retiredSince, that.retiredSince) && Objects.equals(tagConstant, that.tagConstant) && Objects.equals(valueRepresentationWrapper, that.valueRepresentationWrapper);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), tag, name, keyword, valueRepresentation, valueMultiplicity, comment, retired, retiredSince, tagConstant, valueRepresentationWrapper);
     }
 }

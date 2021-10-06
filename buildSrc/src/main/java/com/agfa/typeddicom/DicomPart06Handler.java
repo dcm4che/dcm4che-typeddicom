@@ -77,7 +77,6 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        super.endElement(uri, localName, qName);
         if ("caption".equals(qName)) {
             String recordedText = getRecordedText();
             if (recordedText.startsWith("Registry of DICOM ") && !recordedText.equals("Registry of DICOM Unique Identifiers (UIDs) (Normative)")) {
@@ -100,6 +99,7 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
                 default -> throw new IllegalStateException("Unexpected value: " + currentColumn);
             }
         }
+        super.endElement(uri, localName, qName);
     }
 
     private void endOfDataElement() {

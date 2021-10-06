@@ -85,10 +85,19 @@ public class DicomXmlParser {
         Set<InformationObjectDefinitionMetaInfo> iods = handlerPart3.getIODs();
 
         generateValueRepresentationInterfaces(valueRepresentations);
+        System.out.println("Generated " + valueRepresentations.size() + " value representation classes");
+
         generateValueRepresentationInterfaces(multiValueRepresentations);
+        System.out.println("Generated " + multiValueRepresentations.size() + " multi value representation classes");
+
         generateDataElementWrapperClasses(dataElements);
+        System.out.println("Generated " + dataElements.size() + " data element classes");
+
         generateModuleInterfaces(modules);
+        System.out.println("Generated " + modules.size() + " module classes");
+
         generateIODClasses(iods);
+        System.out.println("Generated " + iods.size() + " iod classes");
     }
 
     private void generateValueRepresentationInterfaces(Set<ValueRepresentationMetaInfo> valueRepresentations) throws IOException {

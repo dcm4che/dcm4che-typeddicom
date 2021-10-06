@@ -1,10 +1,5 @@
 package com.agfa.typeddicom.table;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.*;
 
 /**
@@ -12,14 +7,16 @@ import java.util.*;
  *
  * @author Niklas Roth (niklas.roth@agfa.com)
  */
-@Data
 public class Table {
     private final String id;
     private String caption;
     private final List<String> columnHeaders = new ArrayList<>();
-    @Setter(AccessLevel.NONE)
-    @Getter(AccessLevel.NONE)
-    private List<List<TableCell>> cells = new ArrayList<>();
+
+    private final List<List<TableCell>> cells = new ArrayList<>();
+
+    public Table(String id) {
+        this.id = id;
+    }
 
     public TableCell getTableCell(int row, int column) {
         if (row >= cells.size()) {
@@ -78,5 +75,21 @@ public class Table {
         return this.cells.stream()
                 .mapToInt(Collection::size)
                 .max().orElse(0);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
+    public List<String> getColumnHeaders() {
+        return columnHeaders;
     }
 }

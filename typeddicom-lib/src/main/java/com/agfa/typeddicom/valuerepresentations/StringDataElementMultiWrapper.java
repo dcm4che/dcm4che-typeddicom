@@ -9,17 +9,11 @@ public interface StringDataElementMultiWrapper extends DataElementWrapper {
         return (String[]) vr.toStrings(
                 getValue(),
                 bigEndian(),
-                getValueRepresentation().useSpecificCharacterSet() ? getSpecificCharacterSet() : SpecificCharacterSet.ASCII
+                getCharacterSet()
         );
     }
     
     default String getString(int index, String defaultValue) {
-        VR vr = getValueRepresentation();
-        return vr.toString(
-                getValue(),
-                bigEndian(),
-                index,
-                defaultValue
-        );
+        return getStrings()[index];
     }
 }

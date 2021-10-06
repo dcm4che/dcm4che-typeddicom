@@ -1,20 +1,17 @@
 package com.agfa.typeddicom.metamodel;
 
-import lombok.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * TODO describe this class
  *
  * @author (. @ agfa.com)
  */
-@Data
 public class DataElementMetaInfoContainer implements Serializable {
-    @Setter(AccessLevel.NONE)
-    @EqualsAndHashCode.Exclude
     private final List<DataElementMetaInfo> subDataElementMetaInfos = new ArrayList<>();
 
     public boolean addDataElementMetaInfo(DataElementMetaInfo attributeMetaInfo) {
@@ -36,5 +33,9 @@ public class DataElementMetaInfoContainer implements Serializable {
 
     public Iterable<DataElementMetaInfo> getSubDataElementMetaInfos() {
         return subDataElementMetaInfos;
+    }
+
+    public String implementsContainsInterfaces() {
+        return subDataElementMetaInfos.stream().map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Accessors").collect(Collectors.joining(", "));
     }
 }

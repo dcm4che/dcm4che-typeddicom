@@ -2,7 +2,7 @@
 package com.agfa.typeddicom.iods;
 
 import org.dcm4che3.data.Attributes;
-import com.agfa.typeddicom.AttributesWrapper;
+import com.agfa.typeddicom.AbstractAttributesWrapper;
 {{#moduleReferences}}
 import com.agfa.typeddicom.modules.{{moduleMetaInfo.keyword}};
 {{/moduleReferences}}
@@ -13,7 +13,7 @@ import com.agfa.typeddicom.modules.{{moduleMetaInfo.keyword}};
  *
  * @see <a href="{{href}}">DICOM Standard Part 5 - {{name}}</a>
  */
-public class {{keyword}} extends AttributesWrapper implements {{implementsModules}} {
+public class {{keyword}} extends AbstractAttributesWrapper implements {{implementsModules}} {
 
     public {{keyword}}(Attributes attributes) {
         super(attributes);

@@ -1,8 +1,9 @@
 // Auto generated
 package com.agfa.typeddicom.dataelements;
 
-{{#sequence}}
 import com.agfa.typeddicom.AttributesWrapper;
+{{#sequence}}
+import com.agfa.typeddicom.AbstractAttributesWrapper;
 import com.agfa.typeddicom.SequenceWrapper;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
@@ -14,6 +15,7 @@ import com.agfa.typeddicom.valuerepresentations.{{valueRepresentationWrapper}};
 import java.util.TimeZone;
 {{/sequence}}
 import org.dcm4che3.data.VR;
+import org.dcm4che3.data.Tag;
 
 
 /**
@@ -55,18 +57,38 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
         super(sequence, {{keyword}}.Item.class);
     }
 
-
-    public interface ItemInterface extends SequenceItem {
-{{#subDataElementMetaInfos}}
-{{> DataElementAccessors}}
-{{/subDataElementMetaInfos}}
-    }
-
-    public static class Item extends AttributesWrapper implements {{keyword}}.ItemInterface{
+    public static class Item extends AbstractAttributesWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{implementsContainsInterfaces}} {{/subDataElementMetaInfos.isEmpty}}{
 
         public Item(Attributes attributes) {
             super(attributes);
         }
     }
 {{/sequence}}
+
+    public interface Accessors extends AttributesWrapper {
+        /**
+         *
+         * @return the {{name}} (see {@link {{keyword}}}
+         */
+        default {{keyword}} get{{keyword}}() {
+        {{#sequence}}
+            return new {{keyword}}(getAttributes().getSequence({{tagConstant}}));
+        {{/sequence}}
+        {{^sequence}}
+            return new {{keyword}}(getAttributes().getValue({{tagConstant}}), getAttributes().bigEndian(), getAttributes().getSpecificCharacterSet(), getAttributes().getTimeZone());
+        {{/sequence}}
+        }
+
+        /**
+         * @param value the {{name}} (see {@link {{keyword}}}
+         */
+        default void set{{keyword}}({{keyword}} value) {
+        {{#sequence}}
+            getAttributes().setValue({{tagConstant}}, {{keyword}}.valueRepresentation, value.getSequence());
+        {{/sequence}}
+        {{^sequence}}
+            getAttributes().setValue({{tagConstant}}, {{keyword}}.valueRepresentation, value.getValue());
+        {{/sequence}}
+        }
+    }
 }

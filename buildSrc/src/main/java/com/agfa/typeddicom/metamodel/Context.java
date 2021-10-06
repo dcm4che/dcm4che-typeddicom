@@ -1,12 +1,9 @@
 package com.agfa.typeddicom.metamodel;
 
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Data
 public class Context {
     private final List<ContextEntry> context;
     
@@ -36,5 +33,9 @@ public class Context {
             }
         }
         return html.toString();
+    }
+
+    public List<ContextEntry> getContext() {
+        return context;
     }
 }

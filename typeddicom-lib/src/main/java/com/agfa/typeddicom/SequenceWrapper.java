@@ -10,7 +10,7 @@ import java.util.Objects;
  *
  * @author (. @ agfa.com)
  */
-public class SequenceWrapper<T extends AttributesWrapper> extends AbstractList<T> {
+public class SequenceWrapper<T extends AbstractAttributesWrapper> extends AbstractList<T> {
     private final Sequence sequence;
     private final Class<T> itemClass;
 
@@ -25,7 +25,7 @@ public class SequenceWrapper<T extends AttributesWrapper> extends AbstractList<T
 
     @Override
     public T get(int index) {
-        return AttributesWrapper.wrap(sequence.get(index), itemClass);
+        return AbstractAttributesWrapper.wrap(sequence.get(index), itemClass);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class SequenceWrapper<T extends AttributesWrapper> extends AbstractList<T
 
     @Override
     public T set(int index, T element) {
-        return AttributesWrapper.wrap(sequence.set(index, element.getAttributes()), itemClass);
+        return AbstractAttributesWrapper.wrap(sequence.set(index, element.getAttributes()), itemClass);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SequenceWrapper<T extends AttributesWrapper> extends AbstractList<T
 
     @Override
     public T remove(int index) {
-        return AttributesWrapper.wrap(sequence.remove(index), itemClass);
+        return AbstractAttributesWrapper.wrap(sequence.remove(index), itemClass);
     }
 
     @Override

@@ -63,7 +63,6 @@ public class DicomPart05Handler extends AbstractDicomPartHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        super.endElement(uri, localName, qName);
         if ("caption".equals(qName)) {
             String caption = getRecordedText();
             if (caption.equals("DICOM Value Representations")) {
@@ -79,6 +78,7 @@ public class DicomPart05Handler extends AbstractDicomPartHandler {
             this.rowHref = null;
             this.columns.clear();
         }
+        super.endElement(uri, localName, qName);
     }
 
     private void handleEndOfRow() {

@@ -1,6 +1,5 @@
 package com.agfa.typeddicom.table;
 
-import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,6 @@ import static com.agfa.typeddicom.utils.KeywordUtils.sanitizeAsJavaIdentifier;
  *
  * @author (. @ agfa.com)
  */
-@Data
 public class ModuleTable {
     private final String sectionId;
     private final String name;
@@ -27,4 +25,23 @@ public class ModuleTable {
         this.href = href;
     }
 
+    public String getSectionId() {
+        return sectionId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public String getHref() {
+        return href;
+    }
+
+    public List<TableEntry> getTableEntries() {
+        return tableEntries;
+    }
 }

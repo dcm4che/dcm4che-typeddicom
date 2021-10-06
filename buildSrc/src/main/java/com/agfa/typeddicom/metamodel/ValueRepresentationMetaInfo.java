@@ -1,7 +1,5 @@
 package com.agfa.typeddicom.metamodel;
 
-import lombok.Data;
-
 /**
  * TODO describe this class
  *

@@ -1,19 +1,12 @@
 package com.agfa.typeddicom.table;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * TODO describe this class
  *
  * @author (. @ agfa.com)
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
 public class MacroTableEntry extends TableEntry {
     private final String tableId;
     private final String additionalInfo;
@@ -26,5 +19,27 @@ public class MacroTableEntry extends TableEntry {
         super(href);
         this.tableId = tableId;
         this.additionalInfo = additionalInfo;
+    }
+
+    public String getTableId() {
+        return tableId;
+    }
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        MacroTableEntry that = (MacroTableEntry) o;
+        return Objects.equals(tableId, that.tableId) && Objects.equals(additionalInfo, that.additionalInfo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), tableId, additionalInfo);
     }
 }

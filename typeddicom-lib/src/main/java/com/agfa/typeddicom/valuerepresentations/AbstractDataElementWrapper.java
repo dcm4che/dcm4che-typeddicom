@@ -12,13 +12,13 @@ import java.util.TimeZone;
 abstract public class AbstractDataElementWrapper implements DataElementWrapper {
     private final Object value;
     private final boolean bigEndian;
-    private final SpecificCharacterSet characterSet;
+    private final SpecificCharacterSet specificCharacterSet;
     private final TimeZone timeZone;
 
-    public AbstractDataElementWrapper(Object value, boolean bigEndian, SpecificCharacterSet characterSet, TimeZone timeZone) {
+    public AbstractDataElementWrapper(Object value, boolean bigEndian, SpecificCharacterSet specificCharacterSet, TimeZone timeZone) {
         this.value = value;
         this.bigEndian = bigEndian;
-        this.characterSet = characterSet;
+        this.specificCharacterSet = specificCharacterSet;
         this.timeZone = timeZone;
     }
 
@@ -33,8 +33,8 @@ abstract public class AbstractDataElementWrapper implements DataElementWrapper {
     }
 
     @Override
-    public SpecificCharacterSet getSpecificCharacterSet() {
-        return characterSet;
+    public SpecificCharacterSet getCharacterSet() {
+        return getValueRepresentation().useSpecificCharacterSet() ? specificCharacterSet : SpecificCharacterSet.ASCII;
     }
 
     @Override

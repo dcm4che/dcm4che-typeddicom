@@ -90,16 +90,24 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
         } else if ("caption".equals(qName)) {
             // check for table caption of module definitions
             String recordedText = getRecordedText();
-            if (recordedText.endsWith(" Module Attributes") || recordedText.endsWith(" Module Table")) {
-                String moduleName = recordedText.replace(" Attributes", "").trim();
-                this.currentModule = new ModuleTable(
-                        this.currentSectionId,
-                        moduleName,
-                        getUrlFromXmlId(this.currentSectionId)
-                );
-            } else if (recordedText.contains("Macro Attributes")) {
-                String macroName = recordedText.replace(" Attributes", "").trim();
-                this.currentMacro = new MacroTable(macroName, currentTableId, getUrlFromXmlId(currentTableId));
+            // ignore the weird stuff happening in http://dicom.nema.org/medical/dicom/current/output/html/part03.html#table_C.36.25-2
+            // because it would ruin the module derived from http://dicom.nema.org/medical/dicom/current/output/html/part03.html#table_C.36.25-1
+            // (same caption) as well as the example tables
+            if (!currentTableId.equals("table_C.36.25-2") &&
+                    !recordedText.contains("Example Module Table") &&
+                    !recordedText.contains("Example Macro Attributes") &&
+                    !recordedText.contains("Example Module Table Without The Use of An Attribute Macro")) {
+                if (recordedText.endsWith(" Module Attributes") || recordedText.endsWith(" Module Table")) {
+                    String moduleName = recordedText.replace(" Attributes", "").trim();
+                    this.currentModule = new ModuleTable(
+                            this.currentSectionId,
+                            moduleName,
+                            getUrlFromXmlId(this.currentSectionId)
+                    );
+                } else if (recordedText.contains("Macro Attributes")) {
+                    String macroName = recordedText.replace(" Attributes", "").trim();
+                    this.currentMacro = new MacroTable(macroName, currentTableId, getUrlFromXmlId(currentTableId));
+                }
             }
         } else if ((this.currentModule != null || this.currentMacro != null) && "table".equals(qName)) {
             // table ends (add module meta info to set)
@@ -203,14 +211,14 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
         for (int i = 1; i < this.columns.size() - 1; i++) {
             removeHTMLTagsFromColumn(i);
         }
-        String name = columns.get(0);
+        String name = columns.get(0).trim();
         int currentSequenceDepth = sequenceDepth(name);
         name = name.substring(currentSequenceDepth).trim();
         TableEntry currentTableEntry;
         boolean validInclude = name.startsWith("Include") &&
                 lastReferenceInFirstColumn != null &&
                 lastReferenceInFirstColumn.startsWith("table_");
-        boolean validAttribute = columns.size() > 1 && columns.get(1).matches("\\([0-9A-F]{4},[0-9A-F]{4}\\)");
+        boolean validAttribute = columns.size() > 1 && columns.get(1).matches("\\([0-9A-F]{2}[0-9A-Fx]{2},[0-9A-F]{2}[0-9A-Fx]{2}\\)");
         if (columns.size() == 3 && validAttribute) {
             currentTableEntry = new AttributeTableEntry(tableEntryHref, name, columns.get(1), columns.get(2));
         } else if (columns.size() == 4 && validAttribute) {

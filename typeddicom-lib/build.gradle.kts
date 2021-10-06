@@ -39,5 +39,5 @@ tasks.test {
 }
 
 tasks.compileJava {
-    dependsOn(tasks.generateJavaSourceFiles)
+//    dependsOn(tasks.generateJavaSourceFiles)
 }

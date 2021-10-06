@@ -60,6 +60,9 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
         switch (qName) {
             case "para" -> appendTag("p", close);
             case "itemizedlist" -> appendTag("ul", close);
+            case "emphasis" -> appendTag("em", close);
+            case "superscript" -> appendTag("sup", close);
+            case "subscript" -> appendTag("sub", close);
             case "orderedlist" -> appendTag("ol", close);
             case "variablelist" -> {
                 appendTag("dl", close);
