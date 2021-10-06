@@ -1,44 +1,26 @@
 package com.agfa.typeddicom.valuerepresentations;
 
-import org.dcm4che3.data.SpecificCharacterSet;
-
-import java.util.TimeZone;
+import com.agfa.typeddicom.AbstractAttributesWrapper;
+import org.dcm4che3.data.Attributes;
 
 /**
  * TODO describe this class
  *
  * @author Niklas Roth (niklas.roth@agfa.com)
  */
-abstract public class AbstractDataElementWrapper implements DataElementWrapper {
-    private final Object value;
-    private final boolean bigEndian;
-    private final SpecificCharacterSet specificCharacterSet;
-    private final TimeZone timeZone;
+abstract public class AbstractDataElementWrapper extends AbstractAttributesWrapper implements DataElementWrapper {
 
-    public AbstractDataElementWrapper(Object value, boolean bigEndian, SpecificCharacterSet specificCharacterSet, TimeZone timeZone) {
-        this.value = value;
-        this.bigEndian = bigEndian;
-        this.specificCharacterSet = specificCharacterSet;
-        this.timeZone = timeZone;
+    protected AbstractDataElementWrapper(Attributes attributes) {
+        super(attributes);
     }
 
     @Override
     public Object getValue() {
-        return value;
+        return getAttributes().getValue(getTag());
     }
 
     @Override
-    public boolean bigEndian() {
-        return bigEndian;
-    }
-
-    @Override
-    public SpecificCharacterSet getCharacterSet() {
-        return getValueRepresentation().useSpecificCharacterSet() ? specificCharacterSet : SpecificCharacterSet.ASCII;
-    }
-
-    @Override
-    public TimeZone getTimeZone() {
-        return timeZone;
+    public boolean exists() {
+        return getAttributes().contains(getTag());
     }
 }

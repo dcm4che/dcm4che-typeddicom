@@ -5,15 +5,18 @@ import org.dcm4che3.data.VR;
 
 public interface StringDataElementMultiWrapper extends DataElementWrapper {
     default String[] getStrings() {
-        VR vr = getValueRepresentation();
-        return (String[]) vr.toStrings(
-                getValue(),
-                bigEndian(),
-                getCharacterSet()
-        );
+        return getAttributes().getStrings(getTag());
     }
-    
+
+    default String getString(int index) {
+        return getAttributes().getString(getTag(), index);
+    }
+
     default String getString(int index, String defaultValue) {
-        return getStrings()[index];
+        return getAttributes().getString(getTag(), index, defaultValue);
+    }
+
+    default void setStrings(String[] strings) {
+        getAttributes().setString(getTag(), getValueRepresentation(), strings);
     }
 }

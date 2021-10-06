@@ -35,7 +35,7 @@ public class DataElementMetaInfoContainer implements Serializable {
         return subDataElementMetaInfos;
     }
 
-    public String implementsContainsInterfaces() {
+    public String implementsAccessorInterfaces() {
         return subDataElementMetaInfos.stream().map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Accessors").collect(Collectors.joining(", "));
     }
 }

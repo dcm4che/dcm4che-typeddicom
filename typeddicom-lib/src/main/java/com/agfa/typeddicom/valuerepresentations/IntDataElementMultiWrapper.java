@@ -2,10 +2,14 @@ package com.agfa.typeddicom.valuerepresentations;
 
 public interface IntDataElementMultiWrapper extends DataElementWrapper {
     default int[] getInts() {
-        return getValueRepresentation().toInts(getValue(), bigEndian());
+        return getAttributes().getInts(getTag());
     }
     
-    default int getInts(int index, int defaultValue) {
-        return getValueRepresentation().toInt(getValue(), bigEndian(), index, defaultValue);
+    default int getInt(int index, int defaultValue) {
+        return getAttributes().getInt(getTag(), index, defaultValue);
+    }
+    
+    default void setInts(int[] ints) {
+        getAttributes().setInt(getTag(), getValueRepresentation(), ints);
     }
 }

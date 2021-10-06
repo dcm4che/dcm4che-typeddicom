@@ -7,18 +7,30 @@ import java.util.Date;
 
 public interface DateDataElementMultiWrapper extends DataElementWrapper {
     default Date[] getDates() {
-        return getDates(new DatePrecisions());
+        return getAttributes().getDates(getTag());
     }
 
     default Date[] getDates(DatePrecisions datePrecisions) {
-        return getValueRepresentation().toDates(getValue(), getTimeZone(), false, datePrecisions);
+        return getAttributes().getDates(getTag(), datePrecisions);
     }
 
     default Date getDate(int index, Date defaultValue) {
-        return getDate(index, defaultValue, new DatePrecision());
+        return getAttributes().getDate(getTag(), index, defaultValue);
     }
 
     default Date getDate(int index, Date defaultValue, DatePrecision datePrecision) {
-        return getValueRepresentation().toDate(getValue(), getTimeZone(), index, false, defaultValue, datePrecision);
+        return getAttributes().getDate(getTag(), index, defaultValue, datePrecision);
+    }
+
+    default Date getDate(int index, DatePrecision datePrecision) {
+        return getAttributes().getDate(getTag(), index, datePrecision);
+    }
+
+    default void setDates(Date[] dates) {
+        getAttributes().setDate(getTag(), getValueRepresentation(), dates);
+    }
+
+    default void setDates(Date[] dates, DatePrecision datePrecision) {
+        getAttributes().setDate(getTag(), getValueRepresentation(), datePrecision, dates);
     }
 }

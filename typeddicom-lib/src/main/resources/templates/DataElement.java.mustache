@@ -12,7 +12,7 @@ import org.dcm4che3.data.Tag;
 {{^sequence}}
 import com.agfa.typeddicom.valuerepresentations.AbstractDataElementWrapper;
 import com.agfa.typeddicom.valuerepresentations.{{valueRepresentationWrapper}};
-import java.util.TimeZone;
+import org.dcm4che3.data.Attributes;
 {{/sequence}}
 import org.dcm4che3.data.VR;
 import org.dcm4che3.data.Tag;
@@ -39,16 +39,22 @@ import org.dcm4che3.data.Tag;
 @Deprecated
 {{/retired}}
 public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{{/sequence}}{{^sequence}}AbstractDataElementWrapper implements {{valueRepresentationWrapper}}{{/sequence}} {
-    public static final VR valueRepresentation = VR.{{valueRepresentation}};
+    public static final VR VALUE_REPRESENTATION = VR.{{valueRepresentation}};
+    public static final int TAG = {{tagConstant}};
 
 {{^sequence}}
-    public {{keyword}}(Object value, boolean bigEndian, org.dcm4che3.data.SpecificCharacterSet characterSet, TimeZone timeZone) {
-        super(value, bigEndian, characterSet, timeZone);
+    public {{keyword}}(Attributes attributes) {
+        super(attributes);
+    }
+
+    @Override
+    public int getTag() {
+        return TAG;
     }
 
     @Override
     public VR getValueRepresentation() {
-        return valueRepresentation;
+        return VALUE_REPRESENTATION;
     }
 {{/sequence}}
 {{#sequence}}
@@ -57,7 +63,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
         super(sequence, {{keyword}}.Item.class);
     }
 
-    public static class Item extends AbstractAttributesWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{implementsContainsInterfaces}} {{/subDataElementMetaInfos.isEmpty}}{
+    public static class Item extends AbstractAttributesWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{implementsAccessorInterfaces}} {{/subDataElementMetaInfos.isEmpty}}{
 
         public Item(Attributes attributes) {
             super(attributes);
@@ -66,29 +72,56 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
 {{/sequence}}
 
     public interface Accessors extends AttributesWrapper {
+
         /**
          *
-         * @return the {{name}} (see {@link {{keyword}}}
+         * @return the {{name}} (see {@link {{keyword}}})
          */
         default {{keyword}} get{{keyword}}() {
         {{#sequence}}
-            return new {{keyword}}(getAttributes().getSequence({{tagConstant}}));
+            Sequence sequence = getAttributes().getSequence(TAG);
+            if (sequence == null) {
+                return null;
+            }
+            return new {{keyword}}(sequence);
         {{/sequence}}
         {{^sequence}}
-            return new {{keyword}}(getAttributes().getValue({{tagConstant}}), getAttributes().bigEndian(), getAttributes().getSpecificCharacterSet(), getAttributes().getTimeZone());
+            return new {{keyword}}(getAttributes());
         {{/sequence}}
         }
 
+        {{#sequence}}
+        /**
+         * @return Whether it contains a {{name}} (see {@link {{keyword}}})
+         */
+         default boolean contains{{keyword}}() {
+            return getAttributes().contains(TAG);
+         }
+
+        /**
+         * Adds a new {{name}}. (see {@link {{keyword}}})
+         *
+         * @param initialCapacity the initial capacity for the new {{name}}
+         */
+        default {{keyword}} new{{keyword}}(int initialCapacity) {
+            return new {{keyword}}(getAttributes().newSequence(TAG, initialCapacity));
+        }
+
+        /**
+         * Adds a new {{name}} if it does not already exist. (see {@link {{keyword}}})
+         *
+         * @param initialCapacity the initial capacity if a new {{name}} is created
+         */
+        default {{keyword}} ensure{{keyword}}(int initialCapacity) {
+            return new {{keyword}}(getAttributes().ensureSequence(TAG, initialCapacity));
+        }
+
+        {{/sequence}}
         /**
          * @param value the {{name}} (see {@link {{keyword}}}
          */
-        default void set{{keyword}}({{keyword}} value) {
-        {{#sequence}}
-            getAttributes().setValue({{tagConstant}}, {{keyword}}.valueRepresentation, value.getSequence());
-        {{/sequence}}
-        {{^sequence}}
-            getAttributes().setValue({{tagConstant}}, {{keyword}}.valueRepresentation, value.getValue());
-        {{/sequence}}
+        default void remove{{keyword}}({{keyword}} value) {
+            getAttributes().remove(TAG);
         }
     }
 }
