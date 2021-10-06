@@ -2,6 +2,7 @@ package com.agfa.typeddicom;
 
 import com.agfa.typeddicom.metamodel.*;
 import com.agfa.typeddicom.table.*;
+import com.agfa.typeddicom.utils.KeywordUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -12,16 +13,17 @@ import java.util.*;
  *
  * @author Niklas Roth (niklas.roth@agfa.com)
  */
-public class DicomPart03Handler extends AbstractDicomPartHandler {
+public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
     private final Set<ModuleMetaInfo> modules;
     private final Map<String, Set<DataElementMetaInfo>> dataElementMetaInfos;
+    private final Set<InformationObjectDefinitionMetaInfo> iods;
     private final Set<ModuleTable> moduleTables = new HashSet<>();
     private final List<TableEntry> sequenceAncestors = new ArrayList<>();
     private final Map<String, MacroTable> macroTables = new HashMap<>();
     private final Map<String, MacroMetaInfo> macros = new HashMap<>();
     private final List<String> columns = new LinkedList<>();
     private MacroTable currentMacro = null;
-    private ModuleTable currentModuleTable;
+    private ModuleTable currentModule;
     private boolean inAttributesTableBody = false;
     private String currentSectionId;
     private String currentTableId = "";
@@ -32,11 +34,12 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
     private String tableEntryHref = null;
 
     public DicomPart03Handler(Map<String, Set<DataElementMetaInfo>> dataElementMetaInfos) {
-        this(new HashSet<>(), dataElementMetaInfos);
+        this(new HashSet<>(), new HashSet<>(), dataElementMetaInfos);
     }
 
-    public DicomPart03Handler(Set<ModuleMetaInfo> modules, Map<String, Set<DataElementMetaInfo>> dataElementMetaInfos) {
+    public DicomPart03Handler(Set<ModuleMetaInfo> modules, Set<InformationObjectDefinitionMetaInfo> iods, Map<String, Set<DataElementMetaInfo>> dataElementMetaInfos) {
         this.modules = modules;
+        this.iods = iods;
         this.dataElementMetaInfos = dataElementMetaInfos;
     }
 
@@ -63,7 +66,7 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
             this.currentTableId = attributes.getValue("xml:id");
         } else if ("caption".equals(qName)) {
             startRecordingText();
-        } else if ((this.currentModuleTable != null || this.currentMacro != null) && "tbody".equals(qName)) {
+        } else if ((this.currentModule != null || this.currentMacro != null) && "tbody".equals(qName)) {
             this.inAttributesTableBody = true;
         } else if (inAttributesTableBody && "tr".equals(qName)) {
             isInTableRow = true;
@@ -71,6 +74,8 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
         } else if (isInTableRow && "td".equals(qName)) {
             lastReference = null;
             startRecordingHTML();
+        } else if ("th".equals(qName)) {
+            startRecordingText();
         } else if ("xref".equals(qName)) {
             lastReference = attributes.getValue("linkend");
         } else if (isInTableRow && tableEntryHref == null && "para".equals(qName)) {
@@ -80,30 +85,29 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        super.endElement(uri, localName, qName);
         if ("section".equals(qName)) {
             this.currentSectionId = null;
         } else if ("caption".equals(qName)) {
             // check for table caption of module definitions
             String recordedText = getRecordedText();
-            if (recordedText.trim().endsWith(" Module Attributes")) {
+            if (recordedText.endsWith(" Module Attributes") || recordedText.endsWith(" Module Table")) {
                 String moduleName = recordedText.replace(" Attributes", "").trim();
-                this.currentModuleTable = new ModuleTable(
+                this.currentModule = new ModuleTable(
                         this.currentSectionId,
                         moduleName,
                         getUrlFromXmlId(this.currentSectionId)
                 );
+            } else if (recordedText.contains("Macro Attributes")) {
+                String macroName = recordedText.replace(" Attributes", "").trim();
+                this.currentMacro = new MacroTable(macroName, currentTableId, getUrlFromXmlId(currentTableId));
             }
-            if (recordedText.trim().contains("Macro Attributes")) {
-                this.currentMacro = new MacroTable(recordedText, currentTableId, getUrlFromXmlId(currentTableId));
-            }
-        } else if ((this.currentModuleTable != null || this.currentMacro != null) && "table".equals(qName)) {
+        } else if ((this.currentModule != null || this.currentMacro != null) && "table".equals(qName)) {
             // table ends (add module meta info to set)
-            if (this.currentModuleTable != null) {
-                if (this.currentModuleTable.getTableEntries() != null) {
-                    this.moduleTables.add(currentModuleTable);
+            if (this.currentModule != null) {
+                if (this.currentModule.getTableEntries() != null) {
+                    this.moduleTables.add(currentModule);
                 }
-                this.currentModuleTable = null;
+                this.currentModule = null;
             } else {
                 if (!currentMacro.getTableEntries().isEmpty()) {
                     this.macroTables.put(currentMacro.getTableId(), currentMacro);
@@ -115,15 +119,18 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
             // table body ends
             this.inAttributesTableBody = false;
         } else if (isInTableRow && "tr".equals(qName)) {
-            handleEndOfAttributeTableRow();
+            handleEndOfTableRow();
             isInTableRow = false;
             tableEntryHref = null;
         } else if (isInTableRow && "td".equals(qName)) {
             if (columns.isEmpty()) {
                 lastReferenceInFirstColumn = lastReference;
             }
-            handleEndOfAttributeTableCell();
+            handleEndOfTableCell();
+        } else if ("th".equals(qName)) {
+            String columnHead = getRecordedText();
         }
+        super.endElement(uri, localName, qName);
     }
 
     @Override
@@ -138,13 +145,102 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
 
     @Override
     public void endDocument() {
+        Map<String, ModuleMetaInfo> moduleMap = new HashMap<>();
         for (ModuleTable moduleTable : moduleTables) {
             ModuleMetaInfo module = new ModuleMetaInfo(moduleTable);
             for (TableEntry moduleTableEntry : moduleTable.getTableEntries()) {
                 module.addDataElementMetaInfo(resolveMacrosRecursively(moduleTableEntry, new Context(module.getName(), module.getHref())));
             }
             modules.add(module);
+            putReferenceForAllSuperSectionsIfNoClash(moduleMap, module.getSectionId(), module);
         }
+
+        for (Table table : this.getTables()) {
+            if (table.getCaption().endsWith(" IOD Modules")) {
+                String name = table.getCaption().replaceAll("Modules", "").trim();
+                InformationObjectDefinitionMetaInfo iod = new InformationObjectDefinitionMetaInfo(
+                        name,
+                        KeywordUtils.sanitizeAsJavaIdentifier(name)
+                );
+                for (int r = 0; r < table.getRows(); r++) {
+                    TableCell referenceCell = table.getTableCell(r, "Reference");
+                    if (referenceCell != null) {
+                        String reference = extractModuleReference(referenceCell.getContent());
+                        ModuleMetaInfo moduleMetaInfo = moduleMap.get(reference);
+                        iod.getModuleReferences().add(new IODModuleReference(moduleMetaInfo));
+                    }
+                }
+                iods.add(iod);
+            }
+        }
+    }
+
+    private void putReferenceForAllSuperSectionsIfNoClash(Map<String, ModuleMetaInfo> moduleMap, String sectionId, ModuleMetaInfo module) {
+        // force if leave reference
+        if (module.getSectionId().equals(sectionId)) {
+            moduleMap.put(sectionId, module);
+        }
+        if (moduleMap.containsKey(sectionId)) {
+            // don't remove if it is leave reference (happens at http://dicom.nema.org/medical/dicom/current/output/html/part03.html#sect_C.36.25)
+            if (moduleMap.get(sectionId) != null && !sectionId.equals(moduleMap.get(sectionId).getSectionId())) {
+                moduleMap.put(sectionId, null);
+            }
+        } else {
+            moduleMap.put(sectionId, module);
+        }
+        int lastDot = sectionId.lastIndexOf('.');
+        if (lastDot >= 0) {
+            putReferenceForAllSuperSectionsIfNoClash(moduleMap, sectionId.substring(0, lastDot), module);
+        }
+    }
+
+    private void handleEndOfTableRow() {
+        handleEndOfAttributesTableRow();
+    }
+
+    private void handleEndOfAttributesTableRow() {
+        removeHTMLTagsFromColumn(0);
+        for (int i = 1; i < this.columns.size() - 1; i++) {
+            removeHTMLTagsFromColumn(i);
+        }
+        String name = columns.get(0);
+        int currentSequenceDepth = sequenceDepth(name);
+        name = name.substring(currentSequenceDepth).trim();
+        TableEntry currentTableEntry;
+        boolean validInclude = name.startsWith("Include") &&
+                lastReferenceInFirstColumn != null &&
+                lastReferenceInFirstColumn.startsWith("table_");
+        boolean validAttribute = columns.size() > 1 && columns.get(1).matches("\\([0-9A-F]{4},[0-9A-F]{4}\\)");
+        if (columns.size() == 3 && validAttribute) {
+            currentTableEntry = new AttributeTableEntry(tableEntryHref, name, columns.get(1), columns.get(2));
+        } else if (columns.size() == 4 && validAttribute) {
+            currentTableEntry = new AttributeTableEntry(
+                    tableEntryHref,
+                    name,
+                    columns.get(1),
+                    columns.get(2),
+                    columns.get(3)
+            );
+        } else if (columns.size() == 2 && validInclude) {
+            currentTableEntry = new MacroTableEntry(tableEntryHref, lastReferenceInFirstColumn, columns.get(1));
+        } else if (columns.size() == 1 && validInclude) {
+            currentTableEntry = new MacroTableEntry(tableEntryHref, lastReferenceInFirstColumn);
+        } else {
+            System.out.println("Invalid Row: " + Arrays.toString(columns.toArray()));
+            return;
+        }
+
+        addTableEntry(currentTableEntry, currentSequenceDepth);
+
+        sequenceAncestors.add(currentTableEntry);
+    }
+
+    private String extractModuleReference(String html) {
+        if (html == null) {
+            return null;
+        }
+        String moduleRef = html.replaceAll("(?s).*?<a href=\"http://dicom.nema.org/medical/dicom/current/output/html/part03.html#([^\"]*)\">.*$", "$1");
+        return moduleRef;
     }
 
     private Iterable<DataElementMetaInfo> resolveMacrosRecursively(TableEntry tableEntry, Context context) {
@@ -199,44 +295,12 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
         return Collections.emptyList();
     }
 
-    private void handleEndOfAttributeTableRow() {
-        removeHTMLTagsFromColumn(0);
-        for (int i = 1; i < this.columns.size() - 1; i++) {
-            removeHTMLTagsFromColumn(i);
-        }
-        String name = columns.get(0);
-        int currentSequenceDepth = sequenceDepth(name);
-        name = name.substring(currentSequenceDepth).trim();
-        TableEntry currentTableEntry;
-        boolean validInclude = name.startsWith("Include") &&
-                lastReferenceInFirstColumn != null &&
-                lastReferenceInFirstColumn.startsWith("table_");
-        boolean validAttribute = columns.size() > 1 && columns.get(1).matches("\\([0-9A-F]{4},[0-9A-F]{4}\\)");
-        if (columns.size() == 3 && validAttribute) {
-            currentTableEntry = new AttributeTableEntry(tableEntryHref, name, columns.get(1), columns.get(2));
-        } else if (columns.size() == 4 && validAttribute) {
-            currentTableEntry = new AttributeTableEntry(
-                    tableEntryHref, 
-                    name,
-                    columns.get(1),
-                    columns.get(2),
-                    columns.get(3)
-            );
-        } else if (columns.size() == 2 && validInclude) {
-            currentTableEntry = new MacroTableEntry(tableEntryHref, lastReferenceInFirstColumn, columns.get(1));
-        } else if (columns.size() == 1 && validInclude) {
-            currentTableEntry = new MacroTableEntry(tableEntryHref, lastReferenceInFirstColumn);
-        } else {
-            System.out.println("Invalid Row: " + Arrays.toString(columns.toArray()));
+    private void removeHTMLTagsFromColumn(Integer i) {
+        if (i == null) {
+            return;
+        } else if (i >= this.columns.size()) {
             return;
         }
-
-        addTableEntry(currentTableEntry, currentSequenceDepth);
-
-        sequenceAncestors.add(currentTableEntry);
-    }
-
-    private void removeHTMLTagsFromColumn(int i) {
         this.columns.set(i, this.columns.get(i).replaceAll("</?[^>]*>", ""));
     }
 
@@ -248,8 +312,8 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
             System.out.println("Help");
         }
         if (currentSequenceDepth == 0) {
-            if (currentModuleTable != null) {
-                currentModuleTable.getTableEntries().add(currentTableEntry);
+            if (currentModule != null) {
+                currentModule.getTableEntries().add(currentTableEntry);
             } else if (currentMacro != null) {
                 currentMacro.getTableEntries().add(currentTableEntry);
             }
@@ -258,11 +322,15 @@ public class DicomPart03Handler extends AbstractDicomPartHandler {
         }
     }
 
-    private void handleEndOfAttributeTableCell() {
+    private void handleEndOfTableCell() {
         this.columns.add(getRecordedHTML());
     }
 
     public Set<ModuleMetaInfo> getModules() {
         return modules;
+    }
+
+    public Set<InformationObjectDefinitionMetaInfo> getIODs() {
+        return iods;
     }
 }

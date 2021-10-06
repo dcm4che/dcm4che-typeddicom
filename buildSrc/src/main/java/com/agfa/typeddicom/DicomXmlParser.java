@@ -1,6 +1,7 @@
 package com.agfa.typeddicom;
 
 import com.agfa.typeddicom.metamodel.DataElementMetaInfo;
+import com.agfa.typeddicom.metamodel.InformationObjectDefinitionMetaInfo;
 import com.agfa.typeddicom.metamodel.ModuleMetaInfo;
 import com.agfa.typeddicom.metamodel.ValueRepresentationMetaInfo;
 import com.github.mustachejava.DefaultMustacheFactory;
@@ -81,14 +82,16 @@ public class DicomXmlParser {
         DicomPart03Handler handlerPart3 = new DicomPart03Handler(dataElementMetaInfoMap);
         saxParser.parse(new File(dicomXmlDirectory, "part03.xml"), handlerPart3);
         Set<ModuleMetaInfo> modules = handlerPart3.getModules();
+        Set<InformationObjectDefinitionMetaInfo> iods = handlerPart3.getIODs();
 
-        generateValueRepresentation(valueRepresentations);
-        generateValueRepresentation(multiValueRepresentations);
+        generateValueRepresentationInterfaces(valueRepresentations);
+        generateValueRepresentationInterfaces(multiValueRepresentations);
         generateDataElementWrapperClasses(dataElements);
-        generateModuleClasses(modules);
+        generateModuleInterfaces(modules);
+        generateIODClasses(iods);
     }
 
-    private void generateValueRepresentation(Set<ValueRepresentationMetaInfo> valueRepresentations) throws IOException {
+    private void generateValueRepresentationInterfaces(Set<ValueRepresentationMetaInfo> valueRepresentations) throws IOException {
         Mustache mustache = mustacheFactory.compile("ValueRepresentation");
         File valueRepresentationDir = new File(javaOutputDirectory, "com/agfa/typeddicom/valuerepresentations");
         //noinspection ResultOfMethodCallIgnored
@@ -101,7 +104,7 @@ public class DicomXmlParser {
             }
         }
     }
-    
+
     private void generateDataElementWrapperClasses(Set<DataElementMetaInfo> dataElements) throws IOException {
         Mustache mustache = mustacheFactory.compile("DataElement");
         File dataElementDir = new File(javaOutputDirectory, "com/agfa/typeddicom/dataelements");
@@ -116,7 +119,21 @@ public class DicomXmlParser {
         }
     }
 
-    private void generateModuleClasses(Set<ModuleMetaInfo> moduleMetaInfoSet) throws IOException {
+    private void generateIODClasses(Set<InformationObjectDefinitionMetaInfo> iods) throws IOException {
+        Mustache mustache = mustacheFactory.compile("InformationObjectDefinition");
+        File dataElementDir = new File(javaOutputDirectory, "com/agfa/typeddicom/iods");
+        //noinspection ResultOfMethodCallIgnored
+        dataElementDir.mkdirs();
+        for (InformationObjectDefinitionMetaInfo iod : iods) {
+            String filename = iod.getKeyword() + JAVA_FILE_EXTENSION;
+            File javaFile = new File(dataElementDir, filename);
+            try (FileWriter javaFileWriter = new FileWriter(javaFile)) {
+                mustache.execute(javaFileWriter, iod);
+            }
+        }
+    }
+
+    private void generateModuleInterfaces(Set<ModuleMetaInfo> moduleMetaInfoSet) throws IOException {
         Mustache mustache = mustacheFactory.compile("Module");
         File dataElementDir = new File(javaOutputDirectory, "com/agfa/typeddicom/modules");
         //noinspection ResultOfMethodCallIgnored
