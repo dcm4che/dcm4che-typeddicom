@@ -44,7 +44,15 @@ tasks.compileJava {
     dependsOn(tasks.generateJavaSourceFiles)
 }
 
-tasks.jar.configure {
+tasks.withType<Jar> {
     exclude("dicom-standard-xml/")
     exclude("templates/")
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
+tasks.withType<Javadoc>{
+    options.encoding = "UTF-8"
 }
