@@ -15,6 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -116,7 +117,7 @@ public class DicomXmlParser {
         for (ValueRepresentationMetaInfo valueRepresentation : valueRepresentations) {
             String filename = valueRepresentation.keyword() + JAVA_FILE_EXTENSION;
             File javaFile = new File(valueRepresentationDir, filename);
-            try (FileWriter javaFileWriter = new FileWriter(javaFile)) {
+            try (FileWriter javaFileWriter = new FileWriter(javaFile, StandardCharsets.UTF_8)) {
                 mustache.execute(javaFileWriter, valueRepresentation);
             }
         }
@@ -130,7 +131,7 @@ public class DicomXmlParser {
         for (DataElementMetaInfo dataElementMetaInfo : dataElements) {
             String filename = dataElementMetaInfo.getKeyword() + JAVA_FILE_EXTENSION;
             File javaFile = new File(dataElementDir, filename);
-            try (FileWriter javaFileWriter = new FileWriter(javaFile)) {
+            try (FileWriter javaFileWriter = new FileWriter(javaFile, StandardCharsets.UTF_8)) {
                 mustache.execute(javaFileWriter, dataElementMetaInfo);
             }
         }
@@ -144,7 +145,7 @@ public class DicomXmlParser {
         for (InformationObjectDefinitionMetaInfo iod : iods) {
             String filename = iod.getKeyword() + JAVA_FILE_EXTENSION;
             File javaFile = new File(dataElementDir, filename);
-            try (FileWriter javaFileWriter = new FileWriter(javaFile)) {
+            try (FileWriter javaFileWriter = new FileWriter(javaFile, StandardCharsets.UTF_8)) {
                 mustache.execute(javaFileWriter, iod);
             }
         }
@@ -158,7 +159,7 @@ public class DicomXmlParser {
         for (ModuleMetaInfo moduleMetaInfo : moduleMetaInfoSet) {
             String filename = moduleMetaInfo.getKeyword() + JAVA_FILE_EXTENSION;
             File javaFile = new File(dataElementDir, filename);
-            try (FileWriter javaFileWriter = new FileWriter(javaFile)) {
+            try (FileWriter javaFileWriter = new FileWriter(javaFile, StandardCharsets.UTF_8)) {
                 mustache.execute(javaFileWriter, moduleMetaInfo);
             }
         }

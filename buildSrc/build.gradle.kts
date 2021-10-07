@@ -2,6 +2,15 @@ plugins {
     `java-gradle-plugin`
 }
 
+gradlePlugin {
+    plugins {
+        create("processDicomXml") {
+            id = "com.agfa.typeddicom.gradleplugin.sourcegeneration"
+            implementationClass = "com.agfa.typeddicom.gradleplugin.ProcessDicomXmlPlugin"
+        }
+    }
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
