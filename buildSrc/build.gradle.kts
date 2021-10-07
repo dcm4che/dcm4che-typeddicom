@@ -1,6 +1,5 @@
-
 plugins {
-    `kotlin-dsl`
+    `java-gradle-plugin`
 }
 
 repositories {
@@ -25,6 +24,12 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
 }
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
+}
+
 
 tasks.test {
     useJUnitPlatform()

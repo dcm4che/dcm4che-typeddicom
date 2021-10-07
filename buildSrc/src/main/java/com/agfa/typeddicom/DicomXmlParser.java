@@ -34,70 +34,78 @@ public class DicomXmlParser {
     private final File dicomXmlDirectory;
     private final File javaOutputDirectory;
 
-    public DicomXmlParser(File dicomXmlDirectory, File mustacheTemplateDirectory, File javaOutputDirectory) throws ParserConfigurationException, SAXException {
-        this.dicomXmlDirectory = dicomXmlDirectory;
-        this.javaOutputDirectory = javaOutputDirectory;
-        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-        saxParser = saxParserFactory.newSAXParser();
-        MustacheResolver mustacheResolver = resourceName -> {
-            File mustacheFile = new File(mustacheTemplateDirectory, resourceName + ".java.mustache");
-            try {
-                return new FileReader(mustacheFile);
-            } catch (FileNotFoundException e) {
-                throw new MustacheNotFoundException(resourceName, e);
-            }
-        };
-        mustacheFactory = new DefaultMustacheFactory(mustacheResolver);
-        mustacheFactory.setObjectHandler(new MapMethodReflectionHandler());
+    public DicomXmlParser(File dicomXmlDirectory, File mustacheTemplateDirectory, File javaOutputDirectory) {
+        try {
+            this.dicomXmlDirectory = dicomXmlDirectory;
+            this.javaOutputDirectory = javaOutputDirectory;
+            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+            saxParser = saxParserFactory.newSAXParser();
+            MustacheResolver mustacheResolver = resourceName -> {
+                File mustacheFile = new File(mustacheTemplateDirectory, resourceName + ".java.mustache");
+                try {
+                    return new FileReader(mustacheFile);
+                } catch (FileNotFoundException e) {
+                    throw new MustacheNotFoundException(resourceName, e);
+                }
+            };
+            mustacheFactory = new DefaultMustacheFactory(mustacheResolver);
+            mustacheFactory.setObjectHandler(new MapMethodReflectionHandler());
+        } catch (ParserConfigurationException | SAXException e) {
+            throw new RuntimeException("Wasn't able to create the DICOM XML Parser", e);
+        }
     }
 
-    public void generateSources() throws IOException, SAXException {
-        DicomPart05Handler handlerPart5 = new DicomPart05Handler();
-        saxParser.parse(new File(dicomXmlDirectory, "part05.xml"), handlerPart5);
-        Set<ValueRepresentationMetaInfo> valueRepresentations = handlerPart5.getValueRepresentations();
-        Set<ValueRepresentationMetaInfo> multiValueRepresentations = handlerPart5.getMultiValueRepresentations();
+    public void generateSources() {
+        try {
+            DicomPart05Handler handlerPart5 = new DicomPart05Handler();
+            saxParser.parse(new File(dicomXmlDirectory, "part05.xml"), handlerPart5);
+            Set<ValueRepresentationMetaInfo> valueRepresentations = handlerPart5.getValueRepresentations();
+            Set<ValueRepresentationMetaInfo> multiValueRepresentations = handlerPart5.getMultiValueRepresentations();
 
-        Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap =
-                valueRepresentations.stream().collect(Collectors.toMap(
-                        ValueRepresentationMetaInfo::tag,
-                        Function.identity())
-                );
+            Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap =
+                    valueRepresentations.stream().collect(Collectors.toMap(
+                            ValueRepresentationMetaInfo::tag,
+                            Function.identity())
+                    );
 
-        Map<String, ValueRepresentationMetaInfo> multiValueRepresentationsMap =
-                multiValueRepresentations.stream().collect(Collectors.toMap(
-                        ValueRepresentationMetaInfo::tag,
-                        Function.identity())
-                );
+            Map<String, ValueRepresentationMetaInfo> multiValueRepresentationsMap =
+                    multiValueRepresentations.stream().collect(Collectors.toMap(
+                            ValueRepresentationMetaInfo::tag,
+                            Function.identity())
+                    );
 
-        DicomPart06Handler handlerPart6 = new DicomPart06Handler(valueRepresentationsMap, multiValueRepresentationsMap);
-        saxParser.parse(new File(dicomXmlDirectory, "part06.xml"), handlerPart6);
-        Set<DataElementMetaInfo> dataElements = handlerPart6.getDataElements();
+            DicomPart06Handler handlerPart6 = new DicomPart06Handler(valueRepresentationsMap, multiValueRepresentationsMap);
+            saxParser.parse(new File(dicomXmlDirectory, "part06.xml"), handlerPart6);
+            Set<DataElementMetaInfo> dataElements = handlerPart6.getDataElements();
 
-        Map<String, Set<DataElementMetaInfo>> dataElementMetaInfoMap = new HashMap<>();
-        for (DataElementMetaInfo dataElement : dataElements) {
-            dataElementMetaInfoMap.computeIfAbsent(dataElement.getTag(), (key) -> new HashSet<>());
-            dataElementMetaInfoMap.get(dataElement.getTag()).add(dataElement);
+            Map<String, Set<DataElementMetaInfo>> dataElementMetaInfoMap = new HashMap<>();
+            for (DataElementMetaInfo dataElement : dataElements) {
+                dataElementMetaInfoMap.computeIfAbsent(dataElement.getTag(), (key) -> new HashSet<>());
+                dataElementMetaInfoMap.get(dataElement.getTag()).add(dataElement);
+            }
+
+            DicomPart03Handler handlerPart3 = new DicomPart03Handler(dataElementMetaInfoMap);
+            saxParser.parse(new File(dicomXmlDirectory, "part03.xml"), handlerPart3);
+            Set<ModuleMetaInfo> modules = handlerPart3.getModules();
+            Set<InformationObjectDefinitionMetaInfo> iods = handlerPart3.getIODs();
+
+            generateValueRepresentationInterfaces(valueRepresentations);
+            System.out.println("Generated " + valueRepresentations.size() + " value representation classes");
+
+            generateValueRepresentationInterfaces(multiValueRepresentations);
+            System.out.println("Generated " + multiValueRepresentations.size() + " multi value representation classes");
+
+            generateDataElementWrapperClasses(dataElements);
+            System.out.println("Generated " + dataElements.size() + " data element classes");
+
+            generateModuleInterfaces(modules);
+            System.out.println("Generated " + modules.size() + " module classes");
+
+            generateIODClasses(iods);
+            System.out.println("Generated " + iods.size() + " iod classes");
+        } catch (SAXException | IOException e) {
+            throw new RuntimeException("Wasn't able to generate the Sources", e);
         }
-
-        DicomPart03Handler handlerPart3 = new DicomPart03Handler(dataElementMetaInfoMap);
-        saxParser.parse(new File(dicomXmlDirectory, "part03.xml"), handlerPart3);
-        Set<ModuleMetaInfo> modules = handlerPart3.getModules();
-        Set<InformationObjectDefinitionMetaInfo> iods = handlerPart3.getIODs();
-
-        generateValueRepresentationInterfaces(valueRepresentations);
-        System.out.println("Generated " + valueRepresentations.size() + " value representation classes");
-
-        generateValueRepresentationInterfaces(multiValueRepresentations);
-        System.out.println("Generated " + multiValueRepresentations.size() + " multi value representation classes");
-
-        generateDataElementWrapperClasses(dataElements);
-        System.out.println("Generated " + dataElements.size() + " data element classes");
-
-        generateModuleInterfaces(modules);
-        System.out.println("Generated " + modules.size() + " module classes");
-
-        generateIODClasses(iods);
-        System.out.println("Generated " + iods.size() + " iod classes");
     }
 
     private void generateValueRepresentationInterfaces(Set<ValueRepresentationMetaInfo> valueRepresentations) throws IOException {

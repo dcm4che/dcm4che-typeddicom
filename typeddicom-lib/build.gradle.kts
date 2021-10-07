@@ -39,5 +39,10 @@ tasks.test {
 }
 
 tasks.compileJava {
-//    dependsOn(tasks.generateJavaSourceFiles)
+    dependsOn(tasks.generateJavaSourceFiles)
+}
+
+tasks.jar.configure {
+    exclude("dicom-standard-xml/")
+    exclude("templates/")
 }
