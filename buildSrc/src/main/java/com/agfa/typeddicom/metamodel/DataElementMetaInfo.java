@@ -1,5 +1,9 @@
 package com.agfa.typeddicom.metamodel;
 
+import org.davidmoten.text.utils.WordWrap;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+
 import java.util.*;
 
 /**
@@ -60,6 +64,60 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
                 this.valueRepresentationWrapper = multiValueRepresentationsMap.get(valueRepresentation).keyword();
             }
         }
+    }
+
+    public String classJavaDoc() throws Exception {
+        StringBuilder html = new StringBuilder();
+        html.append("<strong>Name:</strong> ").append(name).append("<br/>");
+        html.append("<strong>Keyword:</strong> ").append(keyword).append("<br/>");
+        html.append("<strong>Tag:</strong> ").append(tag).append("<br/>");
+        html.append("<strong>Value Representation:</strong> ").append(valueRepresentation).append("<br/>");
+        html.append("<strong>Value Multiplicity:</strong> ").append(valueMultiplicity).append("<br/>");
+        if (comment.length() > 0) {
+            html.append("<strong>Comment:</strong> ").append(comment).append("<br/>");
+        }
+        if (!contextsOfAdditionalAttributeInfo.isEmpty()) {
+            html.append("<ul>");
+            for (Map.Entry<AdditionalAttributeInfo, Set<Context>> additionalAttributeInfoSetEntry : contextsOfAdditionalAttributeInfo.entrySet()) {
+                html.append("<li><strong>Described in the contexts:</strong><ul>");
+                for (Context context : additionalAttributeInfoSetEntry.getValue()) {
+                    html.append("<li>").append(context.getContextHTML()).append("</li>");
+                }
+                html.append("</ul>as follows: <br/>");
+                AdditionalAttributeInfo additionalAttributeInfo = additionalAttributeInfoSetEntry.getKey();
+                html.append("<strong>Attribute Name:</strong> ").append(additionalAttributeInfo.name()).append("<br/>");
+                html.append("<strong>Type:</strong> ").append(additionalAttributeInfo.type()).append("<br/>");
+                html.append("<strong>Attribute Description:</strong> ")
+                        .append(additionalAttributeInfo.attributeDescription()).append("<br/>");
+                html.append("</li>");
+            }
+            html.append("</ul>");
+        }
+        Element body = Jsoup.parse(html.toString()).body();
+        String htmlString = body.html();
+        htmlString = htmlString.replace("\n<br>", "<br>\n");
+        if (retired) {
+            htmlString += "\n\n@deprecated ";
+            htmlString += comment;
+        }
+        return javaDocify(htmlString, 0);
+    }
+
+    private String javaDocify(String html, int indentationLevel) {
+        String jdoc = WordWrap.from(html)
+                .maxWidth(117 - indentationLevel)
+                .extraWordChars("0123456789-._~:/?#[]@!$&'()*+,;%=\"<>")
+                .newLine("\n * ")
+                .breakWords(false)
+                .wrap();
+        jdoc = "/**\n * " + jdoc + "\n */";
+        jdoc = indent(jdoc, indentationLevel);
+        return jdoc;
+    }
+
+    private String indent(String text, int indentationLevel) {
+        String indent = " ".repeat(indentationLevel * 4);
+        return indent + text.replace("\n", "\n" + indent);
     }
 
     public String getTag() {

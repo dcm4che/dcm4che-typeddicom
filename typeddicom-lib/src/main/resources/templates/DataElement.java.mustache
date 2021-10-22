@@ -18,23 +18,7 @@ import org.dcm4che3.data.VR;
 import org.dcm4che3.data.Tag;
 
 
-/**
- * <strong>Name:</strong> {{name}}<br/>
- * <strong>Keyword:</strong> {{keyword}}<br/>
- * <strong>Tag:</strong> {{tag}}<br/>
- * <strong>Value Representation:</strong> {{valueRepresentation}}<br/>
- * <strong>Value Multiplicity:</strong> {{valueMultiplicity}}<br/>
-{{#comment}}
- * <strong>Comment:</strong> {{.}}
-{{/comment}}
-{{#contextsOfAdditionalAttributeInfo}}
-{{> AdditionalAttributeInfoInContext}}
-{{/contextsOfAdditionalAttributeInfo}}
-{{#retired}}
- *
- * @deprecated {{comment}}
-{{/retired}}
- */
+{{{classJavaDoc}}}
 {{#retired}}
 @Deprecated
 {{/retired}}

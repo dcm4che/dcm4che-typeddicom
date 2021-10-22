@@ -21,14 +21,16 @@ repositories {
 }
 
 dependencies {
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.5")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.5")
-
     implementation("com.github.spullara.mustache.java:compiler:0.9.10")
 
     implementation("org.apache.commons:commons-text:1.9")
+    implementation("com.github.davidmoten:word-wrap:0.1.9")
+
+    implementation("org.apache.commons:commons-lang3:3.12.0")
 
     implementation("org.dcm4che:dcm4che-core:5.23.3")
+
+    implementation("org.jsoup:jsoup:1.14.3")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
