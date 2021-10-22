@@ -47,6 +47,18 @@ tasks.compileJava {
 tasks.withType<Jar> {
     exclude("dicom-standard-xml/")
     exclude("templates/")
+    manifest{
+        attributes["Manifest-Version"]= "1.0"
+        attributes["Bundle-ManifestVersion"]= "2"
+        attributes["Bundle-Name"]= "com.agfa.typeddicom"
+        attributes["Bundle-SymbolicName"]= "com.agfa.typeddicom;singleton:=true"
+        attributes["Bundle-Version"]= "1.0.0"
+        attributes["Bundle-Vendor"]= "AGFA"
+        attributes["Bundle-ClassPath"]= "."
+        attributes["Bundle-ActivationPolicy"]= "lazy"
+        attributes["Export-Package"]= "com.agfa.typeddicom, com.agfa.typeddicom.dataelements, com.agfa.typeddicom.iods, com.agfa.typeddicom.modules, com.agfa.typeddicom.valuerepresentations"
+        attributes["Import-Package"]= "org.dcm4che3.data"
+    }
 }
 
 tasks.withType<JavaCompile> {
