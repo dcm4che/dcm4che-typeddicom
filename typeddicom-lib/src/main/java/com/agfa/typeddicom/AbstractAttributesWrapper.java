@@ -3,7 +3,12 @@ package com.agfa.typeddicom;
 import org.dcm4che3.data.Attributes;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.agfa.typeddicom.StringUtils.indent;
 
 
 /**
@@ -42,5 +47,34 @@ public abstract class AbstractAttributesWrapper implements AttributesWrapper {
     @Override
     public int hashCode() {
         return Objects.hash(attributes);
+    }
+
+    @Override
+    public String toString() {
+        Map<String, String> keyValuePairs = Arrays.stream(this.getClass().getMethods())
+                .filter(method -> method.getName().startsWith("contains"))
+                .filter(method -> {
+                    try {
+                        return (boolean) method.invoke(this);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        return false;
+                    }
+                })
+                .map(method -> method.getName().substring("contains".length()))
+                .collect(Collectors.toMap(
+                        keyword -> keyword,
+                        keyword -> {
+                            try {
+                                return this.getClass().getMethod("get" + keyword).invoke(this).toString();
+                            } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                                return e.toString();
+                            }
+                        }));
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.getClass().getSimpleName()).append(':');
+        for (Map.Entry<String, String> keyValuePair : keyValuePairs.entrySet()) {
+            stringBuilder.append("\n").append(indent(keyValuePair.getValue(), 2));
+        }
+        return stringBuilder.toString();
     }
 }

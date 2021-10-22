@@ -1,5 +1,6 @@
 package com.agfa.typeddicom.valuerepresentations;
 
+import com.agfa.typeddicom.DataElementWrapper;
 import org.dcm4che3.data.DatePrecision;
 import org.dcm4che3.data.DatePrecisions;
 

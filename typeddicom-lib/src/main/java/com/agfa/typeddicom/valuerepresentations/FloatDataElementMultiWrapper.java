@@ -1,5 +1,7 @@
 package com.agfa.typeddicom.valuerepresentations;
 
+import com.agfa.typeddicom.DataElementWrapper;
+
 public interface FloatDataElementMultiWrapper extends DataElementWrapper {
     default float[] getFloats() {
         return getAttributes().getFloats(getTag());

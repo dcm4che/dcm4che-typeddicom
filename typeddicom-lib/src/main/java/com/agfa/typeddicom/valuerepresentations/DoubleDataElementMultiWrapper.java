@@ -1,6 +1,6 @@
 package com.agfa.typeddicom.valuerepresentations;
 
-import java.util.Date;
+import com.agfa.typeddicom.DataElementWrapper;
 
 public interface DoubleDataElementMultiWrapper extends DataElementWrapper {
     default double[] getDoubles() {

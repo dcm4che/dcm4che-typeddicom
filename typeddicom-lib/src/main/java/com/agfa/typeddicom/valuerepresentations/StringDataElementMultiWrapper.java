@@ -1,7 +1,6 @@
 package com.agfa.typeddicom.valuerepresentations;
 
-import org.dcm4che3.data.SpecificCharacterSet;
-import org.dcm4che3.data.VR;
+import com.agfa.typeddicom.DataElementWrapper;
 
 public interface StringDataElementMultiWrapper extends DataElementWrapper {
     default String[] getStrings() {

@@ -5,6 +5,8 @@ import org.dcm4che3.data.Sequence;
 import java.util.AbstractList;
 import java.util.Objects;
 
+import static com.agfa.typeddicom.StringUtils.indent;
+
 /**
  * TODO describe this class
  *
@@ -59,5 +61,15 @@ public class SequenceWrapper<T extends AbstractAttributesWrapper> extends Abstra
     @Override
     public int hashCode() {
         return Objects.hash(sequence, itemClass);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder();
+        string.append(this.getClass().getSimpleName()).append(':');
+        for (int i = 0; i < size(); i++) {
+            string.append('\n').append(indent("[" + (i + 1) + "] " + get(i).toString(), 2));
+        }
+        return string.toString();
     }
 }

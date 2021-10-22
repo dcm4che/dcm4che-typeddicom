@@ -1,5 +1,7 @@
 package com.agfa.typeddicom.valuerepresentations;
 
+import com.agfa.typeddicom.DataElementWrapper;
+
 import java.io.IOException;
 
 public interface BytesDataElementWrapper extends DataElementWrapper {

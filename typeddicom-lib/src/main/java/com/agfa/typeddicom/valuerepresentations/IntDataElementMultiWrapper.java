@@ -1,5 +1,7 @@
 package com.agfa.typeddicom.valuerepresentations;
 
+import com.agfa.typeddicom.DataElementWrapper;
+
 public interface IntDataElementMultiWrapper extends DataElementWrapper {
     default int[] getInts() {
         return getAttributes().getInts(getTag());
