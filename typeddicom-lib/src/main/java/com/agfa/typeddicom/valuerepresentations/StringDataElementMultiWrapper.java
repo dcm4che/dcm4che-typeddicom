@@ -15,7 +15,7 @@ public interface StringDataElementMultiWrapper extends DataElementWrapper {
         return getAttributes().getString(getTag(), index, defaultValue);
     }
 
-    default void setStrings(String[] strings) {
+    default void setStrings(String... strings) {
         getAttributes().setString(getTag(), getValueRepresentation(), strings);
     }
 }

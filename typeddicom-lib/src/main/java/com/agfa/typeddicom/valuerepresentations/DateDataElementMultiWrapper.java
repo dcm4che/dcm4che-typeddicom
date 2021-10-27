@@ -27,11 +27,11 @@ public interface DateDataElementMultiWrapper extends DataElementWrapper {
         return getAttributes().getDate(getTag(), index, datePrecision);
     }
 
-    default void setDates(Date[] dates) {
+    default void setDates(Date... dates) {
         getAttributes().setDate(getTag(), getValueRepresentation(), dates);
     }
 
-    default void setDates(Date[] dates, DatePrecision datePrecision) {
+    default void setDates(DatePrecision datePrecision, Date... dates) {
         getAttributes().setDate(getTag(), getValueRepresentation(), datePrecision, dates);
     }
 }

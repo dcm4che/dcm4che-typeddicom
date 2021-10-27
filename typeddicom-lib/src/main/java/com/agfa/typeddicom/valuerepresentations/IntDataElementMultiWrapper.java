@@ -11,7 +11,7 @@ public interface IntDataElementMultiWrapper extends DataElementWrapper {
         return getAttributes().getInt(getTag(), index, defaultValue);
     }
     
-    default void setInts(int[] ints) {
+    default void setInts(int... ints) {
         getAttributes().setInt(getTag(), getValueRepresentation(), ints);
     }
 }

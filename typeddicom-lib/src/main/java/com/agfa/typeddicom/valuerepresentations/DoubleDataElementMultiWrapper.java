@@ -11,7 +11,7 @@ public interface DoubleDataElementMultiWrapper extends DataElementWrapper {
         return getAttributes().getDouble(getTag(), index, defaultValue);
     }
 
-    default void setDoubles(double[] doubles) {
+    default void setDoubles(double... doubles) {
         getAttributes().setDouble(getTag(), getValueRepresentation(), doubles);
     }
 }

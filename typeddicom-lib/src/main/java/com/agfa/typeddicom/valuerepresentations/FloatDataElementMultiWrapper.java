@@ -11,7 +11,7 @@ public interface FloatDataElementMultiWrapper extends DataElementWrapper {
         return getAttributes().getFloat(getTag(), index, defaultValue);
     }
     
-    default void setFloats(float[] floats) {
+    default void setFloats(float... floats) {
         getAttributes().setFloat(getTag(), getValueRepresentation(), floats);
     }
 }
