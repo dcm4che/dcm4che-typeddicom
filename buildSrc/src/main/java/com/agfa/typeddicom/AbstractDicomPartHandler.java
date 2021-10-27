@@ -1,5 +1,6 @@
 package com.agfa.typeddicom;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -142,7 +143,7 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
             currentText.append(ch, start, length);
         }
         if (recordHTML) {
-            currentHTML.append(ch, start, length);
+            currentHTML.append(StringEscapeUtils.escapeHtml4(new String(ch, start, length)));
         }
     }
 

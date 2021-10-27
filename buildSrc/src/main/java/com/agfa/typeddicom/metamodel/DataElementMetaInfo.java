@@ -3,6 +3,7 @@ package com.agfa.typeddicom.metamodel;
 import org.davidmoten.text.utils.WordWrap;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.*;
 
@@ -66,8 +67,23 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
         }
     }
 
+
     public String classJavaDoc() throws Exception {
-        StringBuilder html = new StringBuilder();
+        StringBuilder htmlBuilder = new StringBuilder();
+        appendGeneralInfo(htmlBuilder);
+        appendContextInfo(htmlBuilder);
+        Element body = Jsoup.parse(htmlBuilder.toString()).body();
+        sanitizeJDocHtml(body);
+        String htmlString = body.html();
+        htmlString = htmlString.replace("\n<br>", "<br>\n");
+        if (retired) {
+            htmlString += "\n\n@deprecated ";
+            htmlString += comment;
+        }
+        return javaDocify(htmlString, 0);
+    }
+
+    private void appendGeneralInfo(StringBuilder html) {
         html.append("<strong>Name:</strong> ").append(name).append("<br/>");
         html.append("<strong>Keyword:</strong> ").append(keyword).append("<br/>");
         html.append("<strong>Tag:</strong> ").append(tag).append("<br/>");
@@ -76,6 +92,9 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
         if (comment.length() > 0) {
             html.append("<strong>Comment:</strong> ").append(comment).append("<br/>");
         }
+    }
+
+    private void appendContextInfo(StringBuilder html) {
         if (!contextsOfAdditionalAttributeInfo.isEmpty()) {
             html.append("<ul>");
             for (Map.Entry<AdditionalAttributeInfo, Set<Context>> additionalAttributeInfoSetEntry : contextsOfAdditionalAttributeInfo.entrySet()) {
@@ -93,14 +112,16 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
             }
             html.append("</ul>");
         }
-        Element body = Jsoup.parse(html.toString()).body();
-        String htmlString = body.html();
-        htmlString = htmlString.replace("\n<br>", "<br>\n");
-        if (retired) {
-            htmlString += "\n\n@deprecated ";
-            htmlString += comment;
+    }
+
+    private void sanitizeJDocHtml(Element body) {
+        for (Element element : body.select("dl > p")) {
+            assert element.parent() != null; // should always have a parent
+            element.parent().before(element);
         }
-        return javaDocify(htmlString, 0);
+        for (Element element : body.select("dl:empty, p:empty")) {
+            element.remove();
+        }
     }
 
     private String javaDocify(String html, int indentationLevel) {

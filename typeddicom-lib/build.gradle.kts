@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    `maven-publish`
     id("com.agfa.typeddicom.gradleplugin.sourcegeneration")
 }
 
@@ -7,6 +8,18 @@ processDicomXml {
     dicomStandardXmlDirectory.set(layout.projectDirectory.dir("src/main/resources/dicom-standard-xml"))
     mustacheTemplateDirectory.set(layout.projectDirectory.dir("src/main/resources/templates"))
     generatedJavaOutputDirectory.set(layout.buildDirectory.dir("java"))
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.agfa.typeddicom"
+            artifactId = "typeddicom-lib"
+            version = "0.1"
+
+            from(components["java"])
+        }
+    }
 }
 
 java.sourceSets["main"].java {
@@ -45,6 +58,7 @@ tasks.compileJava {
 }
 
 tasks.withType<Jar> {
+    dependsOn(tasks.generateJavaSourceFiles)
     exclude("dicom-standard-xml/")
     exclude("templates/")
     manifest{

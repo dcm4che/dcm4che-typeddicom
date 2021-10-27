@@ -12,11 +12,13 @@ import java.util.stream.Collectors;
 public class InformationObjectDefinitionMetaInfo {
     private final String name;
     private final String keyword;
+    private final String href;
     private final List<IODModuleReference> moduleReferences = new ArrayList<>();
 
-    public InformationObjectDefinitionMetaInfo(String name, String keyword) {
+    public InformationObjectDefinitionMetaInfo(String name, String keyword, String href) {
         this.name = name;
         this.keyword = keyword;
+        this.href = href;
     }
     
     public String getImplementsModules() {
@@ -33,5 +35,9 @@ public class InformationObjectDefinitionMetaInfo {
 
     public List<IODModuleReference> getModuleReferences() {
         return moduleReferences;
+    }
+
+    public String getHref() {
+        return href;
     }
 }

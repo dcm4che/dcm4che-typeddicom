@@ -26,7 +26,8 @@ public abstract class MemorizeTablesDicomPartHandler extends AbstractDicomPartHa
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
         if ("table".equals(qName)) {
-            currentTable = new Table(attributes.getValue("xml:id"));
+            String xmlId = attributes.getValue("xml:id");
+            currentTable = new Table(xmlId, getUrlFromXmlId(xmlId));
         } else if (currentTable != null && "caption".equals(qName)) {
             startRecordingText();
         } else if (currentTable != null && "th".equals(qName)) {

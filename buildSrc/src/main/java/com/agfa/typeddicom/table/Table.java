@@ -9,13 +9,15 @@ import java.util.*;
  */
 public class Table {
     private final String id;
+    private final String href;
     private String caption;
     private final List<String> columnHeaders = new ArrayList<>();
 
     private final List<List<TableCell>> cells = new ArrayList<>();
 
-    public Table(String id) {
+    public Table(String id, String href) {
         this.id = id;
+        this.href = href;
     }
 
     public TableCell getTableCell(int row, int column) {
@@ -91,5 +93,9 @@ public class Table {
 
     public List<String> getColumnHeaders() {
         return columnHeaders;
+    }
+
+    public String getHref() {
+        return href;
     }
 }

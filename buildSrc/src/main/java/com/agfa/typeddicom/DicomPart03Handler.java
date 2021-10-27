@@ -3,6 +3,7 @@ package com.agfa.typeddicom;
 import com.agfa.typeddicom.metamodel.*;
 import com.agfa.typeddicom.table.*;
 import com.agfa.typeddicom.utils.KeywordUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -168,7 +169,8 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
                 String name = table.getCaption().replaceAll("Modules", "").trim();
                 InformationObjectDefinitionMetaInfo iod = new InformationObjectDefinitionMetaInfo(
                         name,
-                        KeywordUtils.sanitizeAsJavaIdentifier(name)
+                        KeywordUtils.sanitizeAsJavaIdentifier(name),
+                        table.getHref()
                 );
                 for (int r = 0; r < table.getRows(); r++) {
                     TableCell referenceCell = table.getTableCell(r, "Reference");
@@ -211,7 +213,7 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
         for (int i = 1; i < this.columns.size() - 1; i++) {
             removeHTMLTagsFromColumn(i);
         }
-        String name = columns.get(0).trim();
+        String name = StringEscapeUtils.unescapeHtml4(columns.get(0).trim());
         int currentSequenceDepth = sequenceDepth(name);
         name = name.substring(currentSequenceDepth).trim();
         TableEntry currentTableEntry;
