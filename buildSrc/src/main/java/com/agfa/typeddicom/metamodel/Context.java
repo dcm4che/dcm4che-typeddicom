@@ -3,21 +3,30 @@ package com.agfa.typeddicom.metamodel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Context {
     private final List<ContextEntry> context;
-    
+
     public Context(String rootContext, String href) {
-        this(Collections.emptyList(), rootContext, href);
+        this(new ContextEntry(rootContext, href));
+    }
+
+    public Context(ContextEntry rootContext) {
+        this(Collections.emptyList(), rootContext);
     }
 
     public Context(Context parentContext, String addedContext, String href) {
-        this(parentContext.getContext(), addedContext, href);
+        this(parentContext, new ContextEntry(addedContext, href));
     }
 
-    private Context(List<ContextEntry> parentContext, String addedContext, String href) {
+    public Context(Context parentContext, ContextEntry addedContextEntry) {
+        this(parentContext.getContext(), addedContextEntry);
+    }
+
+    private Context(List<ContextEntry> parentContext, ContextEntry addedContextEntry) {
         context = new ArrayList<>(parentContext);
-        context.add(new ContextEntry(addedContext, href));
+        context.add(addedContextEntry);
     }
     
     public String getContextHTML() {
@@ -37,5 +46,10 @@ public class Context {
 
     public List<ContextEntry> getContext() {
         return context;
+    }
+
+    @Override
+    public String toString() {
+        return context.stream().map(ContextEntry::contextName).collect(Collectors.joining(" > "));
     }
 }

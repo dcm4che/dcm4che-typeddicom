@@ -1,3 +1,6 @@
+val typeddicomVersion by extra { "0.1.0" }
+
+
 plugins {
     `java-library`
     `maven-publish`
@@ -15,7 +18,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.agfa.typeddicom"
             artifactId = "typeddicom-lib"
-            version = "0.1"
+            version = "$typeddicomVersion-SNAPSHOT"
 
             from(components["java"])
         }
@@ -61,17 +64,18 @@ tasks.withType<Jar> {
     dependsOn(tasks.generateJavaSourceFiles)
     exclude("dicom-standard-xml/")
     exclude("templates/")
-    manifest{
-        attributes["Manifest-Version"]= "1.0"
-        attributes["Bundle-ManifestVersion"]= "2"
-        attributes["Bundle-Name"]= "com.agfa.typeddicom"
-        attributes["Bundle-SymbolicName"]= "com.agfa.typeddicom;singleton:=true"
-        attributes["Bundle-Version"]= "1.0.0"
-        attributes["Bundle-Vendor"]= "AGFA"
-        attributes["Bundle-ClassPath"]= "."
-        attributes["Bundle-ActivationPolicy"]= "lazy"
-        attributes["Export-Package"]= "com.agfa.typeddicom, com.agfa.typeddicom.dataelements, com.agfa.typeddicom.iods, com.agfa.typeddicom.modules, com.agfa.typeddicom.valuerepresentations"
-        attributes["Import-Package"]= "org.dcm4che3.data"
+    manifest {
+        attributes["Manifest-Version"] = "1.0"
+        attributes["Bundle-ManifestVersion"] = "2"
+        attributes["Bundle-Name"] = "com.agfa.typeddicom"
+        attributes["Bundle-SymbolicName"] = "com.agfa.typeddicom;singleton:=true"
+        attributes["Bundle-Version"] = typeddicomVersion
+        attributes["Bundle-Vendor"] = "AGFA"
+        attributes["Bundle-ClassPath"] = "."
+        attributes["Bundle-ActivationPolicy"] = "lazy"
+        attributes["Export-Package"] =
+            "com.agfa.typeddicom, com.agfa.typeddicom.dataelements, com.agfa.typeddicom.iods, com.agfa.typeddicom.modules, com.agfa.typeddicom.valuerepresentations"
+        attributes["Import-Package"] = "org.dcm4che3.data"
     }
 }
 
@@ -79,6 +83,6 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
-tasks.withType<Javadoc>{
+tasks.withType<Javadoc> {
     options.encoding = "UTF-8"
 }

@@ -31,6 +31,14 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
         super(attributes);
     }
 
+    public {{keyword}}() {
+        super();
+    }
+
+    public {{keyword}} copy() {
+        return super.copy({{keyword}}.class);
+    }
+
     @Override
     public int getTag() {
         return TAG;
@@ -47,15 +55,23 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
         super(sequence, {{keyword}}.Item.class);
     }
 
-    public static class Item extends AbstractSequenceItemWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{implementsAccessorInterfaces}} {{/subDataElementMetaInfos.isEmpty}}{
+    public static class Item extends AbstractSequenceItemWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{implementsHolderInterfaces}} {{/subDataElementMetaInfos.isEmpty}}{
 
         public Item(Attributes attributes) {
             super(attributes);
         }
+
+        public Item() {
+            super();
+        }
+
+        public Item copy() {
+            return super.copy(Item.class);
+        }
     }
 {{/sequence}}
 
-    public interface Accessors extends AttributesWrapper {
+    public interface Holder extends AttributesWrapper {
 
         /**
          *

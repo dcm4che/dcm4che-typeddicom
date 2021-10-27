@@ -19,17 +19,14 @@ import static com.agfa.typeddicom.StringUtils.indent;
 public abstract class AbstractAttributesWrapper implements AttributesWrapper {
     private final Attributes attributes;
 
-    public AbstractAttributesWrapper(Attributes attributes) {
+    protected AbstractAttributesWrapper(Attributes attributes) {
         this.attributes = attributes;
     }
 
-    public static <T extends AbstractAttributesWrapper> T wrap(Attributes attributes, Class<T> wrapperClass) {
-        try {
-            return wrapperClass.getConstructor(Attributes.class).newInstance(attributes);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new ConstructorNotImplementedException(wrapperClass.getName() + " could not be instantiated with Attributes.", e);
-        }
+    protected AbstractAttributesWrapper() {
+        this(new Attributes());
     }
+
 
     @Override
     public Attributes getAttributes() {

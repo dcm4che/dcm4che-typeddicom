@@ -5,6 +5,7 @@ import org.dcm4che3.data.Sequence;
 import java.util.AbstractList;
 import java.util.Objects;
 
+import static com.agfa.typeddicom.AttributesWrapper.wrap;
 import static com.agfa.typeddicom.StringUtils.indent;
 
 /**
@@ -27,7 +28,7 @@ public class SequenceWrapper<T extends AbstractAttributesWrapper> extends Abstra
 
     @Override
     public T get(int index) {
-        return AbstractAttributesWrapper.wrap(sequence.get(index), itemClass);
+        return wrap(sequence.get(index), itemClass);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class SequenceWrapper<T extends AbstractAttributesWrapper> extends Abstra
 
     @Override
     public T set(int index, T element) {
-        return AbstractAttributesWrapper.wrap(sequence.set(index, element.getAttributes()), itemClass);
+        return wrap(sequence.set(index, element.getAttributes()), itemClass);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class SequenceWrapper<T extends AbstractAttributesWrapper> extends Abstra
 
     @Override
     public T remove(int index) {
-        return AbstractAttributesWrapper.wrap(sequence.remove(index), itemClass);
+        return wrap(sequence.remove(index), itemClass);
     }
 
     @Override

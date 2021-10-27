@@ -19,6 +19,10 @@ abstract public class AbstractDataElementWrapper extends AbstractAttributesWrapp
         super(attributes);
     }
 
+    protected AbstractDataElementWrapper() {
+        super();
+    }
+
     @Override
     public Object getValue() {
         return getAttributes().getValue(getTag());

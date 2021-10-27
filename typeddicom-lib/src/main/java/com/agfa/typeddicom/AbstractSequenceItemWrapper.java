@@ -3,8 +3,12 @@ package com.agfa.typeddicom;
 import org.dcm4che3.data.Attributes;
 
 public abstract class AbstractSequenceItemWrapper extends AbstractAttributesWrapper {
-    public AbstractSequenceItemWrapper(Attributes attributes) {
+    protected AbstractSequenceItemWrapper(Attributes attributes) {
         super(attributes);
+    }
+
+    protected AbstractSequenceItemWrapper() {
+        super();
     }
 
     @Override

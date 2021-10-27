@@ -255,19 +255,24 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
 
     private Iterable<DataElementMetaInfo> resolveMacrosRecursively(TableEntry tableEntry, Context context) {
         if (tableEntry instanceof MacroTableEntry macroTableEntry) {
-            MacroMetaInfo macroMetaInfo = macros.get(((MacroTableEntry) tableEntry).getTableId());
+            String tableId = macroTableEntry.getTableId();
+            MacroTable macroTable = macroTables.get(tableId);
+            if (macroTable == null) {
+                System.out.println("Invalid macro key: " + tableId);
+                return Collections.emptyList();
+            }
+            MacroMetaInfo macroMetaInfo = macros.get(tableId);
             if (macroMetaInfo == null) {
-                MacroTable macroTable = macroTables.get(macroTableEntry.getTableId());
-                if (macroTable == null) {
-                    System.out.println("Invalid macro key: " + macroTableEntry.getTableId());
-                    return Collections.emptyList();
-                }
                 macroMetaInfo = new MacroMetaInfo(macroTable.getTableId());
                 macros.put(macroMetaInfo.getTableId(), macroMetaInfo);
-                for (TableEntry macroSubEntry : macroTable.getTableEntries()) {
+            }
+            for (TableEntry macroSubEntry : macroTable.getTableEntries()) {
+                ContextEntry newContextEntry = new ContextEntry(macroTable.getName(), macroTable.getHref());
+                // Stop at recursive macros
+                if (!context.getContext().contains(newContextEntry)) {
                     macroMetaInfo.addDataElementMetaInfo(resolveMacrosRecursively(
                             macroSubEntry,
-                            new Context(context, macroTable.getName(), macroTable.getHref())
+                            new Context(newContextEntry)
                     ));
                 }
             }

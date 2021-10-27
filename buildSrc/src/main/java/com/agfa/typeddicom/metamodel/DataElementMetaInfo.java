@@ -3,7 +3,6 @@ package com.agfa.typeddicom.metamodel;
 import org.davidmoten.text.utils.WordWrap;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.*;
 
@@ -119,7 +118,7 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
             assert element.parent() != null; // should always have a parent
             element.parent().before(element);
         }
-        for (Element element : body.select("dl:empty, p:empty")) {
+        for (Element element : body.select("dd:empty, p:empty, dd:matchesOwn((?is) )")) {
             element.remove();
         }
     }
