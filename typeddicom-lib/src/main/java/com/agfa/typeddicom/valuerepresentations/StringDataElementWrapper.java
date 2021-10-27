@@ -7,7 +7,7 @@ public interface StringDataElementWrapper extends DataElementWrapper {
         return getAttributes().getString(getTag());
     }
 
-    default void setString(String[] string) {
+    default void setString(String string) {
         getAttributes().setString(getTag(), getValueRepresentation(), string);
     }
 }
