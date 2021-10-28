@@ -2,17 +2,20 @@ package com.agfa.typeddicom.utils;
 
 import java.util.regex.Pattern;
 
-/**
- * TODO describe this class
- *
- * @author Niklas Roth  (niklasroth.@agfa.com)
- */
 public class KeywordUtils {
 
     private KeywordUtils() {
     }
 
-    public static String sanitizeAsJavaIdentifier(String name) {
+    /**
+     * Remove all invalid characters from a string which are not allowed in a Java class name. It removes "'", "(" and
+     * ")" as well as " ", "-" and "/" while Capitalizing the following character to make it camel case. If the first
+     * character is a digit it replaces it by its written out word.
+     * @param name the name with character which are not allowed in a class name
+     * @return the sanitized name
+     * @throws InvalidClassNameException if the resulting identifier does not comply to the Regex [A-Z][a-zA-Z\d_$]*.
+     */
+    public static String sanitizeAsJavaIdentifier(String name) throws InvalidClassNameException {
         String identifier = name;
         identifier = identifier.replace("'", "");
         identifier = identifier.replace("(", "");
@@ -23,7 +26,7 @@ public class KeywordUtils {
         }
         identifier = removeCharactersAndCapitalizeFollowingLetter(identifier, ' ', '-', '/');
         if (!Pattern.matches("[A-Z][a-zA-Z\\d_$]*", identifier)) {
-            throw new RuntimeException("Invalid class name " + identifier);
+            throw new InvalidClassNameException("Invalid class name " + identifier);
         }
         return identifier;
     }

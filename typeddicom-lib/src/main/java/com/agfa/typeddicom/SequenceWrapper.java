@@ -9,11 +9,9 @@ import static com.agfa.typeddicom.AttributesWrapper.wrap;
 import static com.agfa.typeddicom.StringUtils.indent;
 
 /**
- * TODO describe this class
- *
- * @author (. @ agfa.com)
+ * This abstract class implements all list methods for Sequences.
  */
-public class SequenceWrapper<T extends AbstractAttributesWrapper> extends AbstractList<T> {
+public abstract class SequenceWrapper<T extends AbstractSequenceItemWrapper> extends AbstractList<T> {
     private final Sequence sequence;
     private final Class<T> itemClass;
 

@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * TODO describe this class
- *
- * @author (. @ agfa.com)
+ * This abstract class holds a List of DataElementMetaInfo objects. It should be extended by classes which need to hold
+ * multiple DataElementMetaInfo objects
  */
-public class DataElementMetaInfoContainer implements Serializable {
+public abstract class DataElementMetaInfoContainer implements Serializable {
     private final List<DataElementMetaInfo> subDataElementMetaInfos = new ArrayList<>();
 
     public boolean addDataElementMetaInfo(DataElementMetaInfo attributeMetaInfo) {

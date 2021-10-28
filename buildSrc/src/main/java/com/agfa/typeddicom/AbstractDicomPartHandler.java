@@ -9,9 +9,7 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * TODO describe this class
- *
- * @author Niklas Roth (niklas.roth@agfa.com)
+ * This class records HTML or Text after calling the start methods and stops after calling the corresponding getters.
  */
 public abstract class AbstractDicomPartHandler extends DefaultHandler {
     private final StringBuilder currentText = new StringBuilder();

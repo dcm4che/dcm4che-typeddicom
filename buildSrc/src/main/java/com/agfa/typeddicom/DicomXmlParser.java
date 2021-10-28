@@ -91,19 +91,19 @@ public class DicomXmlParser {
             Set<InformationObjectDefinitionMetaInfo> iods = handlerPart3.getIODs();
 
             generateValueRepresentationInterfaces(valueRepresentations);
-            System.out.println("Generated " + valueRepresentations.size() + " value representation classes");
+            System.out.println("Generated " + valueRepresentations.size() + " Value Representation classes");
 
             generateValueRepresentationInterfaces(multiValueRepresentations);
-            System.out.println("Generated " + multiValueRepresentations.size() + " multi value representation classes");
+            System.out.println("Generated " + multiValueRepresentations.size() + " Multi Value Representation classes");
 
             generateDataElementWrapperClasses(dataElements);
-            System.out.println("Generated " + dataElements.size() + " data element classes");
+            System.out.println("Generated " + dataElements.size() + " Data Element classes");
 
             generateModuleInterfaces(modules);
-            System.out.println("Generated " + modules.size() + " module classes");
+            System.out.println("Generated " + modules.size() + " Module classes");
 
             generateIODClasses(iods);
-            System.out.println("Generated " + iods.size() + " iod classes");
+            System.out.println("Generated " + iods.size() + " IOD classes");
         } catch (SAXException | IOException e) {
             throw new RuntimeException("Wasn't able to generate the Sources", e);
         }

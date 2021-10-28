@@ -12,9 +12,9 @@ import static com.agfa.typeddicom.StringUtils.indent;
 
 
 /**
- * TODO describe this class
- *
- * @author Niklas Roth (niklas.roth@agfa.com)
+ * This abstract class wraps dcm4che Attributes and provides accessors to it. It also implements {@link #equals} and
+ * {@link #hashCode} which delegates to the wrapped Attributes and a toString() method which uses reflection to
+ * provide a nice representation of the set and known Attributes.
  */
 public abstract class AbstractAttributesWrapper implements AttributesWrapper {
     private final Attributes attributes;

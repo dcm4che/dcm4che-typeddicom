@@ -17,9 +17,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * TODO describe this class
- *
- * @author Niklas Roth (niklas.roth@agfa.com)
+ * This class parses the 5th part of the DICOM Standard XML
+ * (http://dicom.nema.org/medical/dicom/current/source/docbook/part05/part05.xml)
  */
 public class DicomPart05Handler extends AbstractDicomPartHandler {
     private final List<String> columns = new LinkedList<>();

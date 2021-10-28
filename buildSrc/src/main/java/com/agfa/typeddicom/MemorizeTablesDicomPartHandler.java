@@ -9,17 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO describe this class
- *
- * @author Niklas Roth (niklas.roth@agfa.com)
+ * This abstract class is used to parse tables contained in the XML doc. The tables can be retrieved with
+ * {@link #getTables()}.
  */
 public abstract class MemorizeTablesDicomPartHandler extends AbstractDicomPartHandler {
     private final List<Table> tables = new ArrayList<>();
     private Table currentTable = null;
     private int currentRow;
     private boolean inBody;
-    private int currentRowSpan;
-    private int currentColSpan;
     private TableCell currentCell;
 
     @Override

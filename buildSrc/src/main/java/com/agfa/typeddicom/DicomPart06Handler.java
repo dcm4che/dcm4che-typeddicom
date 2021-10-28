@@ -15,9 +15,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * TODO describe this class
- *
- * @author Niklas Roth (niklas.roth@agfa.com)
+ * This class parses the 6th part of the DICOM Standard XML
+ * (http://dicom.nema.org/medical/dicom/current/source/docbook/part06/part06.xml)
  */
 public class DicomPart06Handler extends AbstractDicomPartHandler {
     private final Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap;

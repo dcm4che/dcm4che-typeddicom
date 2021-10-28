@@ -9,9 +9,8 @@ import java.util.Objects;
 import static com.agfa.typeddicom.StringUtils.indent;
 
 /**
- * TODO describe this class
- *
- * @author Niklas Roth (niklas.roth@agfa.com)
+ * This abstract class implements some basic methods like {@link #equals}, {@link #hashCode} and {@link #toString} for
+ * the wrappers around Data Elements.
  */
 abstract public class AbstractDataElementWrapper extends AbstractAttributesWrapper implements DataElementWrapper {
 

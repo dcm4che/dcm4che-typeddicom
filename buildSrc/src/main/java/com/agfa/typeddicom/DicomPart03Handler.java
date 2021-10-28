@@ -10,9 +10,8 @@ import org.xml.sax.SAXException;
 import java.util.*;
 
 /**
- * TODO describe this class
- *
- * @author Niklas Roth (niklas.roth@agfa.com)
+ * This class parses the 3th part of the DICOM Standard XML
+ * (http://dicom.nema.org/medical/dicom/current/source/docbook/part03/part03.xml)
  */
 public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
     private final Set<ModuleMetaInfo> modules;
