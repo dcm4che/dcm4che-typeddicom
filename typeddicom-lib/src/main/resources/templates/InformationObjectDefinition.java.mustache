@@ -2,7 +2,7 @@
 package com.agfa.typeddicom.iods;
 
 import org.dcm4che3.data.Attributes;
-import com.agfa.typeddicom.AbstractAttributesWrapper;
+import com.agfa.typeddicom.AbstractInformationObjectDefinition;
 {{#moduleReferences}}
 import com.agfa.typeddicom.modules.{{moduleMetaInfo.keyword}};
 {{/moduleReferences}}
@@ -13,9 +13,14 @@ import com.agfa.typeddicom.modules.{{moduleMetaInfo.keyword}};
  *
  * @see <a href="{{href}}">DICOM Standard Part 5 - {{name}}</a>
  */
-public class {{keyword}} extends AbstractAttributesWrapper implements {{implementsModules}} {
+public class {{keyword}} extends AbstractInformationObjectDefinition implements {{implementsModules}} {
+    public static String SOP_CLASS_UID = "{{sopClassUID}}";
 
     public {{keyword}}(Attributes attributes) {
         super(attributes);
+    }
+
+    public String getStandardSOPClassUID() {
+        return SOP_CLASS_UID;
     }
 }

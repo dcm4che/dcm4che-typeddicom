@@ -1,6 +1,8 @@
 # Typed Dicom
 ## How to build
 Run ```.\gradlew jar``` the file is then located under ```typeddicom-lib/build/libs/typeddicom-lib.jar```
+
+You can also run ```.\gradlew publishToMavenLocal``` to install it to your local Maven repo
 ## How to use
 Instead of
 ```

@@ -3,6 +3,7 @@ package com.agfa.typeddicom.metamodel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Context {
@@ -51,5 +52,18 @@ public class Context {
     @Override
     public String toString() {
         return context.stream().map(ContextEntry::contextName).collect(Collectors.joining(" > "));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Context context1 = (Context) o;
+        return Objects.equals(context, context1.context);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(context);
     }
 }
