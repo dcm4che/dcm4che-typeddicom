@@ -13,6 +13,7 @@ public class InformationObjectDefinitionMetaInfo {
     private final String name;
     private final String keyword;
     private final String href;
+    private String sopClassUID;
     private final List<IODModuleReference> moduleReferences = new ArrayList<>();
 
     public InformationObjectDefinitionMetaInfo(String name, String keyword, String href) {
@@ -39,5 +40,13 @@ public class InformationObjectDefinitionMetaInfo {
 
     public String getHref() {
         return href;
+    }
+
+    public String getSopClassUID() {
+        return sopClassUID;
+    }
+
+    public void setSopClassUID(String sopClassUID) {
+        this.sopClassUID = sopClassUID;
     }
 }

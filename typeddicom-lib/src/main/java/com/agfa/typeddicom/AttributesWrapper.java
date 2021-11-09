@@ -16,7 +16,7 @@ public interface AttributesWrapper {
     Attributes getAttributes();
 
     default <T extends AttributesWrapper> T copy(Class<T> wrapperClass) {
-        return wrap(this.getAttributes(), wrapperClass);
+        return wrap(new Attributes(this.getAttributes()), wrapperClass);
     }
 
     default boolean isEmpty() {
