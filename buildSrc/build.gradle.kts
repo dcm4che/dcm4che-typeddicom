@@ -5,8 +5,8 @@ plugins {
 gradlePlugin {
     plugins {
         create("processDicomXml") {
-            id = "com.agfa.typeddicom.gradleplugin.sourcegeneration"
-            implementationClass = "com.agfa.typeddicom.gradleplugin.ProcessDicomXmlPlugin"
+            id = "org.dcm4che.typeddicom.gradleplugin.sourcegeneration"
+            implementationClass = "org.dcm4che.typeddicom.gradleplugin.ProcessDicomXmlPlugin"
         }
     }
 }

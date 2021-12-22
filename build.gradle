@@ -1,12 +1,2 @@
-plugins {
-    id 'idea'
-}
-
-group 'com.agfa'
-version '1.0-SNAPSHOT'
-
-idea {
-    module {
-        downloadSources = true
-    }
-}
+group 'org.dcm4che'
+version '0.1.0-SNAPSHOT'
