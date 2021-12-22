@@ -32,5 +32,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: Artifacts
-        path: build/libs
-        expire_in: 1 week
+        path: dcm4che-typeddicom-lib/build/libs
+        retention-days: 7
