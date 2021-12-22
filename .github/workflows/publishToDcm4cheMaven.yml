@@ -1,0 +1,29 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Publish dcm4che-typeddicom to the Dcm4che Maven Repository
+on:
+  release:
+    types: [created]
+jobs:
+  publish:
+    environment: publishToDcm4cheMaven
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+      - name: Publish package
+        run: gradle publishAllPublicationsToDcm4cheMavenRepository
+        env:
+          ORG_GRADLE_PROJECT_dcm4cheMavenUsername: ${{ secrets.DCM4CHE_MAVEN_SSH_USERNAME }}
+          ORG_GRADLE_PROJECT_dcm4cheMavenPassword: ${{ secrets.DCM4CHE_MAVEN_SSH_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_KEY_PASSWORD }}
