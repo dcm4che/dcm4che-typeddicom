@@ -82,16 +82,14 @@ java.sourceSets["main"].java {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven {
-        url = uri("http://maven.scijava.org/content/repositories/public/")
-        isAllowInsecureProtocol = true
+        url = uri("https://www.dcm4che.org/maven2/")
     }
 }
 
 dependencies {
-    implementation("org.dcm4che:dcm4che-core:5.23.3")
+    implementation("org.dcm4che:dcm4che-core:5.25.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
