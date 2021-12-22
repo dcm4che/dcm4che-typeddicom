@@ -1,4 +1,4 @@
-# Typed Dicom
+# dcm4che - Typed DICOM
 > :warning: **This project is under active development and not ready for production yet. Use at own risk.**
 
 This library creates typed wrappers around dcm4che attributes to make DICOM objects easier and more intuitive to use in Java.
