@@ -55,16 +55,16 @@ publishing {
     }
     repositories {
         /**
-         *  use `./gradlew publish -Pdcm4cheUsername=DCM4CHE_USERNAME -Pdcm4chePassword=DCM4CHE_PASSWORD -Psigning.keyId=GPG_KEY_ID -Psigning.password=GPG_KEY_PASSWORD -Psigning.secretKeyRingFile=GPG_KEYRING_FILE` to publish
+         *  use `./gradlew publish -Pdcm4cheMavenUsername=DCM4CHE_USERNAME -Pdcm4cheMavenPassword=DCM4CHE_PASSWORD -Psigning.keyId=GPG_KEY_ID -Psigning.password=GPG_KEY_PASSWORD -Psigning.secretKeyRingFile=GPG_KEYRING_FILE` to publish
          *  or set the corresponding env variables before running `./gradlew publish`:
-         *  ORG_GRADLE_PROJECT_dcm4cheUsername=DCM4CHE_SSH_USERNAME
-         *  ORG_GRADLE_PROJECT_dcm4chePassword=DCM4CHE_SSH_PASSWORD
+         *  ORG_GRADLE_PROJECT_dcm4cheMavenUsername=DCM4CHE_MAVEN_SSH_USERNAME
+         *  ORG_GRADLE_PROJECT_dcm4cheMavenPassword=DCM4CHE_MAVEN_SSH_PASSWORD
          *  ORG_GRADLE_PROJECT_signing.keyId=GPG_KEY_ID
          *  ORG_GRADLE_PROJECT_signing.password=GPG_KEY_PASSWORD
          *  ORG_GRADLE_PROJECT_signing.secretKeyRingFile=GPG_KEYRING_FILE`
         */
         maven { 
-            name = "dcm4che"
+            name = "dcm4cheMaven"
             url = uri("sftp://dcm4che.org:22/home/maven2")
             credentials(PasswordCredentials::class)
         }
