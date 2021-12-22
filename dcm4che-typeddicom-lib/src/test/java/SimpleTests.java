@@ -1,4 +1,4 @@
-import org.dcm4che.typeddicom.dataelements.*;
+import org.dcm4che.typeddicom.dataelements.DisplayedAreaSelectionSequence;
 import org.dcm4che.typeddicom.iods.CRImageIOD;
 import org.dcm4che.typeddicom.iods.GrayscaleSoftcopyPresentationStateIOD;
 import org.dcm4che3.data.Attributes;
@@ -13,6 +13,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class SimpleTests {
+    @SuppressWarnings("deprecation")
     private Attributes readDicomFile(String path) throws IOException {
         Attributes attributes;
         File dicomFile = new File(SimpleTests.class.getClassLoader().getResource(path).getFile());
