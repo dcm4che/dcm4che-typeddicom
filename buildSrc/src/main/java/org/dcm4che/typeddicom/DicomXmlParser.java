@@ -111,7 +111,7 @@ public class DicomXmlParser {
 
     private void generateValueRepresentationInterfaces(Set<ValueRepresentationMetaInfo> valueRepresentations) throws IOException {
         Mustache mustache = mustacheFactory.compile("ValueRepresentation");
-        File valueRepresentationDir = new File(javaOutputDirectory, "com/agfa/typeddicom/valuerepresentations");
+        File valueRepresentationDir = new File(javaOutputDirectory, "org/dcm4che/typeddicom/valuerepresentations");
         //noinspection ResultOfMethodCallIgnored
         valueRepresentationDir.mkdirs();
         for (ValueRepresentationMetaInfo valueRepresentation : valueRepresentations) {
@@ -125,7 +125,7 @@ public class DicomXmlParser {
 
     private void generateDataElementWrapperClasses(Set<DataElementMetaInfo> dataElements) throws IOException {
         Mustache mustache = mustacheFactory.compile("DataElement");
-        File dataElementDir = new File(javaOutputDirectory, "com/agfa/typeddicom/dataelements");
+        File dataElementDir = new File(javaOutputDirectory, "org/dcm4che/typeddicom/dataelements");
         //noinspection ResultOfMethodCallIgnored
         dataElementDir.mkdirs();
         for (DataElementMetaInfo dataElementMetaInfo : dataElements) {
@@ -139,7 +139,7 @@ public class DicomXmlParser {
 
     private void generateIODClasses(Set<InformationObjectDefinitionMetaInfo> iods) throws IOException {
         Mustache mustache = mustacheFactory.compile("InformationObjectDefinition");
-        File dataElementDir = new File(javaOutputDirectory, "com/agfa/typeddicom/iods");
+        File dataElementDir = new File(javaOutputDirectory, "org/dcm4che/typeddicom/iods");
         //noinspection ResultOfMethodCallIgnored
         dataElementDir.mkdirs();
         for (InformationObjectDefinitionMetaInfo iod : iods) {
@@ -153,7 +153,7 @@ public class DicomXmlParser {
 
     private void generateModuleInterfaces(Set<ModuleMetaInfo> moduleMetaInfoSet) throws IOException {
         Mustache mustache = mustacheFactory.compile("Module");
-        File dataElementDir = new File(javaOutputDirectory, "com/agfa/typeddicom/modules");
+        File dataElementDir = new File(javaOutputDirectory, "org/dcm4che/typeddicom/modules");
         //noinspection ResultOfMethodCallIgnored
         dataElementDir.mkdirs();
         for (ModuleMetaInfo moduleMetaInfo : moduleMetaInfoSet) {
