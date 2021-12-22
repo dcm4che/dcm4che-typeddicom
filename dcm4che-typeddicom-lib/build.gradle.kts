@@ -59,9 +59,8 @@ publishing {
          *  or set the corresponding env variables before running `./gradlew publish`:
          *  ORG_GRADLE_PROJECT_dcm4cheMavenUsername=DCM4CHE_MAVEN_SSH_USERNAME
          *  ORG_GRADLE_PROJECT_dcm4cheMavenPassword=DCM4CHE_MAVEN_SSH_PASSWORD
-         *  ORG_GRADLE_PROJECT_signing.keyId=GPG_KEY_ID
-         *  ORG_GRADLE_PROJECT_signing.password=GPG_KEY_PASSWORD
-         *  ORG_GRADLE_PROJECT_signing.secretKeyRingFile=GPG_KEYRING_FILE`
+         *  ORG_GRADLE_PROJECT_signingKey=GPG_PRIVATE_KEY
+         *  ORG_GRADLE_PROJECT_signingPassword=GPG_KEY_PASSWORD
         */
         maven { 
             name = "dcm4cheMaven"
@@ -86,6 +85,9 @@ repositories {
 }
 
 signing {
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    useInMemoryPgpKeys(signingKey, signingPassword)
     sign(publishing.publications["mavenJava"])
 }
 
