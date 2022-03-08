@@ -310,12 +310,10 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
     }
 
     private void removeHTMLTagsFromColumn(Integer i) {
-        if (i == null) {
-            return;
-        } else if (i >= this.columns.size()) {
+        if (i == null || i >= this.columns.size()) {
             return;
         }
-        this.columns.set(i, this.columns.get(i).replaceAll("</?[^>]*>", ""));
+        this.columns.set(i, this.columns.get(i).replaceAll("</?[^>]*>", "").trim());
     }
 
     private void addTableEntry(final TableEntry currentTableEntry, int currentSequenceDepth) {
@@ -337,7 +335,7 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
     }
 
     private void handleEndOfTableCell() {
-        this.columns.add(getRecordedHTML());
+        this.columns.add(getRecordedHTML().trim());
     }
 
     public Set<ModuleMetaInfo> getModules() {
