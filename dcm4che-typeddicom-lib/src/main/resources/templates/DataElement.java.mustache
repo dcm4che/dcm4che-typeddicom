@@ -70,7 +70,10 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
         }
     }
 {{/sequence}}
-
+    
+    /**
+     * A class implementing this interface can hold attributes which contain the DICOM tag "{{name}}" (see {@link {{keyword}}})
+     */
     public interface Holder extends AttributesWrapper {
 
         /**
