@@ -7,14 +7,18 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class records HTML or Text after calling the start methods and stops after calling the corresponding getters.
  */
 public abstract class AbstractDicomPartHandler extends DefaultHandler {
+    protected static final String DICOM_STANDARD_HTML_URL = "http://dicom.nema.org/medical/dicom/current/output/html";
     private final StringBuilder currentText = new StringBuilder();
+    private final Pattern partNumberPattern = Pattern.compile("PS3\\.(?<part>\\d+)");
+    private final StringBuilder currentHTML = new StringBuilder();
     private boolean recordText = false;
-    private StringBuilder currentHTML = new StringBuilder();
     private boolean recordHTML;
     private boolean inVariableList;
 
@@ -100,12 +104,59 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
             case "varlistentry" -> {
                 return true;
             }
+            case "note" -> {
+                if (!close) {
+                    appendTag("div", false, Map.of("class", "note", "style", "font-style: italic; margin-left: 0.5in;"), "");
+                    appendTag("strong", false, Collections.emptyMap(), "Note");
+                    appendTag("strong", true);
+                } else {
+                    appendTag("div", true);
+                }
+            }
+            case "olink" -> {
+                if (!close) {
+                    String targetptr = attributes.getValue("targetptr");
+                    String targetdoc = attributes.getValue("targetdoc");
+                    appendTag(
+                            "a",
+                            false,
+                            Collections.singletonMap("href", getUrlFromTarget(targetdoc, targetptr)),
+                            targetptr.replace("sect_", "").replace("_", "")
+                    );
+                } else {
+                    appendTag("a", true);
+                }
+            }
+            case "link" -> {
+                if (!close) {
+                    appendTag(
+                            "a",
+                            false,
+                            Collections.singletonMap("href", attributes.getValue("xl:href")),
+                            attributes.getValue("xl:href")
+                    );
+                } else {
+                    appendTag("a", true);
+                }
+            }
             default -> {
                 System.out.println("Unknown text tag: " + qName);
                 return false;
             }
         }
         return true;
+    }
+
+    private String getUrlFromTarget(String targetdoc, String targetptr) {
+        Integer partNumber = null;
+        Matcher matcher = partNumberPattern.matcher(targetdoc);
+        if (matcher.find()) {
+            partNumber = Integer.parseInt(matcher.group("part"));
+            return String.format("%s/part%02d.html#%s", DICOM_STANDARD_HTML_URL, partNumber, targetptr);
+        }else {
+            throw new IllegalArgumentException("Invalid targetdoc " + targetptr + ". " +
+                    "Needs to be of form 'PS3\\.(\\d+)'.");
+        }
     }
 
     public String getUrlFromXmlId(String xmlId) {

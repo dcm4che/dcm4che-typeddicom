@@ -38,7 +38,7 @@ public class DicomPart05Handler extends AbstractDicomPartHandler {
 
     @Override
     public String getBaseHrefUrl() {
-        return "http://dicom.nema.org/medical/dicom/current/output/html/part05.html";
+        return AbstractDicomPartHandler.DICOM_STANDARD_HTML_URL + "/part05.html";
     }
 
     @Override
