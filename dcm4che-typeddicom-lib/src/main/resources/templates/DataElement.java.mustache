@@ -1,6 +1,7 @@
 // Auto generated
 package org.dcm4che.typeddicom.dataelements;
 
+import org.dcm4che.typeddicom.AbstractAttributesWrapper;
 import org.dcm4che.typeddicom.AttributesWrapper;
 {{#sequence}}
 import org.dcm4che.typeddicom.AbstractSequenceItemWrapper;
@@ -75,6 +76,14 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
      * A class implementing this interface can hold attributes which contain the DICOM tag "{{name}}" (see {@link {{keyword}}})
      */
     public interface Holder extends AttributesWrapper {
+        /**
+         * 
+         * @param attributes An attributes object containing the {{name}} (see {@link {{keyword}}})
+         * @return A wrapper object implementing the {@link Holder} interface. 
+         */
+        static Holder wrap(Attributes attributes) {
+            return AttributesWrapper.wrap(attributes, HolderImpl.class);
+        }
 
         /**
          *
@@ -114,7 +123,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
 
         {{/sequence}}
         /**
-         * @return Whether it contains a {{name}} (see {@link {{keyword}}})
+         * @return Whether it contains the {{name}} (see {@link {{keyword}}})
          */
         default boolean contains{{keyword}}() {
             return getAttributes().contains(TAG);
@@ -125,6 +134,12 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
          */
         default void remove{{keyword}}() {
             getAttributes().remove(TAG);
+        }
+    }
+    
+    private static class HolderImpl extends AbstractAttributesWrapper implements Holder {
+        private HolderImpl(Attributes attributes) {
+            super(attributes);
         }
     }
 }
