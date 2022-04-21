@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Publish dcm4che-typeddicom to the Dcm4che Maven Repository
+name: Publish dcm4che-typeddicom
 on:
   release:
     types: [created]
@@ -62,7 +62,7 @@ jobs:
           asset_name: dcm4che-typeddicom-lib.jar
           asset_content_type: application/jar
 
-      - name: Publish package
+      - name: Publish package to dcm4che Maven Repository
         run: gradle publishAllPublicationsToDcm4cheMavenRepository
         env:
           ORG_GRADLE_PROJECT_dcm4cheMavenUsername: ${{ secrets.DCM4CHE_MAVEN_SSH_USERNAME }}
