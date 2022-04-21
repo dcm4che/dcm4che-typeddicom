@@ -13,13 +13,55 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
           java-version: '17'
           distribution: 'adopt'
+
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+
+      - name: Build package
+        run: gradle build
+
+      - name: Publish bin jar to GitHub
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib.jar
+          asset_name: dcm4che-typeddicom-lib.jar
+          asset_content_type: application/jar
+
+      - name: Publish javadoc jar to GitHub
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib.jar
+          asset_name: dcm4che-typeddicom-lib.jar
+          asset_content_type: application/jar
+
+      - name: Publish sources jar to GitHub
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib.jar
+          asset_name: dcm4che-typeddicom-lib.jar
+          asset_content_type: application/jar
+
       - name: Publish package
         run: gradle publishAllPublicationsToDcm4cheMavenRepository
         env:
