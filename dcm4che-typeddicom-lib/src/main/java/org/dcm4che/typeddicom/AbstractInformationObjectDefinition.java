@@ -9,6 +9,10 @@ public abstract class AbstractInformationObjectDefinition extends AbstractAttrib
         super(attributes);
     }
 
+    public AbstractInformationObjectDefinition() {
+        super();
+    }
+
     /**
      *
      * @return The SOP Class UID defined in
