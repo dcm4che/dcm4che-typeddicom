@@ -48,8 +48,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib.jar
-          asset_name: dcm4che-typeddicom-lib.jar
+          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib-javadoc.jar
+          asset_name: dcm4che-typeddicom-lib-javadoc.jar
           asset_content_type: application/jar
 
       - name: Publish sources jar to GitHub
@@ -58,8 +58,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib.jar
-          asset_name: dcm4che-typeddicom-lib.jar
+          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib-sources.jar
+          asset_name: dcm4che-typeddicom-lib-sources.jar
           asset_content_type: application/jar
 
       - name: Publish package to dcm4che Maven Repository
