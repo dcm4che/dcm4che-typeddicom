@@ -8,14 +8,13 @@ import org.dcm4che.typeddicom.AbstractSequenceItemWrapper;
 import org.dcm4che.typeddicom.SequenceWrapper;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
-import org.dcm4che3.data.Tag;
 {{/sequence}}
 {{^sequence}}
 import org.dcm4che.typeddicom.AbstractDataElementWrapper;
 import org.dcm4che.typeddicom.valuerepresentations.{{valueRepresentationWrapper}};
 import org.dcm4che3.data.Attributes;
-{{/sequence}}
 import org.dcm4che3.data.VR;
+{{/sequence}}
 import org.dcm4che3.data.Tag;
 
 
@@ -24,25 +23,41 @@ import org.dcm4che3.data.Tag;
 @Deprecated
 {{/retired}}
 public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{{/sequence}}{{^sequence}}AbstractDataElementWrapper implements {{valueRepresentationWrapper}}{{/sequence}} {
-    public static final VR VALUE_REPRESENTATION = VR.{{valueRepresentation}};
+    /**
+     * The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part06/chapter_6.html">DICOM Tag</a> 
+     * associated with this class.
+     */
     public static final int TAG = {{tagConstant}};
-
 {{^sequence}}
+    /**
+     * The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html">DICOM Value 
+     * Representation (VR)</a> associated with this class.
+     */
+    public static final VR VALUE_REPRESENTATION = VR.{{valueRepresentation}};
+
+    /**
+     * Creates a new {{name}} object which wraps the provided <code>attributes</code>.
+     *
+     * @param attributes The {@link Attributes} object to be wrapped.
+     */
     public {{keyword}}(Attributes attributes) {
         super(attributes);
     }
 
+    /**
+     * Creates a new {{name}} object which wraps a new and empty {@link Attributes} object.
+     */
     public {{keyword}}() {
         super();
     }
-
+    
+    /**
+     * Returns a new {{name}} which wraps a copy of the Attributes wrapped in this {{name}}. (see {@link Attributes#Attributes(Attributes)}
+     *
+     * @return a new {{name}} which wraps a copy of the Attributes wrapped in this {{name}}. 
+     */
     public {{keyword}} copy() {
         return super.copy({{keyword}}.class);
-    }
-
-    @Override
-    public int getTag() {
-        return TAG;
     }
 
     @Override
@@ -52,20 +67,45 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
 {{/sequence}}
 {{#sequence}}
 
+    /**
+     * Creates a new {{name}} object which wraps the provided <code>sequence</code>.
+     *
+     * @param sequence The {@link Sequence} object to be linked.
+     */
     public {{keyword}}(Sequence sequence) {
         super(sequence, {{keyword}}.Item.class);
     }
+{{/sequence}}
+
+    @Override
+    public int getTag() {
+        return TAG;
+    }
+{{#sequence}}
 
     public static class Item extends AbstractSequenceItemWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{implementsHolderInterfaces}} {{/subDataElementMetaInfos.isEmpty}}{
 
+        /**
+         * Creates a new {{name}} Item object which wraps the provided <code>attributes</code>.
+         *
+         * @param attributes The {@link Attributes} object to be wrapped.
+         */
         public Item(Attributes attributes) {
             super(attributes);
         }
 
+        /**
+         * Creates a new {{name}} Item object which wraps a new and empty {@link Attributes} object.
+         */
         public Item() {
             super();
         }
 
+        /**
+         * Returns a new {{name}} Item which wraps a copy of the Attributes wrapped in this {{name}}. (see {@link Attributes#Attributes(Attributes)}
+         *
+         * @return a new {{name}} Item which wraps a copy of the Attributes wrapped in this {{name}}. 
+         */
         public Item copy() {
             return super.copy(Item.class);
         }
@@ -77,7 +117,6 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
      */
     public interface Holder extends AttributesWrapper {
         /**
-         * 
          * @param attributes An attributes object containing the {{name}} (see {@link {{keyword}}})
          * @return A wrapper object implementing the {@link Holder} interface. 
          */
@@ -86,7 +125,6 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
         }
 
         /**
-         *
          * @return the {{name}} (see {@link {{keyword}}})
          */
         default {{keyword}} get{{keyword}}() {
@@ -113,12 +151,26 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
         }
 
         /**
-         * Adds a new {{name}} if it does not already exist. (see {@link {{keyword}}})
+         * Adds a new {{name}} (see {@link {{keyword}}}) if it does not already exist.
+         * (see {@link Attributes#ensureSequence(int, int)}
          *
-         * @param initialCapacity the initial capacity if a new {{name}} is created
+         * @param initialCapacity The initial capacity (see {@link java.util.ArrayList#ArrayList(int)}) if a new 
+         *                        {{name}} is created.
+         * @return Either the already existing {{name}} (see {@link {{keyword}}}) or a new one with capacity 
+         *         <code>initialCapacity</code>.
          */
         default {{keyword}} ensure{{keyword}}(int initialCapacity) {
             return new {{keyword}}(getAttributes().ensureSequence(TAG, initialCapacity));
+        }
+
+        /**
+         * Adds a new {{name}} (see {@link {{keyword}}}) with initial capacity 1 (see {@link #ensure{{keyword}}(int)})
+         * if it does not already exist.
+         *
+         * @return Either the already existing {{name}} (see {@link {{keyword}}}) or a new one with capacity 1.
+         */
+        default {{keyword}} ensure{{keyword}}() {
+            return ensure{{keyword}}(1);
         }
 
         {{/sequence}}
