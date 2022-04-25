@@ -39,7 +39,7 @@ jobs:
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib.jar
-          asset_name: dcm4che-typeddicom-lib.jar
+          asset_name: dcm4che-typeddicom-lib-${{ steps.get_release.outputs.tag_name }}.jar
           asset_content_type: application/jar
 
       - name: Publish javadoc jar to GitHub
@@ -49,7 +49,7 @@ jobs:
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib-javadoc.jar
-          asset_name: dcm4che-typeddicom-lib-javadoc.jar
+          asset_name: dcm4che-typeddicom-lib-javadoc-${{ steps.get_release.outputs.tag_name }}.jar
           asset_content_type: application/jar
 
       - name: Publish sources jar to GitHub
@@ -59,7 +59,7 @@ jobs:
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib-sources.jar
-          asset_name: dcm4che-typeddicom-lib-sources.jar
+          asset_name: dcm4che-typeddicom-lib-sources-${{ steps.get_release.outputs.tag_name }}.jar
           asset_content_type: application/jar
 
       - name: Publish package to dcm4che Maven Repository
