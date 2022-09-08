@@ -18,7 +18,9 @@ public class InformationObjectDefinitionMetaInfo {
     }
     
     public String getImplementsModules() {
-        return moduleReferences.stream().map(ref -> ref.moduleMetaInfo().getKeyword()).collect(Collectors.joining(", "));
+        return moduleReferences.stream()
+                .map(ref -> ref.moduleMetaInfo().getKeyword() + "<" + keyword + ">")
+                .collect(Collectors.joining(", "));
     }
 
     public String getName() {

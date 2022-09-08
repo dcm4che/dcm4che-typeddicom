@@ -1,6 +1,9 @@
 // Auto generated
 package org.dcm4che.typeddicom.valuerepresentations;
 
+import org.dcm4che.typeddicom.AttributesWrapper;
+import org.dcm4che.typeddicom.DataElementWrapper;
+
 /**
  * <strong>Name:</strong> {{name}} <br/>
  * <strong>Tag:</strong> {{tag}} <br/>
@@ -11,5 +14,9 @@ package org.dcm4che.typeddicom.valuerepresentations;
  * @see <a href="{{href}}">DICOM Standard Part 5 - {{name}}</a>
  */
 public interface {{keyword}} extends {{implementsInterfaces}} {
-
+    class Setter<D extends {{keyword}}, P extends AttributesWrapper> extends DataElementWrapper.AbstractSetter<D, P> implements {{{setterImplementsInterfaces}}} {
+        public Setter(D dataElementWrapper, P parentAttributesWrapper) {
+            super(dataElementWrapper, parentAttributesWrapper);
+        }
+    }
 }

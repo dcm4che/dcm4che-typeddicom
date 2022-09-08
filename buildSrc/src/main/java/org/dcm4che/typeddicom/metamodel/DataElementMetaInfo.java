@@ -5,8 +5,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class DataElementMetaInfo extends DataElementMetaInfoContainer {
+    private static final String LINE_BREAK = "<br/>";
     private String tag;
     private String name;
     private String keyword;
@@ -62,7 +65,7 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     }
 
 
-    public String classJavaDoc() throws Exception {
+    public String classJavaDoc() {
         StringBuilder htmlBuilder = new StringBuilder();
         appendGeneralInfo(htmlBuilder);
         appendContextInfo(htmlBuilder);
@@ -78,13 +81,13 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     }
 
     private void appendGeneralInfo(StringBuilder html) {
-        html.append("<strong>Name:</strong> ").append(name).append("<br/>");
-        html.append("<strong>Keyword:</strong> ").append(keyword).append("<br/>");
-        html.append("<strong>Tag:</strong> ").append(tag).append("<br/>");
-        html.append("<strong>Value Representation:</strong> ").append(valueRepresentation).append("<br/>");
-        html.append("<strong>Value Multiplicity:</strong> ").append(valueMultiplicity).append("<br/>");
+        html.append("<strong>Name:</strong> ").append(name).append(LINE_BREAK);
+        html.append("<strong>Keyword:</strong> ").append(keyword).append(LINE_BREAK);
+        html.append("<strong>Tag:</strong> ").append(tag).append(LINE_BREAK);
+        html.append("<strong>Value Representation:</strong> ").append(valueRepresentation).append(LINE_BREAK);
+        html.append("<strong>Value Multiplicity:</strong> ").append(valueMultiplicity).append(LINE_BREAK);
         if (comment.length() > 0) {
-            html.append("<strong>Comment:</strong> ").append(comment).append("<br/>");
+            html.append("<strong>Comment:</strong> ").append(comment).append(LINE_BREAK);
         }
     }
 
@@ -98,10 +101,10 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
                 }
                 html.append("</ul>as follows: <br/>");
                 AdditionalAttributeInfo additionalAttributeInfo = additionalAttributeInfoSetEntry.getKey();
-                html.append("<strong>Attribute Name:</strong> ").append(additionalAttributeInfo.name()).append("<br/>");
-                html.append("<strong>Type:</strong> ").append(additionalAttributeInfo.type()).append("<br/>");
+                html.append("<strong>Attribute Name:</strong> ").append(additionalAttributeInfo.name()).append(LINE_BREAK);
+                html.append("<strong>Type:</strong> ").append(additionalAttributeInfo.type()).append(LINE_BREAK);
                 html.append("<strong>Attribute Description:</strong> ")
-                        .append(additionalAttributeInfo.attributeDescription()).append("<br/>");
+                        .append(additionalAttributeInfo.attributeDescription()).append(LINE_BREAK);
                 html.append("</li>");
             }
             html.append("</ul>");
@@ -231,5 +234,12 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), tag, name, keyword, valueRepresentation, valueMultiplicity, comment, retired, retiredSince, tagConstant, valueRepresentationWrapper);
+    }
+
+    @Override
+    public String implementsHolderInterfaces() {
+        return StreamSupport.stream(getSubDataElementMetaInfos().spliterator(), false)
+                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Holder<Item>")
+                .collect(Collectors.joining(", "));
     }
 }

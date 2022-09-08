@@ -3,6 +3,8 @@ package org.dcm4che.typeddicom.metamodel;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class MacroMetaInfo extends DataElementMetaInfoContainer implements Serializable {
     private final String tableId;
@@ -27,5 +29,12 @@ public class MacroMetaInfo extends DataElementMetaInfoContainer implements Seria
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), tableId);
+    }
+
+    @Override
+    public String implementsHolderInterfaces() {
+        return StreamSupport.stream(getSubDataElementMetaInfos().spliterator(), false)
+                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Holder<SELF>")
+                .collect(Collectors.joining(", "));
     }
 }

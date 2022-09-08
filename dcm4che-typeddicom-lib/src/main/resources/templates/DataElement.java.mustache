@@ -83,7 +83,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
     }
 {{#sequence}}
 
-    public static class Item extends AbstractSequenceItemWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{implementsHolderInterfaces}} {{/subDataElementMetaInfos.isEmpty}}{
+    public static class Item extends AbstractSequenceItemWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{{implementsHolderInterfaces}}} {{/subDataElementMetaInfos.isEmpty}}{
 
         /**
          * Creates a new {{name}} Item object which wraps the provided <code>attributes</code>.
@@ -115,13 +115,13 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
     /**
      * A class implementing this interface can hold attributes which contain the DICOM tag "{{name}}" (see {@link {{keyword}}})
      */
-    public interface Holder extends AttributesWrapper {
+    public interface Holder<SELF extends Holder<SELF>> extends AttributesWrapper {
         /**
          * @param attributes An attributes object containing the {{name}} (see {@link {{keyword}}})
          * @return A wrapper object implementing the {@link Holder} interface. 
          */
-        static Holder wrap(Attributes attributes) {
-            return AttributesWrapper.wrap(attributes, HolderImpl.class);
+        static Holder<SimpleHolder> wrap(Attributes attributes) {
+            return AttributesWrapper.wrap(attributes, SimpleHolder.class);
         }
 
         /**
@@ -174,6 +174,17 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
         }
 
         {{/sequence}}
+        {{^sequence}}
+        /**
+         * @return a Setter for the {{name}} (see {@link {{keyword}}}) which returns this AttributesWrapper
+         *         on its .setXXXX() methods. This allows fluent object creation in the form of <br>
+         *         {@code XXXIOD xxxIOD = new XXXIOD().getYYYYSetter().setYYYY(xxxxValue).getZZZZSetter().setZZZZ(zzzzValue);}
+         */
+        default {{valueRepresentationWrapper}}.Setter<{{keyword}}, SELF> get{{keyword}}Setter() {
+            return new {{valueRepresentationWrapper}}.Setter<>(this.get{{keyword}}(), (SELF) this);
+        }
+
+        {{/sequence}}
         /**
          * @return Whether it contains the {{name}} (see {@link {{keyword}}})
          */
@@ -189,8 +200,8 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
         }
     }
     
-    private static class HolderImpl extends AbstractAttributesWrapper implements Holder {
-        private HolderImpl(Attributes attributes) {
+    private static class SimpleHolder extends AbstractAttributesWrapper implements Holder<SimpleHolder> {
+        private SimpleHolder(Attributes attributes) {
             super(attributes);
         }
     }

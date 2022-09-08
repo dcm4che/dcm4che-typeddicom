@@ -22,4 +22,30 @@ public interface DataElementWrapper extends AttributesWrapper {
     Object getValue();
 
     boolean exists();
+
+    interface Setter<D extends DataElementWrapper, P extends AttributesWrapper> {
+        D getDataElementWrapper();
+
+        P getParentAttributesWrapper();
+    }
+
+    abstract class AbstractSetter<D extends DataElementWrapper, P extends AttributesWrapper> implements Setter<D, P> {
+        private final D dataElementWrapper;
+        private final P parentAttributesWrapper;
+
+        protected AbstractSetter(D dataElementWrapper, P parentAttributesWrapper) {
+            this.dataElementWrapper = dataElementWrapper;
+            this.parentAttributesWrapper = parentAttributesWrapper;
+        }
+
+        @Override
+        public D getDataElementWrapper() {
+            return dataElementWrapper;
+        }
+        
+        @Override
+        public P getParentAttributesWrapper() {
+            return parentAttributesWrapper;
+        }
+    }
 }

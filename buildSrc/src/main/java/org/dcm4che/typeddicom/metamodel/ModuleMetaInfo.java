@@ -3,6 +3,8 @@ package org.dcm4che.typeddicom.metamodel;
 import org.dcm4che.typeddicom.table.ModuleTable;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class ModuleMetaInfo extends DataElementMetaInfoContainer {
     private final String sectionId;
@@ -52,5 +54,12 @@ public class ModuleMetaInfo extends DataElementMetaInfoContainer {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), sectionId, name, keyword, href);
+    }
+
+    @Override
+    public String implementsHolderInterfaces() {
+        return StreamSupport.stream(getSubDataElementMetaInfos().spliterator(), false)
+                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Holder<SELF>")
+                .collect(Collectors.joining(", "));
     }
 }

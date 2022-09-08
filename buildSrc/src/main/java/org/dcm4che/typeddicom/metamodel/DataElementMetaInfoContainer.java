@@ -4,7 +4,6 @@ package org.dcm4che.typeddicom.metamodel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This abstract class holds a List of DataElementMetaInfo objects. It should be extended by classes which need to hold
@@ -34,7 +33,5 @@ public abstract class DataElementMetaInfoContainer implements Serializable {
         return subDataElementMetaInfos;
     }
 
-    public String implementsHolderInterfaces() {
-        return subDataElementMetaInfos.stream().map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Holder").collect(Collectors.joining(", "));
-    }
+    public abstract String implementsHolderInterfaces();
 }

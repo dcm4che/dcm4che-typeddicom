@@ -11,8 +11,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SimpleTests {
+class SimpleTests {
     @SuppressWarnings("deprecation")
     private Attributes readDicomFile(String path) throws IOException {
         Attributes attributes;
@@ -25,7 +26,7 @@ public class SimpleTests {
     }
 
     @Test
-    public void accessingValuesTheOldFashionedWayShouldYieldTheSameResults() throws IOException {
+    void accessingValuesTheOldFashionedWayShouldYieldTheSameResults() throws IOException {
         Attributes attributes = readDicomFile("GSPS.dcm");
 
         GrayscaleSoftcopyPresentationStateIOD gsps = new GrayscaleSoftcopyPresentationStateIOD(attributes);
@@ -42,7 +43,7 @@ public class SimpleTests {
     }
 
     @Test
-    public void afterSettingADoubleArrayItShouldContainTheNewValues() throws IOException {
+    void afterSettingADoubleArrayItShouldContainTheNewValues() throws IOException {
         GrayscaleSoftcopyPresentationStateIOD gsps = new GrayscaleSoftcopyPresentationStateIOD(readDicomFile("GSPS.dcm"));
         CRImageIOD crImage = new CRImageIOD(readDicomFile("CRImage_PS.dcm"));
         double[] pixelSpacing = crImage.getPixelSpacing().getDoubles();
@@ -52,5 +53,13 @@ public class SimpleTests {
         for (DisplayedAreaSelectionSequence.Item item : gsps.getDisplayedAreaSelectionSequence()) {
             assertArrayEquals(item.getPresentationPixelSpacing().getDoubles(), pixelSpacing);
         }
+    }
+
+    @Test
+    void afterSettingAPatientNameTwiceItShouldContainTheLastValue() throws IOException {
+        GrayscaleSoftcopyPresentationStateIOD gsps = new GrayscaleSoftcopyPresentationStateIOD(readDicomFile("GSPS.dcm"));
+        gsps.getPatientNameSetter().setString("Niklas")
+                .getPatientNameSetter().setString("Roth");
+        assertEquals("Roth", gsps.getPatientName().getString());
     }
 }

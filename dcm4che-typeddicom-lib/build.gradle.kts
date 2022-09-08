@@ -1,4 +1,4 @@
-val typeddicomVersion by extra { "0.1.0" }
+val typeddicomVersion by extra { project.version }
 
 
 plugins {

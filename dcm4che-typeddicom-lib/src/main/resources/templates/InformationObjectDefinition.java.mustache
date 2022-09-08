@@ -13,7 +13,7 @@ import org.dcm4che.typeddicom.modules.{{moduleMetaInfo.keyword}};
  *
  * @see <a href="{{href}}">DICOM Standard Part 5 - {{name}}</a>
  */
-public class {{keyword}} extends AbstractInformationObjectDefinition implements {{implementsModules}} {
+public class {{keyword}} extends AbstractInformationObjectDefinition implements {{{implementsModules}}} {
     public static String SOP_CLASS_UID = "{{sopClassUID}}";
 
     public {{keyword}}(Attributes attributes) {

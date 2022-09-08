@@ -18,7 +18,8 @@ import java.util.stream.Stream;
 
 /**
  * This class parses the 5th part of the DICOM Standard XML
- * (http://dicom.nema.org/medical/dicom/current/source/docbook/part05/part05.xml)
+ * (http://dicom.nema.org/medical/dicom/current/source/docbook/part05/part05.xml) and extracts the Value Representations
+ * from there.
  */
 public class DicomPart05Handler extends AbstractDicomPartHandler {
     private final List<String> columns = new LinkedList<>();
@@ -114,6 +115,10 @@ public class DicomPart05Handler extends AbstractDicomPartHandler {
                 Stream.concat(
                         implementsInterfaces.stream().map(s -> s + "Wrapper"),
                         Stream.of("BytesDataElementWrapper")
+                ).collect(Collectors.joining(", ")),
+                Stream.concat(
+                        implementsInterfaces.stream().map(s -> s + "Wrapper.Setter<D, P>"),
+                        Stream.of("BytesDataElementWrapper.Setter<D, P>")
                 ).collect(Collectors.joining(", "))
         ));
 
@@ -128,6 +133,10 @@ public class DicomPart05Handler extends AbstractDicomPartHandler {
                 Stream.concat(
                         implementsInterfaces.stream().map(s -> s + "MultiWrapper"),
                         Stream.of("BytesDataElementWrapper")
+                ).collect(Collectors.joining(", ")),
+                Stream.concat(
+                        implementsInterfaces.stream().map(s -> s + "MultiWrapper.Setter<D, P>"),
+                        Stream.of("BytesDataElementWrapper.Setter<D, P>")
                 ).collect(Collectors.joining(", "))
         ));
     }
@@ -144,12 +153,14 @@ public class DicomPart05Handler extends AbstractDicomPartHandler {
         try {
             vr.toFloat(new double[]{1.f}, true, 0, 0);
             return true;
-        } catch (Exception ignored) {
+        } catch (Exception ignored){
+            // ignored
         }
         try {
             vr.toFloat(floatToByteArray(1.f), true, 0, 0);
             return true;
         } catch (Exception ignored) {
+            // ignored
         }
         return false;
     }
@@ -159,11 +170,13 @@ public class DicomPart05Handler extends AbstractDicomPartHandler {
             vr.toDouble(new double[]{1.f}, true, 0, 0);
             return true;
         } catch (Exception ignored) {
+            // ignored
         }
         try {
             vr.toDouble(doubleToByteArray(1.f), true, 0, 0);
             return true;
         } catch (Exception ignored) {
+            // ignored
         }
         return false;
     }
