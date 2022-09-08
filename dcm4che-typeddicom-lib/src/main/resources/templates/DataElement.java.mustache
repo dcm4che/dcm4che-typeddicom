@@ -16,13 +16,16 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.VR;
 {{/sequence}}
 import org.dcm4che3.data.Tag;
+{{#sequence}}
 
+import java.util.Arrays;
+{{/sequence}}
 
 {{{classJavaDoc}}}
 {{#retired}}
 @Deprecated
 {{/retired}}
-public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{{/sequence}}{{^sequence}}AbstractDataElementWrapper implements {{valueRepresentationWrapper}}{{/sequence}} {
+public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{keyword}}.Item>{{/sequence}}{{^sequence}}AbstractDataElementWrapper implements {{valueRepresentationWrapper}}{{/sequence}} {
     /**
      * The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part06/chapter_6.html">DICOM Tag</a> 
      * associated with this class.
@@ -148,6 +151,21 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}.Item>{
          */
         default {{keyword}} new{{keyword}}(int initialCapacity) {
             return new {{keyword}}(getAttributes().newSequence(TAG, initialCapacity));
+        }
+
+        /**
+         * Adds a new {{name}} (see {@link {{keyword}}}) and populates it with {@code elements}.
+         * Since this method returns the object on which it is called, it can be used to easily synthesize an
+         * AttributesWrapper with a fluent API. 
+         *
+         * @param elements The elements which should be in the sequence.
+         * @return The AttributesWrapper on which this method is called. If you want to get the Sequence use
+         *         {@link #new{{keyword}}} or {@link #ensure{{keyword}}}.
+         */
+        default SELF append{{keyword}}(Item... elements) {
+            {{keyword}} sequence = new {{keyword}}(getAttributes().newSequence(TAG, elements.length));
+            sequence.addAll(Arrays.asList(elements));
+            return (SELF) this;
         }
 
         /**

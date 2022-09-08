@@ -11,7 +11,7 @@ import static org.dcm4che.typeddicom.StringUtils.indent;
 /**
  * This abstract class implements all list methods for Sequences.
  */
-public abstract class SequenceWrapper<T extends AbstractSequenceItemWrapper> extends AbstractList<T> {
+public abstract class SequenceWrapper<SELF extends SequenceWrapper<SELF, T>, T extends AbstractSequenceItemWrapper> extends AbstractList<T> {
     public static final VR VALUE_REPRESENTATION = VR.SQ;
 
     private final Sequence sequence;
@@ -69,7 +69,7 @@ public abstract class SequenceWrapper<T extends AbstractSequenceItemWrapper> ext
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SequenceWrapper<?> that = (SequenceWrapper<?>) o;
+        SequenceWrapper<SELF, ?> that = (SequenceWrapper<SELF, ?>) o;
         return sequence.equals(that.sequence) && itemClass.equals(that.itemClass);
     }
 
