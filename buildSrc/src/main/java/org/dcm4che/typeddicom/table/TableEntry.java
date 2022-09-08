@@ -4,11 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO describe this class
- *
- * @author (. @ agfa.com)
- */
 public abstract class TableEntry implements Serializable {
     private final String href;
     private final List<TableEntry> subTableEntries = new ArrayList<>();

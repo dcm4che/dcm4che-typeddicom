@@ -4,11 +4,6 @@ import org.dcm4che.typeddicom.table.ModuleTable;
 
 import java.util.Objects;
 
-/**
- * TODO describe this class
- *
- * @author (. @ agfa.com)
- */
 public class ModuleMetaInfo extends DataElementMetaInfoContainer {
     private final String sectionId;
     private final String name;

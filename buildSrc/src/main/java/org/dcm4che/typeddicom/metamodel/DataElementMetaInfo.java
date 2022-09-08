@@ -6,11 +6,6 @@ import org.jsoup.nodes.Element;
 
 import java.util.*;
 
-/**
- * TODO describe this class
- *
- * @author Niklas Roth (niklas.roth@agfa.com)
- */
 public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     private String tag;
     private String name;

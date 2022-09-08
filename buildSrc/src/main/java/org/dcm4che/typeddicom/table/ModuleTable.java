@@ -6,11 +6,6 @@ import java.util.List;
 
 import static org.dcm4che.typeddicom.utils.KeywordUtils.sanitizeAsJavaIdentifier;
 
-/**
- * TODO describe this class
- *
- * @author (. @ agfa.com)
- */
 public class ModuleTable {
     private final String sectionId;
     private final String name;

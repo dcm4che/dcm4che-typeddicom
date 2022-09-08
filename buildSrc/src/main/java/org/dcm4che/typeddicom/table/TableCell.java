@@ -3,11 +3,6 @@ package org.dcm4che.typeddicom.table;
 
 import java.util.Objects;
 
-/**
- * TODO describe this class
- *
- * @author (. @ agfa.com)
- */
 public class TableCell {
     private final int colSpan;
     private final int rowSpan;

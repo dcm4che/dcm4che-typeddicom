@@ -23,11 +23,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * TODO describe this class
- *
- * @author Niklas Roth (niklas.roth@agfa.com)
- */
 public class DicomXmlParser {
     public static final String JAVA_FILE_EXTENSION = ".java";
     private final SAXParser saxParser;

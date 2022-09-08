@@ -4,11 +4,6 @@ package org.dcm4che.typeddicom.metamodel;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * TODO describe this class
- *
- * @author (. @ agfa.com)
- */
 public class MacroMetaInfo extends DataElementMetaInfoContainer implements Serializable {
     private final String tableId;
 

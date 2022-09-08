@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * TODO describe this class
- *
- * @author (. @ agfa.com)
- */
 public class InformationObjectDefinitionMetaInfo {
     private final String name;
     private final String keyword;

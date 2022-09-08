@@ -2,11 +2,6 @@ package org.dcm4che.typeddicom.table;
 
 import java.util.Objects;
 
-/**
- * TODO describe this class
- *
- * @author (. @ agfa.com)
- */
 public class MacroTableEntry extends TableEntry {
     private final String tableId;
     private final String additionalInfo;

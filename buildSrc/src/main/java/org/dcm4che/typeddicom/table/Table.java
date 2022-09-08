@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * TODO describe this class
- *
- * @author Niklas Roth (niklas.roth@agfa.com)
- */
 public class Table {
     private final String id;
     private final String href;
