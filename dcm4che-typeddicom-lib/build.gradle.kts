@@ -110,6 +110,18 @@ tasks.compileJava {
     dependsOn(tasks.generateJavaSourceFiles)
 }
 
+tasks.named<Jar>("jar").configure {
+    archiveFileName.set("${project.name}.jar")
+}
+
+tasks.named<Jar>("javadocJar").configure {
+    archiveFileName.set("${project.name}-javadoc.jar")
+}
+
+tasks.named<Jar>("sourcesJar").configure {
+    archiveFileName.set("${project.name}-sources.jar")
+}
+
 tasks.withType<Jar> {
     dependsOn(tasks.generateJavaSourceFiles)
     exclude("dicom-standard-xml/")
