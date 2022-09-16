@@ -115,28 +115,28 @@ displayedAreaSelectionSequence.add(displayedAreaSelectionSequenceItem);
 ```
 you can now use
 ```
-GrayscaleSoftcopyPresentationStateIOD gsps = new GrayscaleSoftcopyPresentationStateIOD()
-    .getPatientNameSetter().setString("Niklas")
-    .appendReferencedSeriesSequence(
-        new ReferencedSeriesSequence.Item()
-            .getSeriesInstanceUIDSetter().setString("1234567890.345678.3456789")
-            .appendReferencedImageSequence(
-                new ReferencedImageSequence.Item()
-                    .getReferencedSOPInstanceUIDSetter().setString("3483648368436.483.864369.43648.368")
-                    .getReferencedSOPClassUIDSetter().setString("8646.36.54186.86408684371")
-                    .getReferencedFrameNumberSetter().setInts(1,2,3,4,5),
-                new ReferencedImageSequence.Item()
-                    .getReferencedSOPInstanceUIDSetter().setString("782583648368436.478754369.436487827")
-                    .getReferencedSOPClassUIDSetter().setString("7827287.5634836.8463841.3684.3")
-                    .getReferencedFrameNumberSetter().setInts(0,1,2,3,4)
+GrayscaleSoftcopyPresentationStateIOD gsps = GrayscaleSoftcopyPresentationStateIOD.builder()
+    .setPatientName().asString("Niklas")
+    .setReferencedSeriesSequence(
+        ReferencedSeriesSequence.Item.builder()
+            .setSeriesInstanceUID().asString("1234567890.345678.3456789")
+            .setReferencedImageSequence(
+                ReferencedImageSequence.Item.builder()
+                    .setReferencedSOPInstanceUID().asString("3483648368436.483.864369.43648.368")
+                    .setReferencedSOPClassUID().asString("8646.36.54186.86408684371")
+                    .setReferencedFrameNumber().asInts(1, 2, 3, 4, 5),
+                ReferencedImageSequence.Item.builder()
+                    .setReferencedSOPInstanceUID().asString("782583648368436.478754369.436487827")
+                    .setReferencedSOPClassUID().asString("7827287.5634836.8463841.3684.3")
+                    .setReferencedFrameNumber().asInts(0, 1, 2, 3, 4)
             )
     )
-    .appendDisplayedAreaSelectionSequence(
-        new DisplayedAreaSelectionSequence.Item()
-            .getDisplayedAreaTopLeftHandCornerSetter().setInts(1, 1)
-            .getDisplayedAreaBottomRightHandCornerSetter().setInts(1920, 1080)
-            .getPresentationPixelAspectRatioSetter().setInts(1, 1)
-    );
+    .setDisplayedAreaSelectionSequence(
+        DisplayedAreaSelectionSequence.Item.builder()
+            .setDisplayedAreaTopLeftHandCorner().asInts(1, 1)
+            .setDisplayedAreaBottomRightHandCorner().asInts(1920, 1080)
+            .setPresentationPixelAspectRatio().asInts(1, 1)
+    ).build();
 ```
 ### JavaDocs
 Check out the javadocs. They should represent the stuff written in the DICOM Standard.
