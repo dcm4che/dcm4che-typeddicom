@@ -16,10 +16,16 @@ public class InformationObjectDefinitionMetaInfo {
         this.keyword = keyword;
         this.href = href;
     }
-    
+
     public String getImplementsModules() {
         return moduleReferences.stream()
-                .map(ref -> ref.moduleMetaInfo().getKeyword() + "<" + keyword + ">")
+                .map(ref -> ref.moduleMetaInfo().getKeyword())
+                .collect(Collectors.joining(", "));
+    }
+
+    public String getImplementsModuleBuilders() {
+        return moduleReferences.stream()
+                .map(ref -> ref.moduleMetaInfo().getKeyword() + ".Builder<Builder, " + keyword + ">")
                 .collect(Collectors.joining(", "));
     }
 

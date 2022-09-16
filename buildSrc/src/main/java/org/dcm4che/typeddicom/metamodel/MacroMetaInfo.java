@@ -32,9 +32,9 @@ public class MacroMetaInfo extends DataElementMetaInfoContainer implements Seria
     }
 
     @Override
-    public String implementsHolderInterfaces() {
+    public String implementsBuilderInterfaces() {
         return StreamSupport.stream(getSubDataElementMetaInfos().spliterator(), false)
-                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Holder<SELF>")
+                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Builder<SELF>")
                 .collect(Collectors.joining(", "));
     }
 }

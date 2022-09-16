@@ -2,7 +2,9 @@
 package org.dcm4che.typeddicom.iods;
 
 import org.dcm4che3.data.Attributes;
+import org.dcm4che.typeddicom.AbstractAttributesWrapper;
 import org.dcm4che.typeddicom.AbstractInformationObjectDefinition;
+import org.dcm4che.typeddicom.AttributesWrapper;
 {{#moduleReferences}}
 import org.dcm4che.typeddicom.modules.{{moduleMetaInfo.keyword}};
 {{/moduleReferences}}
@@ -15,6 +17,13 @@ import org.dcm4che.typeddicom.modules.{{moduleMetaInfo.keyword}};
  */
 public class {{keyword}} extends AbstractInformationObjectDefinition implements {{{implementsModules}}} {
     public static String SOP_CLASS_UID = "{{sopClassUID}}";
+    
+    /**
+     * @returns a {@link Builder} to create {{name}}s with a fluent API.
+     */
+    public static Builder builder() { 
+        return new Builder(); 
+    }
 
     public {{keyword}}(Attributes attributes) {
         super(attributes);
@@ -26,5 +35,16 @@ public class {{keyword}} extends AbstractInformationObjectDefinition implements 
 
     public String getStandardSOPClassUID() {
         return SOP_CLASS_UID;
+    }
+
+    public static class Builder extends AbstractAttributesWrapper implements {{{implementsModuleBuilders}}} {
+        protected Builder() {
+            super();
+        }
+
+        @Override
+        public {{keyword}} build() {
+            return super.copy({{keyword}}.class);
+        }
     }
 }

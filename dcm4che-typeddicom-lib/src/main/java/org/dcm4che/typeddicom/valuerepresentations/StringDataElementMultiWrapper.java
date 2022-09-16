@@ -1,6 +1,6 @@
 package org.dcm4che.typeddicom.valuerepresentations;
 
-import org.dcm4che.typeddicom.AttributesWrapper;
+import org.dcm4che.typeddicom.Builder;
 import org.dcm4che.typeddicom.DataElementWrapper;
 
 public interface StringDataElementMultiWrapper extends DataElementWrapper {
@@ -20,10 +20,10 @@ public interface StringDataElementMultiWrapper extends DataElementWrapper {
         getAttributes().setString(getTag(), getValueRepresentation(), strings);
     }
 
-    interface Setter<D extends StringDataElementMultiWrapper, P extends AttributesWrapper> extends DataElementWrapper.Setter<D, P> {
-        default P setString(String... strings) {
+    interface Setter<B extends Builder<B, ?>, D extends StringDataElementMultiWrapper> extends Builder.Setter<B, D> {
+        default B asString(String... strings) {
             getDataElementWrapper().setStrings(strings);
-            return getParentAttributesWrapper();
+            return getBuilder();
         }
     }
 }

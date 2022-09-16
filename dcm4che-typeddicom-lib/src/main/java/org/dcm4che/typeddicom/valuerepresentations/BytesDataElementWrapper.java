@@ -1,6 +1,6 @@
 package org.dcm4che.typeddicom.valuerepresentations;
 
-import org.dcm4che.typeddicom.AttributesWrapper;
+import org.dcm4che.typeddicom.Builder;
 import org.dcm4che.typeddicom.DataElementWrapper;
 
 import java.io.IOException;
@@ -18,10 +18,10 @@ public interface BytesDataElementWrapper extends DataElementWrapper {
         getAttributes().setBytes(getTag(), getValueRepresentation(), bytes);
     }
     
-    interface Setter<D extends BytesDataElementWrapper, P extends AttributesWrapper> extends DataElementWrapper.Setter<D, P> {
-        default P setBytes(byte[] bytes) {
+    interface Setter<B extends Builder<B, ?>, D extends BytesDataElementWrapper> extends Builder.Setter<B, D> {
+        default B asBytes(byte[] bytes) {
             getDataElementWrapper().setBytes(bytes);
-            return getParentAttributesWrapper();
+            return getBuilder();
         }
     }
 }

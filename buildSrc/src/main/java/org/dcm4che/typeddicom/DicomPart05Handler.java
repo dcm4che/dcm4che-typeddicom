@@ -117,8 +117,8 @@ public class DicomPart05Handler extends AbstractDicomPartHandler {
                         Stream.of("BytesDataElementWrapper")
                 ).collect(Collectors.joining(", ")),
                 Stream.concat(
-                        implementsInterfaces.stream().map(s -> s + "Wrapper.Setter<D, P>"),
-                        Stream.of("BytesDataElementWrapper.Setter<D, P>")
+                        implementsInterfaces.stream().map(s -> s + "Wrapper.Setter<B, D>"),
+                        Stream.of("BytesDataElementWrapper.Setter<B, D>")
                 ).collect(Collectors.joining(", "))
         ));
 
@@ -135,8 +135,8 @@ public class DicomPart05Handler extends AbstractDicomPartHandler {
                         Stream.of("BytesDataElementWrapper")
                 ).collect(Collectors.joining(", ")),
                 Stream.concat(
-                        implementsInterfaces.stream().map(s -> s + "MultiWrapper.Setter<D, P>"),
-                        Stream.of("BytesDataElementWrapper.Setter<D, P>")
+                        implementsInterfaces.stream().map(s -> s + "MultiWrapper.Setter<B, D>"),
+                        Stream.of("BytesDataElementWrapper.Setter<B, D>")
                 ).collect(Collectors.joining(", "))
         ));
     }

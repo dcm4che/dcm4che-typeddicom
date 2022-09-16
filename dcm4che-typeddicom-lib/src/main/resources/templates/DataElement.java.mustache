@@ -87,6 +87,12 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
 {{#sequence}}
 
     public static class Item extends AbstractSequenceItemWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{{implementsHolderInterfaces}}} {{/subDataElementMetaInfos.isEmpty}}{
+        /**
+         * @returns a {@link Builder} to create {{name}} Items with a fluent API.
+         */
+        public static Builder builder() { 
+            return new Builder(); 
+        }
 
         /**
          * Creates a new {{name}} Item object which wraps the provided <code>attributes</code>.
@@ -112,18 +118,29 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         public Item copy() {
             return super.copy(Item.class);
         }
+        
+        public static class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, Item> {{^subDataElementMetaInfos.isEmpty}}, {{{implementsBuilderInterfaces}}} {{/subDataElementMetaInfos.isEmpty}}{
+            protected Builder() {
+                super();
+            }
+
+            @Override
+            public Item build() {
+                return super.copy(Item.class);
+            }
+        }
     }
 {{/sequence}}
     
     /**
      * A class implementing this interface can hold attributes which contain the DICOM tag "{{name}}" (see {@link {{keyword}}})
      */
-    public interface Holder<SELF extends Holder<SELF>> extends AttributesWrapper {
+    public interface Holder extends AttributesWrapper {
         /**
          * @param attributes An attributes object containing the {{name}} (see {@link {{keyword}}})
          * @return A wrapper object implementing the {@link Holder} interface. 
          */
-        static Holder<SimpleHolder> wrap(Attributes attributes) {
+        static Holder wrap(Attributes attributes) {
             return AttributesWrapper.wrap(attributes, SimpleHolder.class);
         }
 
@@ -154,21 +171,6 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         }
 
         /**
-         * Adds a new {{name}} (see {@link {{keyword}}}) and populates it with {@code elements}.
-         * Since this method returns the object on which it is called, it can be used to easily synthesize an
-         * AttributesWrapper with a fluent API. 
-         *
-         * @param elements The elements which should be in the sequence.
-         * @return The AttributesWrapper on which this method is called. If you want to get the Sequence use
-         *         {@link #new{{keyword}}} or {@link #ensure{{keyword}}}.
-         */
-        default SELF append{{keyword}}(Item... elements) {
-            {{keyword}} sequence = new {{keyword}}(getAttributes().newSequence(TAG, elements.length));
-            sequence.addAll(Arrays.asList(elements));
-            return (SELF) this;
-        }
-
-        /**
          * Adds a new {{name}} (see {@link {{keyword}}}) if it does not already exist.
          * (see {@link Attributes#ensureSequence(int, int)}
          *
@@ -192,17 +194,6 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         }
 
         {{/sequence}}
-        {{^sequence}}
-        /**
-         * @return a Setter for the {{name}} (see {@link {{keyword}}}) which returns this AttributesWrapper
-         *         on its .setXXXX() methods. This allows fluent object creation in the form of <br>
-         *         {@code XXXIOD xxxIOD = new XXXIOD().getYYYYSetter().setYYYY(xxxxValue).getZZZZSetter().setZZZZ(zzzzValue);}
-         */
-        default {{valueRepresentationWrapper}}.Setter<{{keyword}}, SELF> get{{keyword}}Setter() {
-            return new {{valueRepresentationWrapper}}.Setter<>(this.get{{keyword}}(), (SELF) this);
-        }
-
-        {{/sequence}}
         /**
          * @return Whether it contains the {{name}} (see {@link {{keyword}}})
          */
@@ -218,9 +209,36 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         }
     }
     
-    private static class SimpleHolder extends AbstractAttributesWrapper implements Holder<SimpleHolder> {
+    private static class SimpleHolder extends AbstractAttributesWrapper implements Holder {
         private SimpleHolder(Attributes attributes) {
             super(attributes);
         }
     }
+    {{#sequence}}
+
+    public interface Builder<SELF extends Builder<SELF, T>, T extends {{keyword}}.Holder> extends org.dcm4che.typeddicom.Builder<SELF, T> {
+        default SELF set{{keyword}}(Item.Builder... builders) {
+            final SimpleHolder simpleHolder = new SimpleHolder(this.getAttributes());
+            simpleHolder.remove{{keyword}}();
+            simpleHolder.new{{keyword}}(builders.length);
+            for (Item.Builder builder : builders) {
+                simpleHolder.get{{keyword}}().add(builder.build());
+            }            
+            return (SELF) this;
+        }
+    }
+    {{/sequence}}
+    {{^sequence}}
+
+    public interface Builder<SELF extends Builder<SELF, T>, T extends {{keyword}}.Holder> extends org.dcm4che.typeddicom.Builder<SELF, T> {
+        /**
+         * @return a Setter for the {{name}} (see {@link {{keyword}}}) which returns this Builder
+         *         on its .asXXXX() methods. This allows fluent object creation in the form of <br>
+         *         {@code XXXIOD xxxIOD = new XXXIOD().setYYYY().asYYYY(xxxxValue).setZZZZ().asZZZZ(zzzzValue);}
+         */
+        default {{valueRepresentationWrapper}}.Setter<SELF, {{keyword}}> set{{keyword}}() {
+            return new {{valueRepresentationWrapper}}.Setter<>((SELF) this, new {{keyword}}(this.getAttributes()));
+        }
+    }
+    {{/sequence}}
 }

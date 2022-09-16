@@ -11,5 +11,7 @@ import org.dcm4che.typeddicom.dataelements.{{keyword}};
  * @see <a href="{{href}}">DICOM Standard Part 3 - {{name}}</a>
  *
  */
-public interface {{keyword}}<SELF extends {{keyword}}<SELF>> extends {{{implementsHolderInterfaces}}} {
+public interface {{keyword}} extends {{{implementsHolderInterfaces}}} {
+    interface Builder<SELF extends Builder<SELF, T>, T extends {{keyword}}> extends {{{implementsBuilderInterfaces}}} {
+    }
 }

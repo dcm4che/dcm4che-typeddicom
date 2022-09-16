@@ -57,9 +57,9 @@ public class ModuleMetaInfo extends DataElementMetaInfoContainer {
     }
 
     @Override
-    public String implementsHolderInterfaces() {
+    public String implementsBuilderInterfaces() {
         return StreamSupport.stream(getSubDataElementMetaInfos().spliterator(), false)
-                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Holder<SELF>")
+                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Builder<SELF, T>")
                 .collect(Collectors.joining(", "));
     }
 }

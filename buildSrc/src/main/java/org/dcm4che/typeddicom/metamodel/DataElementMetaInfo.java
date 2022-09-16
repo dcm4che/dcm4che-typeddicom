@@ -237,9 +237,9 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     }
 
     @Override
-    public String implementsHolderInterfaces() {
+    public String implementsBuilderInterfaces() {
         return StreamSupport.stream(getSubDataElementMetaInfos().spliterator(), false)
-                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Holder<Item>")
+                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Builder<Builder, Item>")
                 .collect(Collectors.joining(", "));
     }
 }

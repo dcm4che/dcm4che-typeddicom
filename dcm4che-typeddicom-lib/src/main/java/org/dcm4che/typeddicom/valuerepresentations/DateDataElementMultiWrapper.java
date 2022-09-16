@@ -1,6 +1,6 @@
 package org.dcm4che.typeddicom.valuerepresentations;
 
-import org.dcm4che.typeddicom.AttributesWrapper;
+import org.dcm4che.typeddicom.Builder;
 import org.dcm4che.typeddicom.DataElementWrapper;
 import org.dcm4che3.data.DatePrecision;
 import org.dcm4che3.data.DatePrecisions;
@@ -36,15 +36,15 @@ public interface DateDataElementMultiWrapper extends DataElementWrapper {
         getAttributes().setDate(getTag(), getValueRepresentation(), datePrecision, dates);
     }
 
-    interface Setter<D extends DateDataElementMultiWrapper, P extends AttributesWrapper> extends DataElementWrapper.Setter<D, P> {
-        default P setDates(Date... dates) {
+    interface Setter<B extends Builder<B, ?>, D extends DateDataElementMultiWrapper> extends Builder.Setter<B, D> {
+        default B asDates(Date... dates) {
             getDataElementWrapper().setDates(dates);
-            return getParentAttributesWrapper();
+            return getBuilder();
         }
 
-        default P setDates(DatePrecision datePrecision, Date... dates) {
+        default B asDates(DatePrecision datePrecision, Date... dates) {
             getDataElementWrapper().setDates(datePrecision, dates);
-            return getParentAttributesWrapper();
+            return getBuilder();
         }
     }
 }
