@@ -88,7 +88,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
 
     public static class Item extends AbstractSequenceItemWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{{implementsHolderInterfaces}}} {{/subDataElementMetaInfos.isEmpty}}{
         /**
-         * @returns a {@link Builder} to create {{name}} Items with a fluent API.
+         * @return a {@link Builder} to create {{name}} Items with a fluent API.
          */
         public static Builder builder() { 
             return new Builder(); 
