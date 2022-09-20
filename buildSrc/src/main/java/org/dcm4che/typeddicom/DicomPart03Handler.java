@@ -25,7 +25,6 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
     private MacroTable currentMacro = null;
     private ModuleTable currentModule;
     private boolean inAttributesTableBody = false;
-    private String currentSectionId;
     private String currentTableId = "";
     // should only be not null in a sequence row
     private String lastReference;
@@ -60,9 +59,7 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
-        if ("section".equals(qName)) {
-            this.currentSectionId = attributes.getValue("xml:id");
-        } else if ("table".equals(qName)) {
+        if ("table".equals(qName)) {
             this.currentTableId = attributes.getValue("xml:id");
         } else if ("caption".equals(qName)) {
             startRecordingText();
@@ -85,9 +82,7 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        if ("section".equals(qName)) {
-            this.currentSectionId = null;
-        } else if ("caption".equals(qName)) {
+        if ("caption".equals(qName)) {
             // check for table caption of module definitions
             String recordedText = getRecordedText();
             // ignore the weird stuff happening in http://dicom.nema.org/medical/dicom/current/output/html/part03.html#table_C.36.25-2
@@ -169,8 +164,8 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
                 InformationObjectDefinitionMetaInfo iod = new InformationObjectDefinitionMetaInfo(
                         name,
                         KeywordUtils.sanitizeAsJavaIdentifier(name),
-                        table.getHref()
-                );
+                        table.getHref(),
+                        table.getSectionId());
                 for (int r = 0; r < table.getRows(); r++) {
                     TableCell referenceCell = table.getTableCell(r, "Reference");
                     if (referenceCell != null) {

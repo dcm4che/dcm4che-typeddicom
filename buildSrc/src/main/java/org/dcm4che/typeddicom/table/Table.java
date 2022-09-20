@@ -7,14 +7,17 @@ import java.util.List;
 public class Table {
     private final String id;
     private final String href;
+    
+    private final String sectionId;
     private String caption;
     private final List<String> columnHeaders = new ArrayList<>();
 
     private final List<List<TableCell>> cells = new ArrayList<>();
 
-    public Table(String id, String href) {
+    public Table(String id, String href, String sectionId) {
         this.id = id;
         this.href = href;
+        this.sectionId = sectionId;
     }
 
     public TableCell getTableCell(int row, int column) {
@@ -94,5 +97,9 @@ public class Table {
 
     public String getHref() {
         return href;
+    }
+
+    public String getSectionId() {
+        return sectionId;
     }
 }

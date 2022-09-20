@@ -84,6 +84,9 @@ public class DicomXmlParser {
             saxParser.parse(new File(dicomXmlDirectory, "part03.xml"), handlerPart3);
             Set<ModuleMetaInfo> modules = handlerPart3.getModules();
             Set<InformationObjectDefinitionMetaInfo> iods = handlerPart3.getIODs();
+            
+            DicomPart04Handler handlerPart4 = new DicomPart04Handler(iods);
+            saxParser.parse(new File(dicomXmlDirectory, "part04.xml"), handlerPart4);
 
             generateValueRepresentationInterfaces(valueRepresentations);
             System.out.println("Generated " + valueRepresentations.size() + " Value Representation classes");

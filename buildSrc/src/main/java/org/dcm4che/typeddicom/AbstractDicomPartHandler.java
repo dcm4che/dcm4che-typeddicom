@@ -21,6 +21,7 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
     private boolean recordText = false;
     private boolean recordHTML;
     private boolean inVariableList;
+    protected String currentSectionId;
 
     protected void startRecordingText() {
         this.currentText.setLength(0);
@@ -46,16 +47,22 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
+        if ("section".equals(qName)) {
+            this.currentSectionId = attributes.getValue("xml:id");
+        }
         if (this.recordHTML) {
-            boolean handled = convertToAndAppendHTML(qName, attributes, false);
+            convertToAndAppendHTML(qName, attributes, false);
         }
     }
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         super.endElement(uri, localName, qName);
+        if ("section".equals(qName)) {
+            this.currentSectionId = null;
+        }
         if (this.recordHTML) {
-            boolean handled = convertToAndAppendHTML(qName, null, true);
+            convertToAndAppendHTML(qName, null, true);
         }
     }
 
@@ -121,7 +128,7 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
                             "a",
                             false,
                             Collections.singletonMap("href", getUrlFromTarget(targetdoc, targetptr)),
-                            targetptr.replace("sect_", "").replace("_", "")
+                            targetdoc + " " + targetptr.replace("sect_", "").replace("_", "")
                     );
                 } else {
                     appendTag("a", true);

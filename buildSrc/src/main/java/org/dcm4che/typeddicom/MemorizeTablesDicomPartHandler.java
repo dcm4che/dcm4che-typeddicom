@@ -24,7 +24,7 @@ public abstract class MemorizeTablesDicomPartHandler extends AbstractDicomPartHa
         super.startElement(uri, localName, qName, attributes);
         if ("table".equals(qName)) {
             String xmlId = attributes.getValue("xml:id");
-            currentTable = new Table(xmlId, getUrlFromXmlId(xmlId));
+            currentTable = new Table(xmlId, getUrlFromXmlId(xmlId), this.currentSectionId);
         } else if (currentTable != null && "caption".equals(qName)) {
             startRecordingText();
         } else if (currentTable != null && "th".equals(qName)) {

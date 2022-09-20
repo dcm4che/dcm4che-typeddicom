@@ -1,13 +1,17 @@
 // Auto generated
 package org.dcm4che.typeddicom.iods;
 
+import org.dcm4che.typeddicom.SOPClass;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che.typeddicom.AbstractAttributesWrapper;
 import org.dcm4che.typeddicom.AbstractInformationObjectDefinition;
-import org.dcm4che.typeddicom.AttributesWrapper;
 {{#moduleReferences}}
 import org.dcm4che.typeddicom.modules.{{moduleMetaInfo.keyword}};
 {{/moduleReferences}}
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <strong>Name:</strong> {{name}} <br/>
@@ -16,8 +20,15 @@ import org.dcm4che.typeddicom.modules.{{moduleMetaInfo.keyword}};
  * @see <a href="{{href}}">DICOM Standard Part 5 - {{name}}</a>
  */
 public class {{keyword}} extends AbstractInformationObjectDefinition implements {{{implementsModules}}} {
-    public static String SOP_CLASS_UID = "{{sopClassUID}}";
-    
+    public static final Set<SOPClass> STANDARD_SOP_CLASSES;
+    static {
+        Set<SOPClass> sopClasses = new HashSet<>();
+        {{#sopClasses}}
+        sopClasses.add(new SOPClass("{{name}}", "{{uid}}"));
+        {{/sopClasses}}
+        STANDARD_SOP_CLASSES = Collections.unmodifiableSet(sopClasses);
+    }
+
     /**
      * @return a {@link Builder} to create {{name}}s with a fluent API.
      */
@@ -33,8 +44,8 @@ public class {{keyword}} extends AbstractInformationObjectDefinition implements 
         super();
     }
 
-    public String getStandardSOPClassUID() {
-        return SOP_CLASS_UID;
+    public Set<SOPClass> getStandardSOPClasses() {
+        return STANDARD_SOP_CLASSES;
     }
 
     public static class Builder extends AbstractAttributesWrapper implements {{{implementsModuleBuilders}}} {
