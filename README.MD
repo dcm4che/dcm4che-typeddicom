@@ -19,7 +19,7 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation 'org.dcm4che:dcm4che-typeddicom:0.3.2-SNAPSHOT'
+    implementation 'org.dcm4che:dcm4che-typeddicom:0.4.0-SNAPSHOT'
 }
 ```
 
@@ -35,7 +35,7 @@ repositories {
 
 ```kotlin
 dependencies {
-    implementation("org.dcm4che:dcm4che-typeddicom:0.3.2-SNAPSHOT")
+    implementation("org.dcm4che:dcm4che-typeddicom:0.4.0-SNAPSHOT")
 }
 ```
 
@@ -54,7 +54,7 @@ dependencies {
 <dependency>
     <groupId>org.dcm4che</groupId>
     <artifactId>dcm4che-typeddicom</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
 </dependency>
 ```
 

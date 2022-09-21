@@ -24,12 +24,12 @@ abstract public class AbstractDataElementWrapper extends AbstractAttributesWrapp
 
     @Override
     public Object getValue() {
-        return getAttributes().getValue(getTag());
+        return getAttributes().getValue(getPrivateCreator(), getTag());
     }
 
     @Override
     public boolean exists() {
-        return getAttributes().contains(getTag());
+        return getAttributes().contains(getPrivateCreator(), getTag());
     }
 
     @Override

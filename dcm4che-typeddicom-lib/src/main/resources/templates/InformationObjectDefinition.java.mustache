@@ -36,6 +36,15 @@ public class {{keyword}} extends AbstractInformationObjectDefinition implements 
         return new Builder(); 
     }
 
+    /**
+     * @param attributes The Attributes to be wrapped by the {@link Builder}.
+     *
+     * @return a {@link Builder} to create {{name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
+     */
+    public static Builder builder(Attributes attributes) { 
+        return new Builder(attributes); 
+    }
+
     public {{keyword}}(Attributes attributes) {
         super(attributes);
     }
@@ -49,8 +58,12 @@ public class {{keyword}} extends AbstractInformationObjectDefinition implements 
     }
 
     public static class Builder extends AbstractAttributesWrapper implements {{{implementsModuleBuilders}}} {
-        protected Builder() {
+        private Builder() {
             super();
+        }
+
+        private Builder(Attributes attributes) {
+            super(attributes);
         }
 
         @Override

@@ -1,31 +1,22 @@
 package org.dcm4che.typeddicom;
 
+import org.dcm4che.typeddicom.valuerepresentations.UniversalDataElementWrapper;
+import org.dcm4che3.data.Sequence;
+import org.dcm4che3.data.VR;
+
 public interface Builder<SELF extends Builder<SELF, T>, T extends AttributesWrapper> extends AttributesWrapper {
     T build();
-
-    interface Setter<B extends AttributesWrapper, D extends DataElementWrapper> {
-        B getBuilder();
-
-        D getDataElementWrapper();
+    
+    default UniversalDataElementWrapper.Setter<SELF> setAttribute(String privateCreator, int tag, VR valueRepresentation) {
+        return new UniversalDataElementWrapper.Setter<>((SELF) this, new UniversalDataElementWrapper(this.getAttributes(), privateCreator, tag, valueRepresentation));
     }
     
-    abstract class AbstractSetter<B extends AttributesWrapper, D extends DataElementWrapper> implements Setter<B, D> {
-        private final B builder;
-        private final D dataElementWrapper;
-
-        protected AbstractSetter(B builder, D dataElementWrapper) {
-            this.builder = builder;
-            this.dataElementWrapper = dataElementWrapper;
+    default SELF setSequence(String privateCreator, int tag, Builder<?, ?>... itemBuilders) {
+        this.getAttributes().remove(tag);
+        Sequence sequence = this.getAttributes().newSequence(privateCreator, tag, itemBuilders.length);
+        for (Builder<?, ?> builder : itemBuilders) {
+            sequence.add(builder.build().getAttributes());
         }
-
-        @Override
-        public B getBuilder() {
-            return builder;
-        }
-
-        @Override
-        public D getDataElementWrapper() {
-            return dataElementWrapper;
-        }
+        return (SELF) this;
     }
 }
