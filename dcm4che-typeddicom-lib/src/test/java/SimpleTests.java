@@ -1,4 +1,5 @@
-import org.dcm4che.typeddicom.dataelements.AdditionalInspectionMethodSequence;
+import org.dcm4che.typeddicom.AttributesWrapper;
+import org.dcm4che.typeddicom.UniversalAttributesWrapper;
 import org.dcm4che.typeddicom.dataelements.DisplayedAreaSelectionSequence;
 import org.dcm4che.typeddicom.dataelements.ReferencedImageSequence;
 import org.dcm4che.typeddicom.dataelements.ReferencedSeriesSequence;
@@ -19,6 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SimpleTests {
+    public static final String HPStateTag_CREATOR = "AGFA-AG_HPState";
+    public static final int HPStateTag_ViewZoom = 0x00710024;
+    public static final int HPStateTag_SpatialTransformSequence = 0x00710019;
+
     @Test
     void accessingValuesTheOldFashionedWayShouldYieldTheSameResults() throws IOException {
         Attributes attributes = readDicomFile("GSPS.dcm");
@@ -125,5 +130,28 @@ class SimpleTests {
         );
         
         assertEquals(gspsClassic, gsps.getAttributes());
+    }
+    
+    @Test
+    void settingCustomAttributesWithFluidBuilderAPIWorks() {
+        final UniversalAttributesWrapper rendererEnvironment =
+                UniversalAttributesWrapper.builder().setSequence(HPStateTag_CREATOR, HPStateTag_SpatialTransformSequence,
+                        DisplayedAreaSelectionSequence.Holder.builder()
+                                .setAttribute(HPStateTag_CREATOR, HPStateTag_ViewZoom, VR.FD).asDoubles(.1, .2)
+                                .setDisplayedAreaSelectionSequence(DisplayedAreaSelectionSequence.Item.builder()
+                                        .setReferencedImageSequence(ReferencedImageSequence.Item.builder()
+                                                .setReferencedSOPClassUID().asString("1.1.1.1")
+                                                .setReferencedSOPInstanceUID().asString("658416184.186.81.684.6816")
+                                        )
+                                        .setPresentationPixelAspectRatio().asInts(1, 1)
+                                        .setDisplayedAreaTopLeftHandCorner().asInts(1, 1)
+                                        .setDisplayedAreaBottomRightHandCorner().asInts(1920, 1080)
+                                        .setPresentationSizeMode().asString("SCALE TO FIT")
+                                )
+                )
+                .build();
+        assertEquals(0.1, rendererEnvironment.getAttributes()
+                .getSequence(HPStateTag_CREATOR, HPStateTag_SpatialTransformSequence)
+                .get(0).getDouble(HPStateTag_CREATOR, HPStateTag_ViewZoom, VR.FD, 0, 0));
     }
 }

@@ -5,18 +5,18 @@ import org.dcm4che.typeddicom.DataElementWrapper;
 
 public interface IntDataElementMultiWrapper extends DataElementWrapper {
     default int[] getInts() {
-        return getAttributes().getInts(getTag());
+        return getAttributes().getInts(getPrivateCreator(), getTag());
     }
     
     default int getInt(int index, int defaultValue) {
-        return getAttributes().getInt(getTag(), index, defaultValue);
+        return getAttributes().getInt(getPrivateCreator(), getTag(), index, defaultValue);
     }
     
     default void setInts(int... ints) {
-        getAttributes().setInt(getTag(), getValueRepresentation(), ints);
+        getAttributes().setInt(getPrivateCreator(), getTag(), getValueRepresentation(), ints);
     }
 
-    interface Setter<B extends Builder<B, ?>, D extends IntDataElementMultiWrapper> extends Builder.Setter<B, D> {
+    interface Setter<B extends Builder<B, ?>, D extends IntDataElementMultiWrapper> extends org.dcm4che.typeddicom.Setter<B, D> {
         default B asInts(int... ints) {
             getDataElementWrapper().setInts(ints);
             return getBuilder();

@@ -13,7 +13,6 @@ import org.dcm4che3.data.Sequence;
 import org.dcm4che.typeddicom.AbstractDataElementWrapper;
 import org.dcm4che.typeddicom.valuerepresentations.{{valueRepresentationWrapper}};
 import org.dcm4che3.data.Attributes;
-import org.dcm4che3.data.VR;
 {{/sequence}}
 import org.dcm4che3.data.Tag;
 {{#sequence}}
@@ -32,11 +31,6 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
      */
     public static final int TAG = {{tagConstant}};
 {{^sequence}}
-    /**
-     * The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html">DICOM Value 
-     * Representation (VR)</a> associated with this class.
-     */
-    public static final VR VALUE_REPRESENTATION = VR.{{valueRepresentation}};
 
     /**
      * Creates a new {{name}} object which wraps the provided <code>attributes</code>.
@@ -63,10 +57,6 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         return super.copy({{keyword}}.class);
     }
 
-    @Override
-    public VR getValueRepresentation() {
-        return VALUE_REPRESENTATION;
-    }
 {{/sequence}}
 {{#sequence}}
 
@@ -95,6 +85,15 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         }
 
         /**
+         * @param attributes The Attributes to be wrapped by the {@link Builder}.
+         *
+         * @return a {@link Builder} to create {{name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
+         */
+        public static Builder builder(Attributes attributes) { 
+            return new Builder(attributes); 
+        }
+
+        /**
          * Creates a new {{name}} Item object which wraps the provided <code>attributes</code>.
          *
          * @param attributes The {@link Attributes} object to be wrapped.
@@ -119,9 +118,13 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
             return super.copy(Item.class);
         }
         
-        public static class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, Item> {{^subDataElementMetaInfos.isEmpty}}, {{{implementsBuilderInterfaces}}} {{/subDataElementMetaInfos.isEmpty}}{
-            protected Builder() {
+        public static class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, Item>{{^subDataElementMetaInfos.isEmpty}}, {{{implementsBuilderInterfaces}}} {{/subDataElementMetaInfos.isEmpty}}{
+            private Builder() {
                 super();
+            }
+
+            private Builder(Attributes attributes) {
+                super(attributes);
             }
 
             @Override
@@ -142,6 +145,22 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
          */
         static Holder wrap(Attributes attributes) {
             return AttributesWrapper.wrap(attributes, SimpleHolder.class);
+        }
+
+        /**
+         * @return a {@link Builder} to create {{name}} Items with a fluent API.
+         */
+        public static Builder builder() { 
+            return new Builder(); 
+        }
+
+        /**
+         * @param attributes The Attributes to be wrapped by the {@link Builder}.
+         *
+         * @return a {@link Builder} to create {{name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
+         */
+        public static Builder builder(Attributes attributes) { 
+            return new Builder(attributes); 
         }
 
         /**
@@ -207,6 +226,21 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         default void remove{{keyword}}() {
             getAttributes().remove(TAG);
         }
+
+        class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, SimpleHolder>, {{keyword}}.Builder<Builder, SimpleHolder> {
+            private Builder() {
+                super();
+            }
+
+            private Builder(Attributes attributes) {
+                super(attributes);
+            }
+
+            @Override
+            public SimpleHolder build() {
+                return super.copy(SimpleHolder.class);
+            }
+        }
     }
     
     private static class SimpleHolder extends AbstractAttributesWrapper implements Holder {
@@ -217,11 +251,11 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
     {{#sequence}}
 
     public interface Builder<SELF extends Builder<SELF, T>, T extends {{keyword}}.Holder> extends org.dcm4che.typeddicom.Builder<SELF, T> {
-        default SELF set{{keyword}}(Item.Builder... builders) {
+        default SELF set{{keyword}}(Item.Builder... itemBuilders) {
             final SimpleHolder simpleHolder = new SimpleHolder(this.getAttributes());
             simpleHolder.remove{{keyword}}();
-            simpleHolder.new{{keyword}}(builders.length);
-            for (Item.Builder builder : builders) {
+            simpleHolder.new{{keyword}}(itemBuilders.length);
+            for (Item.Builder builder : itemBuilders) {
                 simpleHolder.get{{keyword}}().add(builder.build());
             }            
             return (SELF) this;
