@@ -243,8 +243,8 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         }
     }
     
-    private static class SimpleHolder extends AbstractAttributesWrapper implements Holder {
-        private SimpleHolder(Attributes attributes) {
+    public static class SimpleHolder extends AbstractAttributesWrapper implements Holder {
+        public SimpleHolder(Attributes attributes) {
             super(attributes);
         }
     }
