@@ -19,4 +19,8 @@ public interface Builder<SELF extends Builder<SELF, T>, T extends AttributesWrap
         }
         return (SELF) this;
     }
+    
+    default <B extends Builder> B as(Class<B> builderClass) {
+        return AttributesWrapper.wrap(this.getAttributes(), builderClass);
+    }
 }
