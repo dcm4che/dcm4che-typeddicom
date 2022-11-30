@@ -8,12 +8,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class parses the 3th part of the DICOM Standard XML
  * (http://dicom.nema.org/medical/dicom/current/source/docbook/part03/part03.xml)
  */
 public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
+    private static final String FUNCTIONAL_GROUP_MACRO_REFERENCE = "FUNCTIONAL GROUP MACRO";
     private final Set<ModuleMetaInfo> modules;
     private final Map<String, Set<DataElementMetaInfo>> dataElementMetaInfos;
     private final Set<InformationObjectDefinitionMetaInfo> iods;
@@ -211,10 +213,11 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
         int currentSequenceDepth = sequenceDepth(name);
         name = name.substring(currentSequenceDepth).trim();
         TableEntry currentTableEntry;
-        boolean validInclude = name.startsWith("Include") &&
+        boolean validStandardInclude = name.startsWith("Include") &&
                 lastReferenceInFirstColumn != null &&
                 lastReferenceInFirstColumn.startsWith("table_");
         boolean validAttribute = columns.size() > 1 && columns.get(1).matches("\\([0-9A-F]{2}[0-9A-Fx]{2},[0-9A-F]{2}[0-9A-Fx]{2}\\)");
+        boolean validFunctionalGroupMacroInclude = name.startsWith("Include one or more Functional Group Macros");
         if (columns.size() == 3 && validAttribute) {
             currentTableEntry = new AttributeTableEntry(tableEntryHref, name, columns.get(1), columns.get(2));
         } else if (columns.size() == 4 && validAttribute) {
@@ -225,10 +228,12 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
                     columns.get(2),
                     columns.get(3)
             );
-        } else if (columns.size() == 2 && validInclude) {
+        } else if (columns.size() == 2 && validStandardInclude) {
             currentTableEntry = new MacroTableEntry(tableEntryHref, lastReferenceInFirstColumn, columns.get(1));
-        } else if (columns.size() == 1 && validInclude) {
+        } else if (columns.size() == 1 && validStandardInclude) {
             currentTableEntry = new MacroTableEntry(tableEntryHref, lastReferenceInFirstColumn);
+        } else if (validFunctionalGroupMacroInclude) {
+            currentTableEntry = new MacroTableEntry(tableEntryHref, FUNCTIONAL_GROUP_MACRO_REFERENCE);
         } else {
             System.out.println("Invalid Row: " + Arrays.toString(columns.toArray()));
             return;
@@ -243,31 +248,32 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
         if (html == null) {
             return null;
         }
-        String moduleRef = html.replaceAll("(?s).*?<a href=\"http://dicom.nema.org/medical/dicom/current/output/html/part03.html#([^\"]*)\">.*$", "$1");
-        return moduleRef;
+        return html.replaceAll("(?s).*?<a href=\"http://dicom.nema.org/medical/dicom/current/output/html/part03.html#([^\"]*)\">.*$", "$1");
     }
 
     private Iterable<DataElementMetaInfo> resolveMacrosRecursively(TableEntry tableEntry, Context context) {
         if (tableEntry instanceof MacroTableEntry macroTableEntry) {
             String tableId = macroTableEntry.getTableId();
-            MacroTable macroTable = macroTables.get(tableId);
-            if (macroTable == null) {
+            Set<MacroTable> matchingMacroTables = getMatchingMacroTables(tableId);
+            if (matchingMacroTables.isEmpty()) {
                 System.out.println("Invalid macro key: " + tableId);
                 return Collections.emptyList();
             }
             MacroMetaInfo macroMetaInfo = macros.get(tableId);
             if (macroMetaInfo == null) {
-                macroMetaInfo = new MacroMetaInfo(macroTable.getTableId());
+                macroMetaInfo = new MacroMetaInfo(tableId);
                 macros.put(macroMetaInfo.getTableId(), macroMetaInfo);
             }
-            for (TableEntry macroSubEntry : macroTable.getTableEntries()) {
-                ContextEntry newContextEntry = new ContextEntry(macroTable.getName(), macroTable.getHref());
-                // Stop at recursive macros
-                if (!context.getContext().contains(newContextEntry)) {
-                    macroMetaInfo.addDataElementMetaInfo(resolveMacrosRecursively(
-                            macroSubEntry,
-                            new Context(newContextEntry)
-                    ));
+            for (MacroTable macroTable : matchingMacroTables) {
+                for (TableEntry macroSubEntry : macroTable.getTableEntries()) {
+                    ContextEntry newContextEntry = new ContextEntry(macroTable.getName(), macroTable.getHref());
+                    // Stop at recursive macros
+                    if (!context.getContext().contains(newContextEntry)) {
+                        macroMetaInfo.addDataElementMetaInfo(resolveMacrosRecursively(
+                                macroSubEntry,
+                                new Context(newContextEntry)
+                        ));
+                    }
                 }
             }
             return macroMetaInfo.getSubDataElementMetaInfos();
@@ -302,6 +308,25 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
             return attributeMetaInfos;
         }
         return Collections.emptyList();
+    }
+    
+    // Usually only one macro matches, but there is also the Functional Groups Macros which get combined to one special macro
+    private Set<MacroTable> getMatchingMacroTables(String tableId) {
+        Set<MacroTable> matchingMacroTables;
+        if (FUNCTIONAL_GROUP_MACRO_REFERENCE.equals(tableId)) {
+            matchingMacroTables = macroTables.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("table_C.7.6.16"))
+                    .map(Map.Entry::getValue)
+                    .collect(Collectors.toSet());
+        } else {
+            MacroTable matchingMacroTable = macroTables.get(tableId);
+            if (matchingMacroTable == null) {
+                matchingMacroTables = Collections.emptySet();
+            } else {
+                matchingMacroTables = Collections.singleton(matchingMacroTable);
+            }
+        }
+        return matchingMacroTables;
     }
 
     private void removeHTMLTagsFromColumn(Integer i) {
