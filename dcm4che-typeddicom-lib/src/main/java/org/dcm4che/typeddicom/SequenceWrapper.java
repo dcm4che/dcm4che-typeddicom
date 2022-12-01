@@ -35,6 +35,12 @@ public abstract class SequenceWrapper<SELF extends SequenceWrapper<SELF, T>, T e
     }
 
     /**
+     * @return The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html">DICOM
+     *         Private Creator</a> of the wrapped DICOM attributes. null if not private
+     */
+    public abstract String getPrivateCreator();
+
+    /**
      * @return The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part06/chapter_6.html">DICOM 
      *         Tag</a> of the wrapped DICOM sequence.
      */

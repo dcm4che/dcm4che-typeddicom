@@ -26,6 +26,11 @@ import java.util.Arrays;
 {{/retired}}
 public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{keyword}}.Item>{{/sequence}}{{^sequence}}AbstractDataElementWrapper implements {{valueRepresentationWrapper}}{{/sequence}} {
     /**
+     * The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html">Private Creator</a> 
+     * associated with this class.
+     */
+    public static final String PRIVATE_CREATOR = null;
+    /**
      * The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part06/chapter_6.html">DICOM Tag</a> 
      * associated with this class.
      */
@@ -69,6 +74,11 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         super(sequence, {{keyword}}.Item.class);
     }
 {{/sequence}}
+
+    @Override
+    public String getPrivateCreator() {
+        return PRIVATE_CREATOR;
+    }
 
     @Override
     public int getTag() {
@@ -150,7 +160,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         /**
          * @return a {@link Builder} to create {{name}} Items with a fluent API.
          */
-        public static Builder builder() { 
+        static Builder builder() { 
             return new Builder(); 
         }
 
@@ -159,7 +169,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
          *
          * @return a {@link Builder} to create {{name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
          */
-        public static Builder builder(Attributes attributes) { 
+        static Builder builder(Attributes attributes) { 
             return new Builder(attributes); 
         }
 
@@ -168,7 +178,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
          */
         default {{keyword}} get{{keyword}}() {
         {{#sequence}}
-            Sequence sequence = getAttributes().getSequence(TAG);
+            Sequence sequence = getAttributes().getSequence(PRIVATE_CREATOR, TAG);
             if (sequence == null) {
                 return null;
             }
@@ -186,7 +196,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
          * @param initialCapacity the initial capacity for the new {{name}}
          */
         default {{keyword}} new{{keyword}}(int initialCapacity) {
-            return new {{keyword}}(getAttributes().newSequence(TAG, initialCapacity));
+            return new {{keyword}}(getAttributes().newSequence(PRIVATE_CREATOR, TAG, initialCapacity));
         }
 
         /**
@@ -199,7 +209,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
          *         <code>initialCapacity</code>.
          */
         default {{keyword}} ensure{{keyword}}(int initialCapacity) {
-            return new {{keyword}}(getAttributes().ensureSequence(TAG, initialCapacity));
+            return new {{keyword}}(getAttributes().ensureSequence(PRIVATE_CREATOR, TAG, initialCapacity));
         }
 
         /**
@@ -217,14 +227,14 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
          * @return Whether it contains the {{name}} (see {@link {{keyword}}})
          */
         default boolean contains{{keyword}}() {
-            return getAttributes().contains(TAG);
+            return getAttributes().contains(PRIVATE_CREATOR, TAG);
         }
 
         /**
          * Removes the {{name}} (see {@link {{keyword}}}
          */
         default void remove{{keyword}}() {
-            getAttributes().remove(TAG);
+            getAttributes().remove(PRIVATE_CREATOR, TAG);
         }
 
         class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, SimpleHolder>, {{keyword}}.Builder<Builder, SimpleHolder> {
