@@ -9,6 +9,8 @@ import org.dcm4che.typeddicom.generator.metamodel.DataElementMetaInfo;
 import org.dcm4che.typeddicom.generator.metamodel.InformationObjectDefinitionMetaInfo;
 import org.dcm4che.typeddicom.generator.metamodel.ModuleMetaInfo;
 import org.dcm4che.typeddicom.generator.metamodel.ValueRepresentationMetaInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,6 +27,8 @@ import java.util.stream.Collectors;
 
 public class DicomXmlParser {
     public static final String JAVA_FILE_EXTENSION = ".java";
+    private static final Logger LOGGER = LoggerFactory.getLogger(DicomXmlParser.class);
+
     private final SAXParser saxParser;
     private final DefaultMustacheFactory mustacheFactory;
     private final File dicomXmlDirectory;
@@ -88,23 +92,27 @@ public class DicomXmlParser {
             DicomPart04Handler handlerPart4 = new DicomPart04Handler(iods);
             saxParser.parse(new File(dicomXmlDirectory, "part04.xml"), handlerPart4);
 
-            generateValueRepresentationInterfaces(valueRepresentations);
-            System.out.println("Generated " + valueRepresentations.size() + " Value Representation classes");
-
-            generateValueRepresentationInterfaces(multiValueRepresentations);
-            System.out.println("Generated " + multiValueRepresentations.size() + " Multi Value Representation classes");
-
-            generateDataElementWrapperClasses(dataElements);
-            System.out.println("Generated " + dataElements.size() + " Data Element classes");
-
-            generateModuleInterfaces(modules);
-            System.out.println("Generated " + modules.size() + " Module classes");
-
-            generateIODClasses(iods);
-            System.out.println("Generated " + iods.size() + " IOD classes");
+            generateJavaSources(valueRepresentations, multiValueRepresentations, dataElements, modules, iods);
         } catch (SAXException | IOException e) {
             throw new RuntimeException("Wasn't able to generate the Sources", e);
         }
+    }
+
+    private void generateJavaSources(Set<ValueRepresentationMetaInfo> valueRepresentations, Set<ValueRepresentationMetaInfo> multiValueRepresentations, Set<DataElementMetaInfo> dataElements, Set<ModuleMetaInfo> modules, Set<InformationObjectDefinitionMetaInfo> iods) throws IOException {
+        generateValueRepresentationInterfaces(valueRepresentations);
+        LOGGER.info("Generated {} Value Representation classes", valueRepresentations.size());
+
+        generateValueRepresentationInterfaces(multiValueRepresentations);
+        LOGGER.info("Generated {} Multi Value Representation classes", multiValueRepresentations.size());
+
+        generateDataElementWrapperClasses(dataElements);
+        LOGGER.info("Generated {} Data Element classes", dataElements.size());
+
+        generateModuleInterfaces(modules);
+        LOGGER.info("Generated {} Module classes", modules.size());
+
+        generateIODClasses(iods);
+        LOGGER.info("Generated {} IOD classes", iods.size());
     }
 
     private void generateValueRepresentationInterfaces(Set<ValueRepresentationMetaInfo> valueRepresentations) throws IOException {
