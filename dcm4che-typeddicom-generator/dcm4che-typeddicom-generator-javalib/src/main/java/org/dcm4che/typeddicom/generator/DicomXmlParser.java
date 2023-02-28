@@ -1,11 +1,16 @@
 package org.dcm4che.typeddicom.generator;
 
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheNotFoundException;
 import com.github.mustachejava.MustacheResolver;
 import com.github.mustachejava.reflect.ReflectionObjectHandler;
 import org.dcm4che.typeddicom.generator.metamodel.*;
+import org.dcm4che.typeddicom.generator.metamodel.dto.DicomMetaModelDTO;
+import org.dcm4che.typeddicom.generator.metamodel.dto.DicomMetaModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -95,9 +100,27 @@ public class DicomXmlParser {
             DicomPart04Handler handlerPart4 = new DicomPart04Handler(iods);
             saxParser.parse(new File(dicomXmlDirectory, "part04.xml"), handlerPart4);
 
+            generateYamlFile(dicomMetaModel);
+
             generateJavaSources(dicomMetaModel);
         } catch (SAXException | IOException e) {
             throw new RuntimeException("Wasn't able to generate the Sources", e);
+        }
+    }
+
+    private void generateYamlFile(DicomMetaModel dicomMetaModel) {
+        DicomMetaModelMapper dtoMapper = new DicomMetaModelMapper();
+        DicomMetaModelDTO dicomMetaModelDTO = dtoMapper.mapDicomMetaModelToDicomMetaModelDTO(dicomMetaModel);
+
+        YAMLMapper yamlMapper = new YAMLMapper(new YAMLFactory());
+        yamlMapper.configure(YAMLGenerator.Feature.WRITE_DOC_START_MARKER, false);
+        yamlMapper.configure(YAMLGenerator.Feature.SPLIT_LINES, false);
+        yamlMapper.configure(YAMLGenerator.Feature.LITERAL_BLOCK_STYLE, true);
+        yamlMapper.configure(YAMLGenerator.Feature.MINIMIZE_QUOTES, true);
+        try {
+            yamlMapper.writeValue(new File("std.dicom-meta-model.yaml"), dicomMetaModelDTO);
+        } catch (IOException e) {
+            throw new RuntimeException("Wasn't able to generate the YAML file", e);
         }
     }
 
