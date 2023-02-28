@@ -1,13 +1,26 @@
 plugins {
     `java-gradle-plugin`
+    id("org.dcm4che.typeddicom.parser.gradleplugin")
+}
+
+processDicomXml {
+    dicomStandardXmlDirectory.set(layout.projectDirectory.dir("src/main/resources/dicom-standard-xml"))
+    mustacheTemplateDirectory.set(layout.projectDirectory.dir("src/main/resources/templates"))
+    generatedYamlMetamodelOutputDirectory.set(layout.buildDirectory.dir("typeddicom/metamodel"))
 }
 
 gradlePlugin {
     plugins {
-        create("processDicomXml") {
-            id = "org.dcm4che.typeddicom.gradleplugin"
-            implementationClass = "org.dcm4che.typeddicom.generator.gradleplugin.ProcessDicomXmlPlugin"
+        create("generateJavaSourceFiles") {
+            id = "org.dcm4che.typeddicom.generator.gradleplugin"
+            implementationClass = "org.dcm4che.typeddicom.generator.gradleplugin.GenerateTypeddicomJavaSourcesPlugin"
         }
+    }
+}
+
+sourceSets {
+    create("metamodel") {
+        java.srcDir(layout.buildDirectory.dir("typeddicom/metamodel"))
     }
 }
 

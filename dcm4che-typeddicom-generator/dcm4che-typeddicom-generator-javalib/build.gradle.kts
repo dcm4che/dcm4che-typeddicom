@@ -1,3 +1,5 @@
+val typeddicomVersion: String by extra { project.version as String }
+
 plugins {
     id("java-library")
 }
@@ -15,6 +17,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.dcm4che:dcm4che-typeddicom-parser-javalib:$typeddicomVersion")
+
     implementation("com.github.spullara.mustache.java:compiler:0.9.10")
 
     implementation("org.apache.commons:commons-text:1.9")

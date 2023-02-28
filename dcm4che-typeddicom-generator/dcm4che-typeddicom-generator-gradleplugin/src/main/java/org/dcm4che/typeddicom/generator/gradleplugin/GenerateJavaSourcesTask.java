@@ -1,11 +1,10 @@
 package org.dcm4che.typeddicom.generator.gradleplugin;
 
-import org.dcm4che.typeddicom.generator.DicomXmlParser;
+import org.dcm4che.typeddicom.generator.JavaGenerator;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,10 +13,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.LinkedList;
+import java.util.List;
 
 abstract public class GenerateJavaSourcesTask extends DefaultTask {
+    public static final String METAMODEL_SOURCE_SET_NAME = "metamodel";
+
     @InputDirectory
-    abstract public DirectoryProperty getDicomStandardXmlDirectory();
+    abstract public DirectoryProperty getPrivateDicomMetamodelYamlDirectory();
 
     @InputDirectory
     abstract public DirectoryProperty getMustacheTemplateDirectory();
@@ -27,7 +30,12 @@ abstract public class GenerateJavaSourcesTask extends DefaultTask {
 
     @TaskAction
     public void generateJavaSources() {
-        File dicomXmlDirectory = this.getDicomStandardXmlDirectory().get().getAsFile();
+        SourceSet metamodelSourceSet = getProject().getExtensions().getByType(SourceSetContainer.class).getByName(METAMODEL_SOURCE_SET_NAME);
+        List<File> metamodelYamlFiles = new LinkedList<>(metamodelSourceSet.getAllSource().getFiles());
+        Directory privateDicomMetamodelYamlDirectory2 = this.getPrivateDicomMetamodelYamlDirectory().get();
+        if (privateDicomMetamodelYamlDirectory2 != null) {
+            metamodelYamlFiles.addAll(privateDicomMetamodelYamlDirectory2.getAsFileTree().getFiles());
+        }
         File mustacheTemplateDirectory = this.getMustacheTemplateDirectory().get().getAsFile();
         File javaDirectory = this.getGeneratedJavaOutputDirectory().get().getAsFile();
 
@@ -58,7 +66,7 @@ abstract public class GenerateJavaSourcesTask extends DefaultTask {
 
         //noinspection ResultOfMethodCallIgnored
         javaDirectory.mkdirs();
-        DicomXmlParser dicomXmlParser = new DicomXmlParser(dicomXmlDirectory, mustacheTemplateDirectory, javaDirectory);
+        JavaGenerator dicomXmlParser = new JavaGenerator(metamodelYamlFiles, mustacheTemplateDirectory, javaDirectory);
         dicomXmlParser.generateSources();
     }
 }

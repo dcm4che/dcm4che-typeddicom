@@ -5,13 +5,11 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    id("org.dcm4che.typeddicom.gradleplugin")
+    id("org.dcm4che.typeddicom.generator.gradleplugin")
 }
 
-processDicomXml {
-    dicomStandardXmlDirectory.set(layout.projectDirectory.dir("src/main/resources/dicom-standard-xml"))
-    mustacheTemplateDirectory.set(layout.projectDirectory.dir("src/main/resources/templates"))
-    generatedJavaOutputDirectory.set(layout.buildDirectory.dir("java"))
+generateTypeddicomJavaSources {
+    generatedJavaOutputDirectory.set(layout.buildDirectory.dir("typeddicom"))
 }
 
 publishing {
@@ -77,9 +75,6 @@ signing {
     sign(publishing.publications["mavenJava"])
 }
 
-java.sourceSets["main"].java {
-    srcDir("build/java")
-}
 
 repositories {
     mavenCentral()
@@ -100,6 +95,13 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
     withJavadocJar()
     withSourcesJar()
+    sourceSets {
+        main {
+            java {
+                srcDir(layout.buildDirectory.dir("typeddicom"))
+            }
+        }
+    }
 }
 
 tasks.test {
