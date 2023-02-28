@@ -5,10 +5,7 @@ import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheNotFoundException;
 import com.github.mustachejava.MustacheResolver;
 import com.github.mustachejava.reflect.ReflectionObjectHandler;
-import org.dcm4che.typeddicom.generator.metamodel.DataElementMetaInfo;
-import org.dcm4che.typeddicom.generator.metamodel.InformationObjectDefinitionMetaInfo;
-import org.dcm4che.typeddicom.generator.metamodel.ModuleMetaInfo;
-import org.dcm4che.typeddicom.generator.metamodel.ValueRepresentationMetaInfo;
+import org.dcm4che.typeddicom.generator.metamodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -57,10 +54,14 @@ public class DicomXmlParser {
 
     public void generateSources() {
         try {
+            DicomMetaModel dicomMetaModel = new DicomMetaModel();
             DicomPart05Handler handlerPart5 = new DicomPart05Handler();
             saxParser.parse(new File(dicomXmlDirectory, "part05.xml"), handlerPart5);
             Set<ValueRepresentationMetaInfo> valueRepresentations = handlerPart5.getValueRepresentations();
             Set<ValueRepresentationMetaInfo> multiValueRepresentations = handlerPart5.getMultiValueRepresentations();
+
+            dicomMetaModel.addValueRepresentations(valueRepresentations);
+            dicomMetaModel.addValueRepresentations(multiValueRepresentations);
 
             Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap =
                     valueRepresentations.stream().collect(Collectors.toMap(
@@ -77,6 +78,7 @@ public class DicomXmlParser {
             DicomPart06Handler handlerPart6 = new DicomPart06Handler(valueRepresentationsMap, multiValueRepresentationsMap);
             saxParser.parse(new File(dicomXmlDirectory, "part06.xml"), handlerPart6);
             Set<DataElementMetaInfo> dataElements = handlerPart6.getDataElements();
+            dicomMetaModel.addDataElements(dataElements);
 
             Map<String, Set<DataElementMetaInfo>> dataElementMetaInfoMap = new HashMap<>();
             for (DataElementMetaInfo dataElement : dataElements) {
@@ -86,33 +88,31 @@ public class DicomXmlParser {
 
             DicomPart03Handler handlerPart3 = new DicomPart03Handler(dataElementMetaInfoMap);
             saxParser.parse(new File(dicomXmlDirectory, "part03.xml"), handlerPart3);
-            Set<ModuleMetaInfo> modules = handlerPart3.getModules();
+            dicomMetaModel.addModules(handlerPart3.getModules());
             Set<InformationObjectDefinitionMetaInfo> iods = handlerPart3.getIODs();
+            dicomMetaModel.addIods(iods);
             
             DicomPart04Handler handlerPart4 = new DicomPart04Handler(iods);
             saxParser.parse(new File(dicomXmlDirectory, "part04.xml"), handlerPart4);
 
-            generateJavaSources(valueRepresentations, multiValueRepresentations, dataElements, modules, iods);
+            generateJavaSources(dicomMetaModel);
         } catch (SAXException | IOException e) {
             throw new RuntimeException("Wasn't able to generate the Sources", e);
         }
     }
 
-    private void generateJavaSources(Set<ValueRepresentationMetaInfo> valueRepresentations, Set<ValueRepresentationMetaInfo> multiValueRepresentations, Set<DataElementMetaInfo> dataElements, Set<ModuleMetaInfo> modules, Set<InformationObjectDefinitionMetaInfo> iods) throws IOException {
-        generateValueRepresentationInterfaces(valueRepresentations);
-        LOGGER.info("Generated {} Value Representation classes", valueRepresentations.size());
+    private void generateJavaSources(DicomMetaModel dicomMetaModel) throws IOException {
+        generateValueRepresentationInterfaces(dicomMetaModel.getValueRepresentations());
+        LOGGER.info("Generated {} Value Representation classes", dicomMetaModel.getValueRepresentations().size());
 
-        generateValueRepresentationInterfaces(multiValueRepresentations);
-        LOGGER.info("Generated {} Multi Value Representation classes", multiValueRepresentations.size());
+        generateDataElementWrapperClasses(dicomMetaModel.getDataElements());
+        LOGGER.info("Generated {} Data Element classes", dicomMetaModel.getDataElements().size());
 
-        generateDataElementWrapperClasses(dataElements);
-        LOGGER.info("Generated {} Data Element classes", dataElements.size());
+        generateModuleInterfaces(dicomMetaModel.getModules());
+        LOGGER.info("Generated {} Module classes", dicomMetaModel.getModules().size());
 
-        generateModuleInterfaces(modules);
-        LOGGER.info("Generated {} Module classes", modules.size());
-
-        generateIODClasses(iods);
-        LOGGER.info("Generated {} IOD classes", iods.size());
+        generateIODClasses(dicomMetaModel.getIods());
+        LOGGER.info("Generated {} IOD classes", dicomMetaModel.getIods().size());
     }
 
     private void generateValueRepresentationInterfaces(Set<ValueRepresentationMetaInfo> valueRepresentations) throws IOException {
