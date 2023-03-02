@@ -6,7 +6,7 @@ plugins {
 processDicomXml {
     dicomStandardXmlDirectory.set(layout.projectDirectory.dir("src/main/resources/dicom-standard-xml"))
     mustacheTemplateDirectory.set(layout.projectDirectory.dir("src/main/resources/templates"))
-    generatedYamlMetamodelOutputDirectory.set(layout.buildDirectory.dir("typeddicom/metamodel"))
+    generatedYamlMetamodelOutputDirectory.set(layout.buildDirectory.dir("typeddicom-generated/resources"))
 }
 
 gradlePlugin {
@@ -18,11 +18,6 @@ gradlePlugin {
     }
 }
 
-sourceSets {
-    create("metamodel") {
-        java.srcDir(layout.buildDirectory.dir("typeddicom/metamodel"))
-    }
-}
 
 repositories {
     mavenLocal()
@@ -40,8 +35,18 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
+    sourceSets {
+        main {
+            resources {
+                srcDir(layout.buildDirectory.dir("typeddicom-generated/resources"))
+            }
+        }
+    }
 }
 
+// tasks.processResources {
+//     dependsOn(tasks.generateYamlFiles)
+// }
 
 tasks.test {
     useJUnitPlatform()

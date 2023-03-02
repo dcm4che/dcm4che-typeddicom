@@ -34,12 +34,4 @@ public abstract class DataElementMetaInfoContainer implements Serializable {
     public Iterable<DataElementMetaInfo> getSubDataElementMetaInfos() {
         return subDataElementMetaInfos;
     }
-
-    public String implementsHolderInterfaces() {
-        return StreamSupport.stream(getSubDataElementMetaInfos().spliterator(), false)
-                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Holder")
-                .collect(Collectors.joining(", "));
-    }
-
-    public abstract String implementsBuilderInterfaces();
 }

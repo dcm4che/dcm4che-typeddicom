@@ -3,28 +3,28 @@ package org.dcm4che.typeddicom.dataelements;
 
 import org.dcm4che.typeddicom.AbstractAttributesWrapper;
 import org.dcm4che.typeddicom.AttributesWrapper;
-{{#sequence}}
+{{#value.sequence}}
 import org.dcm4che.typeddicom.AbstractSequenceItemWrapper;
 import org.dcm4che.typeddicom.SequenceWrapper;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
-{{/sequence}}
-{{^sequence}}
+{{/value.sequence}}
+{{^value.sequence}}
 import org.dcm4che.typeddicom.AbstractDataElementWrapper;
-import org.dcm4che.typeddicom.valuerepresentations.{{valueRepresentationWrapper}};
+import org.dcm4che.typeddicom.valuerepresentations.{{value.valueRepresentationWrapper}};
 import org.dcm4che3.data.Attributes;
-{{/sequence}}
+{{/value.sequence}}
 import org.dcm4che3.data.Tag;
-{{#sequence}}
+{{#value.sequence}}
 
 import java.util.Arrays;
-{{/sequence}}
+{{/value.sequence}}
 
-{{{classJavaDoc}}}
-{{#retired}}
+{{{value.classJavaDoc}}}
+{{#value.retired}}
 @Deprecated
-{{/retired}}
-public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{keyword}}.Item>{{/sequence}}{{^sequence}}AbstractDataElementWrapper implements {{valueRepresentationWrapper}}{{/sequence}} {
+{{/value.retired}}
+public class {{key}} extends {{#value.sequence}}SequenceWrapper<{{key}}, {{key}}.Item>{{/value.sequence}}{{^value.sequence}}AbstractDataElementWrapper implements {{value.valueRepresentationWrapper}}{{/value.sequence}} {
     /**
      * The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.html">Private Creator</a> 
      * associated with this class.
@@ -34,46 +34,46 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
      * The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part06/chapter_6.html">DICOM Tag</a> 
      * associated with this class.
      */
-    public static final int TAG = {{tagConstant}};
-{{^sequence}}
+    public static final int TAG = {{value.tagConstant}};
+{{^value.sequence}}
 
     /**
-     * Creates a new {{name}} object which wraps the provided <code>attributes</code>.
+     * Creates a new {{value.name}} object which wraps the provided <code>attributes</code>.
      *
      * @param attributes The {@link Attributes} object to be wrapped.
      */
-    public {{keyword}}(Attributes attributes) {
+    public {{key}}(Attributes attributes) {
         super(attributes);
     }
 
     /**
-     * Creates a new {{name}} object which wraps a new and empty {@link Attributes} object.
+     * Creates a new {{value.name}} object which wraps a new and empty {@link Attributes} object.
      */
-    public {{keyword}}() {
+    public {{key}}() {
         super();
     }
     
     /**
-     * Returns a new {{name}} which wraps a copy of the Attributes wrapped in this {{name}}. (see {@link Attributes#Attributes(Attributes)}
+     * Returns a new {{value.name}} which wraps a copy of the Attributes wrapped in this {{value.name}}. (see {@link Attributes#Attributes(Attributes)}
      *
-     * @return a new {{name}} which wraps a copy of the Attributes wrapped in this {{name}}. 
+     * @return a new {{value.name}} which wraps a copy of the Attributes wrapped in this {{value.name}}. 
      */
-    public {{keyword}} copy() {
-        return super.copy({{keyword}}.class);
+    public {{key}} copy() {
+        return super.copy({{key}}.class);
     }
 
-{{/sequence}}
-{{#sequence}}
+{{/value.sequence}}
+{{#value.sequence}}
 
     /**
-     * Creates a new {{name}} object which wraps the provided <code>sequence</code>.
+     * Creates a new {{value.name}} object which wraps the provided <code>sequence</code>.
      *
      * @param sequence The {@link Sequence} object to be linked.
      */
-    public {{keyword}}(Sequence sequence) {
-        super(sequence, {{keyword}}.Item.class);
+    public {{key}}(Sequence sequence) {
+        super(sequence, {{key}}.Item.class);
     }
-{{/sequence}}
+{{/value.sequence}}
 
     @Override
     public String getPrivateCreator() {
@@ -84,11 +84,11 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
     public int getTag() {
         return TAG;
     }
-{{#sequence}}
+{{#value.sequence}}
 
-    public static class Item extends AbstractSequenceItemWrapper {{^subDataElementMetaInfos.isEmpty}}implements {{{implementsHolderInterfaces}}} {{/subDataElementMetaInfos.isEmpty}}{
+    public static class Item extends AbstractSequenceItemWrapper {{^value.contains.isEmpty}}implements {{{value.implementsHolderInterfaces}}} {{/value.contains.isEmpty}}{
         /**
-         * @return a {@link Builder} to create {{name}} Items with a fluent API.
+         * @return a {@link Builder} to create {{value.name}} Items with a fluent API.
          */
         public static Builder builder() { 
             return new Builder(); 
@@ -97,14 +97,14 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         /**
          * @param attributes The Attributes to be wrapped by the {@link Builder}.
          *
-         * @return a {@link Builder} to create {{name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
+         * @return a {@link Builder} to create {{value.name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
          */
         public static Builder builder(Attributes attributes) { 
             return new Builder(attributes); 
         }
 
         /**
-         * Creates a new {{name}} Item object which wraps the provided <code>attributes</code>.
+         * Creates a new {{value.name}} Item object which wraps the provided <code>attributes</code>.
          *
          * @param attributes The {@link Attributes} object to be wrapped.
          */
@@ -113,22 +113,22 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         }
 
         /**
-         * Creates a new {{name}} Item object which wraps a new and empty {@link Attributes} object.
+         * Creates a new {{value.name}} Item object which wraps a new and empty {@link Attributes} object.
          */
         public Item() {
             super();
         }
 
         /**
-         * Returns a new {{name}} Item which wraps a copy of the Attributes wrapped in this {{name}}. (see {@link Attributes#Attributes(Attributes)}
+         * Returns a new {{value.name}} Item which wraps a copy of the Attributes wrapped in this {{value.name}}. (see {@link Attributes#Attributes(Attributes)}
          *
-         * @return a new {{name}} Item which wraps a copy of the Attributes wrapped in this {{name}}. 
+         * @return a new {{value.name}} Item which wraps a copy of the Attributes wrapped in this {{value.name}}. 
          */
         public Item copy() {
             return super.copy(Item.class);
         }
         
-        public static class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, Item>{{^subDataElementMetaInfos.isEmpty}}, {{{implementsBuilderInterfaces}}} {{/subDataElementMetaInfos.isEmpty}}{
+        public static class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, Item>{{^value.contains.isEmpty}}, {{{value.implementsBuilderInterfaces}}} {{/value.contains.isEmpty}}{
             private Builder() {
                 super();
             }
@@ -143,14 +143,14 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
             }
         }
     }
-{{/sequence}}
+{{/value.sequence}}
     
     /**
-     * A class implementing this interface can hold attributes which contain the DICOM tag "{{name}}" (see {@link {{keyword}}})
+     * A class implementing this interface can hold attributes which contain the DICOM tag "{{value.name}}" (see {@link {{key}}})
      */
     public interface Holder extends AttributesWrapper {
         /**
-         * @param attributes An attributes object containing the {{name}} (see {@link {{keyword}}})
+         * @param attributes An attributes object containing the {{value.name}} (see {@link {{key}}})
          * @return A wrapper object implementing the {@link Holder} interface. 
          */
         static Holder wrap(Attributes attributes) {
@@ -158,7 +158,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         }
 
         /**
-         * @return a {@link Builder} to create {{name}} Items with a fluent API.
+         * @return a {@link Builder} to create {{value.name}} Items with a fluent API.
          */
         static Builder builder() { 
             return new Builder(); 
@@ -167,77 +167,77 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         /**
          * @param attributes The Attributes to be wrapped by the {@link Builder}.
          *
-         * @return a {@link Builder} to create {{name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
+         * @return a {@link Builder} to create {{value.name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
          */
         static Builder builder(Attributes attributes) { 
             return new Builder(attributes); 
         }
 
         /**
-         * @return the {{name}} (see {@link {{keyword}}})
+         * @return the {{value.name}} (see {@link {{key}}})
          */
-        default {{keyword}} get{{keyword}}() {
-        {{#sequence}}
+        default {{key}} get{{key}}() {
+        {{#value.sequence}}
             Sequence sequence = getAttributes().getSequence(PRIVATE_CREATOR, TAG);
             if (sequence == null) {
                 return null;
             }
-            return new {{keyword}}(sequence);
-        {{/sequence}}
-        {{^sequence}}
-            return new {{keyword}}(getAttributes());
-        {{/sequence}}
+            return new {{key}}(sequence);
+        {{/value.sequence}}
+        {{^value.sequence}}
+            return new {{key}}(getAttributes());
+        {{/value.sequence}}
         }
 
-        {{#sequence}}
+        {{#value.sequence}}
         /**
-         * Adds a new {{name}}. (see {@link {{keyword}}})
+         * Adds a new {{value.name}}. (see {@link {{key}}})
          *
-         * @param initialCapacity the initial capacity for the new {{name}}
+         * @param initialCapacity the initial capacity for the new {{value.name}}
          */
-        default {{keyword}} new{{keyword}}(int initialCapacity) {
-            return new {{keyword}}(getAttributes().newSequence(PRIVATE_CREATOR, TAG, initialCapacity));
+        default {{key}} new{{key}}(int initialCapacity) {
+            return new {{key}}(getAttributes().newSequence(PRIVATE_CREATOR, TAG, initialCapacity));
         }
 
         /**
-         * Adds a new {{name}} (see {@link {{keyword}}}) if it does not already exist.
+         * Adds a new {{value.name}} (see {@link {{key}}}) if it does not already exist.
          * (see {@link Attributes#ensureSequence(int, int)}
          *
          * @param initialCapacity The initial capacity (see {@link java.util.ArrayList#ArrayList(int)}) if a new 
-         *                        {{name}} is created.
-         * @return Either the already existing {{name}} (see {@link {{keyword}}}) or a new one with capacity 
+         *                        {{value.name}} is created.
+         * @return Either the already existing {{value.name}} (see {@link {{key}}}) or a new one with capacity 
          *         <code>initialCapacity</code>.
          */
-        default {{keyword}} ensure{{keyword}}(int initialCapacity) {
-            return new {{keyword}}(getAttributes().ensureSequence(PRIVATE_CREATOR, TAG, initialCapacity));
+        default {{key}} ensure{{key}}(int initialCapacity) {
+            return new {{key}}(getAttributes().ensureSequence(PRIVATE_CREATOR, TAG, initialCapacity));
         }
 
         /**
-         * Adds a new {{name}} (see {@link {{keyword}}}) with initial capacity 1 (see {@link #ensure{{keyword}}(int)})
+         * Adds a new {{value.name}} (see {@link {{key}}}) with initial capacity 1 (see {@link #ensure{{key}}(int)})
          * if it does not already exist.
          *
-         * @return Either the already existing {{name}} (see {@link {{keyword}}}) or a new one with capacity 1.
+         * @return Either the already existing {{value.name}} (see {@link {{key}}}) or a new one with capacity 1.
          */
-        default {{keyword}} ensure{{keyword}}() {
-            return ensure{{keyword}}(1);
+        default {{key}} ensure{{key}}() {
+            return ensure{{key}}(1);
         }
 
-        {{/sequence}}
+        {{/value.sequence}}
         /**
-         * @return Whether it contains the {{name}} (see {@link {{keyword}}})
+         * @return Whether it contains the {{value.name}} (see {@link {{key}}})
          */
-        default boolean contains{{keyword}}() {
+        default boolean contains{{key}}() {
             return getAttributes().contains(PRIVATE_CREATOR, TAG);
         }
 
         /**
-         * Removes the {{name}} (see {@link {{keyword}}}
+         * Removes the {{value.name}} (see {@link {{key}}}
          */
-        default void remove{{keyword}}() {
+        default void remove{{key}}() {
             getAttributes().remove(PRIVATE_CREATOR, TAG);
         }
 
-        class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, SimpleHolder>, {{keyword}}.Builder<Builder, SimpleHolder> {
+        class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, SimpleHolder>, {{key}}.Builder<Builder, SimpleHolder> {
             private Builder() {
                 super();
             }
@@ -258,31 +258,31 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
             super(attributes);
         }
     }
-    {{#sequence}}
+    {{#value.sequence}}
 
-    public interface Builder<SELF extends Builder<SELF, T>, T extends {{keyword}}.Holder> extends org.dcm4che.typeddicom.Builder<SELF, T> {
-        default SELF set{{keyword}}(Item.Builder... itemBuilders) {
+    public interface Builder<SELF extends Builder<SELF, T>, T extends {{key}}.Holder> extends org.dcm4che.typeddicom.Builder<SELF, T> {
+        default SELF set{{key}}(Item.Builder... itemBuilders) {
             final SimpleHolder simpleHolder = new SimpleHolder(this.getAttributes());
-            simpleHolder.remove{{keyword}}();
-            simpleHolder.new{{keyword}}(itemBuilders.length);
+            simpleHolder.remove{{key}}();
+            simpleHolder.new{{key}}(itemBuilders.length);
             for (Item.Builder builder : itemBuilders) {
-                simpleHolder.get{{keyword}}().add(builder.build());
+                simpleHolder.get{{key}}().add(builder.build());
             }            
             return (SELF) this;
         }
     }
-    {{/sequence}}
-    {{^sequence}}
+    {{/value.sequence}}
+    {{^value.sequence}}
 
-    public interface Builder<SELF extends Builder<SELF, T>, T extends {{keyword}}.Holder> extends org.dcm4che.typeddicom.Builder<SELF, T> {
+    public interface Builder<SELF extends Builder<SELF, T>, T extends {{key}}.Holder> extends org.dcm4che.typeddicom.Builder<SELF, T> {
         /**
-         * @return a Setter for the {{name}} (see {@link {{keyword}}}) which returns this Builder
+         * @return a Setter for the {{value.name}} (see {@link {{key}}}) which returns this Builder
          *         on its .asXXXX() methods. This allows fluent object creation in the form of <br>
          *         {@code XXXIOD xxxIOD = new XXXIOD().setYYYY().asYYYY(xxxxValue).setZZZZ().asZZZZ(zzzzValue);}
          */
-        default {{valueRepresentationWrapper}}.Setter<SELF, {{keyword}}> set{{keyword}}() {
-            return new {{valueRepresentationWrapper}}.Setter<>((SELF) this, new {{keyword}}(this.getAttributes()));
+        default {{value.valueRepresentationWrapper}}.Setter<SELF, {{key}}> set{{key}}() {
+            return new {{value.valueRepresentationWrapper}}.Setter<>((SELF) this, new {{key}}(this.getAttributes()));
         }
     }
-    {{/sequence}}
+    {{/value.sequence}}
 }

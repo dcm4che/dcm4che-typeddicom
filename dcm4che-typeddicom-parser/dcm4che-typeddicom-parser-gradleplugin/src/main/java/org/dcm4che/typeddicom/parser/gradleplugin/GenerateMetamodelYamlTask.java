@@ -15,12 +15,12 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-abstract public class GenerateMetamodelYamlTask extends DefaultTask {
+public abstract class GenerateMetamodelYamlTask extends DefaultTask {
     @InputDirectory
-    abstract public DirectoryProperty getDicomStandardXmlDirectory();
+    public abstract DirectoryProperty getDicomStandardXmlDirectory();
 
     @OutputDirectory
-    abstract public DirectoryProperty getGeneratedYamlOutputDirectory();
+    public abstract DirectoryProperty getGeneratedYamlOutputDirectory();
 
     @TaskAction
     public void generateJavaSources() {
@@ -55,6 +55,6 @@ abstract public class GenerateMetamodelYamlTask extends DefaultTask {
         //noinspection ResultOfMethodCallIgnored
         javaDirectory.mkdirs();
         DicomXmlParser dicomXmlParser = new DicomXmlParser(dicomXmlDirectory, javaDirectory);
-        dicomXmlParser.generateSources();
+        dicomXmlParser.generateYamlMetamodel();
     }
 }

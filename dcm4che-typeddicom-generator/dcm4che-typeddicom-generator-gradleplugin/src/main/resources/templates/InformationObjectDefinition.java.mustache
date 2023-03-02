@@ -5,9 +5,9 @@ import org.dcm4che.typeddicom.SOPClass;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che.typeddicom.AbstractAttributesWrapper;
 import org.dcm4che.typeddicom.AbstractInformationObjectDefinition;
-{{#moduleReferences}}
-import org.dcm4che.typeddicom.modules.{{moduleMetaInfo.keyword}};
-{{/moduleReferences}}
+{{#modules}}
+import org.dcm4che.typeddicom.modules.{{.}};
+{{/modules}}
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,8 +32,8 @@ public class {{keyword}} extends AbstractInformationObjectDefinition implements 
     /**
      * @return a {@link Builder} to create {{name}}s with a fluent API.
      */
-    public static Builder builder() { 
-        return new Builder(); 
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -41,8 +41,8 @@ public class {{keyword}} extends AbstractInformationObjectDefinition implements 
      *
      * @return a {@link Builder} to create {{name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
      */
-    public static Builder builder(Attributes attributes) { 
-        return new Builder(attributes); 
+    public static Builder builder(Attributes attributes) {
+        return new Builder(attributes);
     }
 
     public {{keyword}}(Attributes attributes) {

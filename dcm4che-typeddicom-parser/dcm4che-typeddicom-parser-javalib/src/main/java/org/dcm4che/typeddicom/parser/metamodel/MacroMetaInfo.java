@@ -31,7 +31,6 @@ public class MacroMetaInfo extends DataElementMetaInfoContainer implements Seria
         return Objects.hash(super.hashCode(), tableId);
     }
 
-    @Override
     public String implementsBuilderInterfaces() {
         return StreamSupport.stream(getSubDataElementMetaInfos().spliterator(), false)
                 .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Builder<SELF>")

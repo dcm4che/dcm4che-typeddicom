@@ -9,8 +9,6 @@ import org.dcm4che.typeddicom.parser.metamodel.InformationObjectDefinitionMetaIn
 import org.dcm4che.typeddicom.parser.metamodel.ValueRepresentationMetaInfo;
 import org.dcm4che.typeddicom.parser.metamodel.dto.DicomMetaModelDTO;
 import org.dcm4che.typeddicom.parser.metamodel.dto.DicomMetaModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,16 +39,14 @@ public class DicomXmlParser {
         }
     }
 
-    public void generateSources() {
+    public void generateYamlMetamodel() {
         try {
             DicomMetaModel dicomMetaModel = new DicomMetaModel();
             DicomPart05Handler handlerPart5 = new DicomPart05Handler();
             saxParser.parse(new File(dicomXmlDirectory, "part05.xml"), handlerPart5);
             Set<ValueRepresentationMetaInfo> valueRepresentations = handlerPart5.getValueRepresentations();
-            Set<ValueRepresentationMetaInfo> multiValueRepresentations = handlerPart5.getMultiValueRepresentations();
 
             dicomMetaModel.addValueRepresentations(valueRepresentations);
-            dicomMetaModel.addValueRepresentations(multiValueRepresentations);
 
             Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap =
                     valueRepresentations.stream().collect(Collectors.toMap(
@@ -58,13 +54,7 @@ public class DicomXmlParser {
                             Function.identity())
                     );
 
-            Map<String, ValueRepresentationMetaInfo> multiValueRepresentationsMap =
-                    multiValueRepresentations.stream().collect(Collectors.toMap(
-                            ValueRepresentationMetaInfo::tag,
-                            Function.identity())
-                    );
-
-            DicomPart06Handler handlerPart6 = new DicomPart06Handler(valueRepresentationsMap, multiValueRepresentationsMap);
+            DicomPart06Handler handlerPart6 = new DicomPart06Handler(valueRepresentationsMap);
             saxParser.parse(new File(dicomXmlDirectory, "part06.xml"), handlerPart6);
             Set<DataElementMetaInfo> dataElements = handlerPart6.getDataElements();
             dicomMetaModel.addDataElements(dataElements);

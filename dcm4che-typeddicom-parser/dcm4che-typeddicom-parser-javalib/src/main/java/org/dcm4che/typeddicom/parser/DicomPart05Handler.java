@@ -24,17 +24,12 @@ import java.util.stream.Stream;
 public class DicomPart05Handler extends AbstractDicomPartHandler {
     private final List<String> columns = new LinkedList<>();
     private final Set<ValueRepresentationMetaInfo> valueRepresentations = new HashSet<>();
-    private final Set<ValueRepresentationMetaInfo> multiValueRepresentations = new HashSet<>();
     private boolean isInVRTable;
     private boolean isInVRTableBody;
     private String rowHref = null;
 
     public Set<ValueRepresentationMetaInfo> getValueRepresentations() {
         return valueRepresentations;
-    }
-
-    public Set<ValueRepresentationMetaInfo> getMultiValueRepresentations() {
-        return multiValueRepresentations;
     }
 
     @Override
@@ -87,57 +82,32 @@ public class DicomPart05Handler extends AbstractDicomPartHandler {
         if (tag.equals("SQ")) {
             return;
         }
-        Set<String> implementsInterfaces = new HashSet<>();
+        Set<String> dataTypes = new HashSet<>();
         VR vr = VR.valueOf(tag);
         if (vr.isTemporalType()) {
-            implementsInterfaces.add("DateDataElement");
+            dataTypes.add("DateDataElement");
         }
         if (isDoubleType(vr)) {
-            implementsInterfaces.add("DoubleDataElement");
+            dataTypes.add("DoubleDataElement");
         }
         if (isFloatType(vr)) {
-            implementsInterfaces.add("FloatDataElement");
+            dataTypes.add("FloatDataElement");
         }
         if (isIntType(vr)) {
-            implementsInterfaces.add("IntDataElement");
+            dataTypes.add("IntDataElement");
         }
         if (isStringType(vr)) {
-            implementsInterfaces.add("StringDataElement");
+            dataTypes.add("StringDataElement");
         }
         valueRepresentations.add(new ValueRepresentationMetaInfo(
                 tag,
                 name,
-                KeywordUtils.sanitizeAsJavaIdentifier(name) + "Wrapper",
+                KeywordUtils.sanitizeAsJavaIdentifier(name),
                 columns.get(1),
                 columns.get(2),
                 columns.get(3),
                 rowHref,
-                Stream.concat(
-                        implementsInterfaces.stream().map(s -> s + "Wrapper"),
-                        Stream.of("BytesDataElementWrapper")
-                ).collect(Collectors.joining(", ")),
-                Stream.concat(
-                        implementsInterfaces.stream().map(s -> s + "Wrapper.Setter<B, D>"),
-                        Stream.of("BytesDataElementWrapper.Setter<B, D>")
-                ).collect(Collectors.joining(", "))
-        ));
-
-        multiValueRepresentations.add(new ValueRepresentationMetaInfo(
-                tag,
-                name,
-                KeywordUtils.sanitizeAsJavaIdentifier(name) + "MultiWrapper",
-                columns.get(1),
-                columns.get(2),
-                columns.get(3),
-                rowHref,
-                Stream.concat(
-                        implementsInterfaces.stream().map(s -> s + "MultiWrapper"),
-                        Stream.of("BytesDataElementWrapper")
-                ).collect(Collectors.joining(", ")),
-                Stream.concat(
-                        implementsInterfaces.stream().map(s -> s + "MultiWrapper.Setter<B, D>"),
-                        Stream.of("BytesDataElementWrapper.Setter<B, D>")
-                ).collect(Collectors.joining(", "))
+                dataTypes
         ));
     }
 

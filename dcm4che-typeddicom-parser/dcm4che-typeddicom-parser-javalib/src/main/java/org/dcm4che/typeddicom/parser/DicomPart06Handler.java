@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
  */
 public class DicomPart06Handler extends AbstractDicomPartHandler {
     private final Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap;
-    private final Map<String, ValueRepresentationMetaInfo> multiValueRepresentationsMap;
     private final Set<DataElementMetaInfo> dataElements;
     private boolean inAttributeRegistryTable = false;
     private int currentColumn = 0;
@@ -28,13 +27,12 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
     private boolean inAttributeRegistryTableBody = false;
     private Map<String, Integer> tagConstants;
 
-    public DicomPart06Handler(Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap, Map<String, ValueRepresentationMetaInfo> multiValueRepresentationsMap) {
-        this(valueRepresentationsMap, multiValueRepresentationsMap, new HashSet<>());
+    public DicomPart06Handler(Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap) {
+        this(valueRepresentationsMap, new HashSet<>());
     }
 
-    public DicomPart06Handler(Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap, Map<String, ValueRepresentationMetaInfo> multiValueRepresentationsMap, Set<DataElementMetaInfo> dataElements) {
+    public DicomPart06Handler(Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap, Set<DataElementMetaInfo> dataElements) {
         this.valueRepresentationsMap = valueRepresentationsMap;
-        this.multiValueRepresentationsMap = multiValueRepresentationsMap;
         this.dataElements = dataElements;
     }
 
@@ -133,12 +131,12 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
                 for (String vr : valueRepresentations) {
                     DataElementMetaInfo dataElement = new DataElementMetaInfo(currentDataElementMetaInfo);
                     dataElement.setValueRepresentation(vr);
-                    dataElement.setValueRepresentationWrapper(valueRepresentationsMap, multiValueRepresentationsMap);
+                    dataElement.setValueRepresentationWrapper(valueRepresentationsMap);
                     dataElement.setKeyword(dataElement.getKeyword() + "As" + vr);
                     this.dataElements.add(dataElement);
                 }
             } else {
-                currentDataElementMetaInfo.setValueRepresentationWrapper(valueRepresentationsMap, multiValueRepresentationsMap);
+                currentDataElementMetaInfo.setValueRepresentationWrapper(valueRepresentationsMap);
                 this.dataElements.add(this.currentDataElementMetaInfo);
             }
         }

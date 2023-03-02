@@ -16,27 +16,22 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
 
-abstract public class GenerateJavaSourcesTask extends DefaultTask {
+public abstract class GenerateJavaSourcesTask extends DefaultTask {
     public static final String METAMODEL_SOURCE_SET_NAME = "metamodel";
 
     @InputDirectory
-    abstract public DirectoryProperty getPrivateDicomMetamodelYamlDirectory();
-
-    @InputDirectory
-    abstract public DirectoryProperty getMustacheTemplateDirectory();
+    public abstract DirectoryProperty getPrivateDicomMetamodelYamlDirectory();
 
     @OutputDirectory
-    abstract public DirectoryProperty getGeneratedJavaOutputDirectory();
+    public abstract DirectoryProperty getGeneratedJavaOutputDirectory();
 
     @TaskAction
     public void generateJavaSources() {
-        SourceSet metamodelSourceSet = getProject().getExtensions().getByType(SourceSetContainer.class).getByName(METAMODEL_SOURCE_SET_NAME);
-        List<File> metamodelYamlFiles = new LinkedList<>(metamodelSourceSet.getAllSource().getFiles());
-        Directory privateDicomMetamodelYamlDirectory2 = this.getPrivateDicomMetamodelYamlDirectory().get();
-        if (privateDicomMetamodelYamlDirectory2 != null) {
-            metamodelYamlFiles.addAll(privateDicomMetamodelYamlDirectory2.getAsFileTree().getFiles());
+        List<File> privateMetamodelYamlFiles = new LinkedList<>();
+        Directory privateDicomMetamodelYamlDirectory = this.getPrivateDicomMetamodelYamlDirectory().getOrNull();
+        if (privateDicomMetamodelYamlDirectory != null) {
+            privateMetamodelYamlFiles.addAll(privateDicomMetamodelYamlDirectory.getAsFileTree().getFiles());
         }
-        File mustacheTemplateDirectory = this.getMustacheTemplateDirectory().get().getAsFile();
         File javaDirectory = this.getGeneratedJavaOutputDirectory().get().getAsFile();
 
 
@@ -66,7 +61,7 @@ abstract public class GenerateJavaSourcesTask extends DefaultTask {
 
         //noinspection ResultOfMethodCallIgnored
         javaDirectory.mkdirs();
-        JavaGenerator dicomXmlParser = new JavaGenerator(metamodelYamlFiles, mustacheTemplateDirectory, javaDirectory);
-        dicomXmlParser.generateSources();
+        JavaGenerator javaGenerator = new JavaGenerator("std.dicom-meta-model.yaml", privateMetamodelYamlFiles, javaDirectory, "templates");
+        javaGenerator.generateSources();
     }
 }

@@ -9,6 +9,7 @@ plugins {
 }
 
 generateTypeddicomJavaSources {
+    privateDicomMetamodelYamlDirectory.set(java.sourceSets.getByName("main").resources.sourceDirectories.single())
     generatedJavaOutputDirectory.set(layout.buildDirectory.dir("typeddicom"))
 }
 

@@ -13,10 +13,10 @@ public class ModuleMetaInfo extends DataElementMetaInfoContainer {
     private final String href;
 
     public ModuleMetaInfo(ModuleTable moduleTable) {
-        this.sectionId = moduleTable.getSectionId();
-        this.name = moduleTable.getName();
-        this.keyword = moduleTable.getKeyword();
-        this.href = moduleTable.getHref();
+        this(moduleTable.getSectionId(),
+                moduleTable.getName(),
+                moduleTable.getKeyword(),
+                moduleTable.getHref());
     }
 
     public ModuleMetaInfo(String sectionId, String name, String keyword, String href) {
@@ -56,10 +56,4 @@ public class ModuleMetaInfo extends DataElementMetaInfoContainer {
         return Objects.hash(super.hashCode(), sectionId, name, keyword, href);
     }
 
-    @Override
-    public String implementsBuilderInterfaces() {
-        return StreamSupport.stream(getSubDataElementMetaInfos().spliterator(), false)
-                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Builder<SELF, T>")
-                .collect(Collectors.joining(", "));
-    }
 }

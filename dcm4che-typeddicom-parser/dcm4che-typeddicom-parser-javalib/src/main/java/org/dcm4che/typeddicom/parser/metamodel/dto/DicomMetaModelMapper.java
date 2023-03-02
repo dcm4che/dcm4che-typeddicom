@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 public class DicomMetaModelMapper {
     public DicomMetaModelDTO mapDicomMetaModelToDicomMetaModelDTO(DicomMetaModel dicomMetaModel) {
@@ -33,7 +34,7 @@ public class DicomMetaModelMapper {
                 valueRepresentationMetaInfo.characterRepertoire(),
                 valueRepresentationMetaInfo.lengthOfValue(),
                 valueRepresentationMetaInfo.href(),
-                Arrays.stream(valueRepresentationMetaInfo.implementsInterfaces().split(",")).map(String::trim).toList()
+                valueRepresentationMetaInfo.dataTypes().stream().toList()
         );
     }
 
@@ -41,13 +42,17 @@ public class DicomMetaModelMapper {
         return new DataElementMetaInfoDTO(
                 dataElementMetaInfo.getName(),
                 dataElementMetaInfo.getTag(),
-                dataElementMetaInfo.getValueRepresentation(),
+                dataElementMetaInfo.getTagConstant(),
+                dataElementMetaInfo.getValueRepresentationWrapper(),
                 dataElementMetaInfo.getValueMultiplicity(),
                 dataElementMetaInfo.getComment(),
                 dataElementMetaInfo.isRetired(),
                 dataElementMetaInfo.getRetiredSince(),
                 dataElementMetaInfo.getContextsOfAdditionalAttributeInfo().entrySet().stream()
                         .map(this::mapAdditionalAttributeInfoContextsEntryToAdditionalAttributeInfoContextsDTO)
+                        .toList(),
+                StreamSupport.stream(dataElementMetaInfo.getSubDataElementMetaInfos().spliterator(), false)
+                        .map(DataElementMetaInfo::getKeyword)
                         .toList()
         );
     }
@@ -77,7 +82,9 @@ public class DicomMetaModelMapper {
         return new ModuleMetaInfoDTO(
                 moduleMetaInfo.getName(),
                 moduleMetaInfo.getSectionId(),
-                moduleMetaInfo.getHref()
+                moduleMetaInfo.getHref(),
+                StreamSupport.stream(moduleMetaInfo.getSubDataElementMetaInfos().spliterator(), false)
+                        .map(DataElementMetaInfo::getKeyword).toList()
         );
     }
 

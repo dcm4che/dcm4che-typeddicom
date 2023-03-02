@@ -44,23 +44,17 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
         this.setTagConstant(other.getTagConstant());
     }
 
-    public boolean isSequence() {
-        return "SQ".equals(valueRepresentation);
-    }
-
     public void addAdditionalAttributeInfoForContext(AdditionalAttributeInfo additionalAttributeInfo, Context context) {
         this.contextsOfAdditionalAttributeInfo
                 .computeIfAbsent(additionalAttributeInfo, info -> new HashSet<>())
                 .add(context);
     }
 
-    public void setValueRepresentationWrapper(Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap, Map<String, ValueRepresentationMetaInfo> multiValueRepresentationsMap) {
+    public void setValueRepresentationWrapper(Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap) {
         if (!valueRepresentation.equals("SQ")) {
-            if (getValueMultiplicity().equals("1")) {
-                this.valueRepresentationWrapper = valueRepresentationsMap.get(valueRepresentation).keyword();
-            } else {
-                this.valueRepresentationWrapper = multiValueRepresentationsMap.get(valueRepresentation).keyword();
-            }
+            this.valueRepresentationWrapper = valueRepresentationsMap.get(valueRepresentation).keyword();
+        } else {
+            this.valueRepresentationWrapper = "Sequence";
         }
     }
 
@@ -234,12 +228,5 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), tag, name, keyword, valueRepresentation, valueMultiplicity, comment, retired, retiredSince, tagConstant, valueRepresentationWrapper);
-    }
-
-    @Override
-    public String implementsBuilderInterfaces() {
-        return StreamSupport.stream(getSubDataElementMetaInfos().spliterator(), false)
-                .map(dataElementMetaInfo -> dataElementMetaInfo.getKeyword() + ".Builder<Builder, Item>")
-                .collect(Collectors.joining(", "));
     }
 }

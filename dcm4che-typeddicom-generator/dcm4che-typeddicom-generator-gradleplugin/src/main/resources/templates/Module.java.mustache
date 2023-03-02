@@ -1,17 +1,17 @@
 // Auto generated
 package org.dcm4che.typeddicom.modules;
 
-{{#subDataElementMetaInfos}}
-import org.dcm4che.typeddicom.dataelements.{{keyword}};
-{{/subDataElementMetaInfos}}
+{{#value.contains}}
+import org.dcm4che.typeddicom.dataelements.{{.}};
+{{/value.contains}}
 
 /**
  * {{name}}
  *
- * @see <a href="{{href}}">DICOM Standard Part 3 - {{name}}</a>
+ * @see <a href="{{value.href}}">DICOM Standard Part 3 - {{value.name}}</a>
  *
  */
-public interface {{keyword}} extends {{{implementsHolderInterfaces}}} {
-    interface Builder<SELF extends Builder<SELF, T>, T extends {{keyword}}> extends {{{implementsBuilderInterfaces}}} {
+public interface {{key}} extends {{{value.implementsHolderInterfaces}}} {
+    interface Builder<SELF extends Builder<SELF, T>, T extends {{key}}> extends {{{value.implementsBuilderInterfaces}}} {
     }
 }
