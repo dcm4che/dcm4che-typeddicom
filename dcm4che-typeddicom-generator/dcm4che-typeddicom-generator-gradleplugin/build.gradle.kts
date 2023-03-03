@@ -5,7 +5,6 @@ plugins {
 
 processDicomXml {
     dicomStandardXmlDirectory.set(layout.projectDirectory.dir("src/main/resources/dicom-standard-xml"))
-    mustacheTemplateDirectory.set(layout.projectDirectory.dir("src/main/resources/templates"))
     generatedYamlMetamodelOutputDirectory.set(layout.buildDirectory.dir("typeddicom-generated/resources"))
 }
 
@@ -44,9 +43,9 @@ java {
     }
 }
 
-// tasks.processResources {
-//     dependsOn(tasks.generateYamlFiles)
-// }
+tasks.named("processResources") {
+    dependsOn(tasks.named("generateYamlFiles"))
+}
 
 tasks.test {
     useJUnitPlatform()

@@ -1,3 +1,5 @@
+import org.dcm4che.typeddicom.generator.gradleplugin.GenerateJavaSourcesTask
+
 val typeddicomVersion: String by extra { project.version as String }
 
 
@@ -109,8 +111,8 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.compileJava {
-    dependsOn(tasks.generateJavaSourceFiles)
+tasks.named<JavaCompile>("compileJava") {
+    dependsOn(tasks.named<GenerateJavaSourcesTask>("generateJavaSourceFiles"))
 }
 
 tasks.named<Jar>("jar").configure {

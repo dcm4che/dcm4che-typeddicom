@@ -20,12 +20,12 @@ public abstract class GenerateMetamodelYamlTask extends DefaultTask {
     public abstract DirectoryProperty getDicomStandardXmlDirectory();
 
     @OutputDirectory
-    public abstract DirectoryProperty getGeneratedYamlOutputDirectory();
+    public abstract DirectoryProperty getGeneratedYamlMetamodelOutputDirectory();
 
     @TaskAction
     public void generateJavaSources() {
         File dicomXmlDirectory = this.getDicomStandardXmlDirectory().get().getAsFile();
-        File javaDirectory = this.getGeneratedYamlOutputDirectory().get().getAsFile();
+        File javaDirectory = this.getGeneratedYamlMetamodelOutputDirectory().get().getAsFile();
 
 
         if (javaDirectory.exists()) {

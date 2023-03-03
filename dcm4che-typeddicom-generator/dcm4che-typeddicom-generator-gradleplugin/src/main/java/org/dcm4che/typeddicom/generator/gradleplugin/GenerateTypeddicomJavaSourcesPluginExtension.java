@@ -10,9 +10,7 @@ import java.io.File;
 
 public interface GenerateTypeddicomJavaSourcesPluginExtension {
     @Optional
-    @InputDirectory
     DirectoryProperty getPrivateDicomMetamodelYamlDirectory();
 
-    @OutputDirectory
     DirectoryProperty getGeneratedJavaOutputDirectory();
 }
