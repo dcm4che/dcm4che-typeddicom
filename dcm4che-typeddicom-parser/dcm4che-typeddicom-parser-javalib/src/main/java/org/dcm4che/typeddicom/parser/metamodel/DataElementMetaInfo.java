@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class DataElementMetaInfo extends DataElementMetaInfoContainer {
-    private static final String LINE_BREAK = "<br/>";
     private String tag;
     private String name;
     private String keyword;
@@ -56,80 +55,6 @@ public class DataElementMetaInfo extends DataElementMetaInfoContainer {
         } else {
             this.valueRepresentationWrapper = "Sequence";
         }
-    }
-
-
-    public String classJavaDoc() {
-        StringBuilder htmlBuilder = new StringBuilder();
-        appendGeneralInfo(htmlBuilder);
-        appendContextInfo(htmlBuilder);
-        Element body = Jsoup.parse(htmlBuilder.toString()).body();
-        sanitizeJDocHtml(body);
-        String htmlString = body.html();
-        htmlString = htmlString.replace("\n<br>", "<br>\n");
-        if (retired) {
-            htmlString += "\n\n@deprecated ";
-            htmlString += comment;
-        }
-        return javaDocify(htmlString, 0);
-    }
-
-    private void appendGeneralInfo(StringBuilder html) {
-        html.append("<strong>Name:</strong> ").append(name).append(LINE_BREAK);
-        html.append("<strong>Keyword:</strong> ").append(keyword).append(LINE_BREAK);
-        html.append("<strong>Tag:</strong> ").append(tag).append(LINE_BREAK);
-        html.append("<strong>Value Representation:</strong> ").append(valueRepresentation).append(LINE_BREAK);
-        html.append("<strong>Value Multiplicity:</strong> ").append(valueMultiplicity).append(LINE_BREAK);
-        if (comment.length() > 0) {
-            html.append("<strong>Comment:</strong> ").append(comment).append(LINE_BREAK);
-        }
-    }
-
-    private void appendContextInfo(StringBuilder html) {
-        if (!contextsOfAdditionalAttributeInfo.isEmpty()) {
-            html.append("<ul>");
-            for (Map.Entry<AdditionalAttributeInfo, Set<Context>> additionalAttributeInfoSetEntry : contextsOfAdditionalAttributeInfo.entrySet()) {
-                html.append("<li><strong>Described in the contexts:</strong><ul>");
-                for (Context context : additionalAttributeInfoSetEntry.getValue()) {
-                    html.append("<li>").append(context.getContextHTML()).append("</li>");
-                }
-                html.append("</ul>as follows: <br/>");
-                AdditionalAttributeInfo additionalAttributeInfo = additionalAttributeInfoSetEntry.getKey();
-                html.append("<strong>Attribute Name:</strong> ").append(additionalAttributeInfo.name()).append(LINE_BREAK);
-                html.append("<strong>Type:</strong> ").append(additionalAttributeInfo.type()).append(LINE_BREAK);
-                html.append("<strong>Attribute Description:</strong> ")
-                        .append(additionalAttributeInfo.attributeDescription()).append(LINE_BREAK);
-                html.append("</li>");
-            }
-            html.append("</ul>");
-        }
-    }
-
-    private void sanitizeJDocHtml(Element body) {
-        for (Element element : body.select("dl > p")) {
-            assert element.parent() != null; // should always have a parent
-            element.parent().before(element);
-        }
-        for (Element element : body.select("dd:empty, p:empty, dd:matchesOwn((?is) )")) {
-            element.remove();
-        }
-    }
-
-    private String javaDocify(String html, int indentationLevel) {
-        String jdoc = WordWrap.from(html)
-                .maxWidth(117 - indentationLevel)
-                .extraWordChars("0123456789-._~:/?#[]@!$&'()*+,;%=\"<>")
-                .newLine("\n * ")
-                .breakWords(false)
-                .wrap();
-        jdoc = "/**\n * " + jdoc + "\n */";
-        jdoc = indent(jdoc, indentationLevel);
-        return jdoc;
-    }
-
-    private String indent(String text, int indentationLevel) {
-        String indent = " ".repeat(indentationLevel * 4);
-        return indent + text.replace("\n", "\n" + indent);
     }
 
     public String getTag() {

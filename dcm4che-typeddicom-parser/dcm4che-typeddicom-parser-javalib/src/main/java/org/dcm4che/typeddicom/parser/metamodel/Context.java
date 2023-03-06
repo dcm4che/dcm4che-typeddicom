@@ -30,20 +30,6 @@ public class Context {
         context.add(addedContextEntry);
     }
     
-    public String getContextHTML() {
-        StringBuilder html = new StringBuilder();
-        for (int i = 0; i < this.context.size(); i++) {
-            html.append("<a href=\"");
-            html.append(this.context.get(i).href());
-            html.append("\">");
-            html.append(this.context.get(i).contextName());
-            html.append("</a>");
-            if (i < this.context.size() - 1 ) {
-                html.append(" &gt; ");
-            }
-        }
-        return html.toString();
-    }
 
     public List<ContextEntry> getContext() {
         return context;

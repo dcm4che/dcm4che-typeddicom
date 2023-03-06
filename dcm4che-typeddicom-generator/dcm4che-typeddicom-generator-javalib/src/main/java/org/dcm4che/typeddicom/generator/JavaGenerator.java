@@ -8,6 +8,8 @@ import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheNotFoundException;
 import com.github.mustachejava.MustacheResolver;
 import com.github.mustachejava.reflect.ReflectionObjectHandler;
+import org.dcm4che.typeddicom.generator.model.mustache.DataElementMustacheModel;
+import org.dcm4che.typeddicom.generator.model.mustache.InformationObjectDefinitionMustacheModel;
 import org.dcm4che.typeddicom.parser.metamodel.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,7 +135,7 @@ public class JavaGenerator {
             String filename = dataElementMetaInfoEntry.getKey() + JAVA_FILE_EXTENSION;
             File javaFile = new File(dataElementDir, filename);
             try (FileWriter javaFileWriter = new FileWriter(javaFile, StandardCharsets.UTF_8)) {
-                mustache.execute(javaFileWriter, dataElementMetaInfoEntry);
+                mustache.execute(javaFileWriter, new DataElementMustacheModel(dataElementMetaInfoEntry.getKey(), dataElementMetaInfoEntry.getValue()));
             }
         }
     }
@@ -147,7 +149,7 @@ public class JavaGenerator {
             String filename = iodEntry.getKey() + JAVA_FILE_EXTENSION;
             File javaFile = new File(dataElementDir, filename);
             try (FileWriter javaFileWriter = new FileWriter(javaFile, StandardCharsets.UTF_8)) {
-                mustache.execute(javaFileWriter, new InformationObjectDefinitionMetaInfoMustacheModel(iodEntry.getKey(), iodEntry.getValue()));
+                mustache.execute(javaFileWriter, new InformationObjectDefinitionMustacheModel(iodEntry.getKey(), iodEntry.getValue()));
             }
         }
     }

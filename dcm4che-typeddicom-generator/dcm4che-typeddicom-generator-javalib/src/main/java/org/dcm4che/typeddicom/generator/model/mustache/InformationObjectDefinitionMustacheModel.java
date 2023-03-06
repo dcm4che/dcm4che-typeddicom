@@ -1,9 +1,12 @@
-package org.dcm4che.typeddicom.parser.metamodel.dto;
+package org.dcm4che.typeddicom.generator.model.mustache;
+
+import org.dcm4che.typeddicom.parser.metamodel.dto.InformationObjectDefinitionMetaInfoDTO;
+import org.dcm4che.typeddicom.parser.metamodel.dto.SOPClassDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record InformationObjectDefinitionMetaInfoMustacheModel(
+public record InformationObjectDefinitionMustacheModel(
         String keyword,
         String name,
         String href,
@@ -11,7 +14,7 @@ public record InformationObjectDefinitionMetaInfoMustacheModel(
         List<SOPClassDTO> sopClasses,
         List<String> modules
 ) {
-    public InformationObjectDefinitionMetaInfoMustacheModel(String key, InformationObjectDefinitionMetaInfoDTO dto) {
+    public InformationObjectDefinitionMustacheModel(String key, InformationObjectDefinitionMetaInfoDTO dto) {
         this(key, dto.name(), dto.name(), dto.href(), dto.sopClasses(), dto.modules());
     }
 
