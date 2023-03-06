@@ -128,8 +128,6 @@ tasks.named<Jar>("sourcesJar").configure {
 }
 
 tasks.withType<Jar> {
-    exclude("dicom-standard-xml/")
-    exclude("templates/")
     manifest {
         attributes["Manifest-Version"] = "1.0"
         attributes["Bundle-ManifestVersion"] = "2"

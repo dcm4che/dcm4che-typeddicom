@@ -44,7 +44,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_16
 }
 
-
 tasks.test {
     useJUnitPlatform()
 }

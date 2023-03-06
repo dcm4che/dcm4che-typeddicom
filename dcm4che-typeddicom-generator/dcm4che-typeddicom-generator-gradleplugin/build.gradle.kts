@@ -47,6 +47,10 @@ tasks.named("processResources") {
     dependsOn(tasks.named("generateYamlFiles"))
 }
 
+tasks.withType<Jar> {
+    exclude("dicom-standard-xml/")
+}
+
 tasks.test {
     useJUnitPlatform()
 }
