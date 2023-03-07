@@ -32,33 +32,33 @@ jobs:
       - name: Build package
         run: gradle build
 
-      - name: Publish bin jar to GitHub
+      - name: Publish standard library bin jar to GitHub
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib.jar
+          asset_path: ./dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std/build/libs/dcm4che-typeddicom-lib.jar
           asset_name: dcm4che-typeddicom-lib-${{ steps.get_release.outputs.tag_name }}.jar
           asset_content_type: application/jar
 
-      - name: Publish javadoc jar to GitHub
+      - name: Publish standard library javadoc jar to GitHub
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib-javadoc.jar
+          asset_path: ./dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std/build/libs/dcm4che-typeddicom-lib-javadoc.jar
           asset_name: dcm4che-typeddicom-lib-javadoc-${{ steps.get_release.outputs.tag_name }}.jar
           asset_content_type: application/jar
 
-      - name: Publish sources jar to GitHub
+      - name: Publish standard library sources jar to GitHub
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib-sources.jar
+          asset_path: ./dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std/build/libs/dcm4che-typeddicom-lib-sources.jar
           asset_name: dcm4che-typeddicom-lib-sources-${{ steps.get_release.outputs.tag_name }}.jar
           asset_content_type: application/jar
 

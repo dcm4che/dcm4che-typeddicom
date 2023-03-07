@@ -32,5 +32,5 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: Artifacts
-        path: dcm4che-typeddicom-lib/build/libs
+        path: dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std/build/libs
         retention-days: 7
