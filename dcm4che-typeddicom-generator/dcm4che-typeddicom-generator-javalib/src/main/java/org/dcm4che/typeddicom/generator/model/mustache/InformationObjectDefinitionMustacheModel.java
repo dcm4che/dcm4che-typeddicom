@@ -15,7 +15,7 @@ public record InformationObjectDefinitionMustacheModel(
         List<String> modules
 ) {
     public InformationObjectDefinitionMustacheModel(String key, InformationObjectDefinitionMetaInfoDTO dto) {
-        this(key, dto.name(), dto.name(), dto.href(), dto.sopClasses(), dto.modules());
+        this(key, dto.name(), dto.href(), dto.sectionId(), dto.sopClasses(), dto.modules());
     }
 
     public String getImplementsModules() {
