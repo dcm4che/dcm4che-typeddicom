@@ -1,12 +1,22 @@
+import java.util.*
+
+val rootProperties = Properties()
+File("./gradle.properties").inputStream().use {
+    rootProperties.load(it)
+}
+
+group = rootProperties.getProperty("group")
+version = rootProperties.getProperty("version")
+
 plugins {
     `java-gradle-plugin`
 }
 
 gradlePlugin {
     plugins {
-        create("processDicomXml") {
-            id = "org.dcm4che.typeddicom.parser.gradleplugin"
-            implementationClass = "org.dcm4che.typeddicom.parser.gradleplugin.ProcessDicomXmlPlugin"
+        create("dicomXmlParser") {
+            id = "org.dcm4che.typeddicom-xml-parser"
+            implementationClass = "org.dcm4che.typeddicom.parser.gradleplugin.DicomXmlParserPlugin"
         }
     }
 }

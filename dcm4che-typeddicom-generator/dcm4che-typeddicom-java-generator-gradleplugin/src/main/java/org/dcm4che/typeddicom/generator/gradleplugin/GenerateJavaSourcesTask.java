@@ -17,8 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class GenerateJavaSourcesTask extends DefaultTask {
-    public static final String METAMODEL_SOURCE_SET_NAME = "metamodel";
-
     @InputDirectory
     public abstract DirectoryProperty getPrivateDicomMetamodelYamlDirectory();
 
@@ -61,7 +59,7 @@ public abstract class GenerateJavaSourcesTask extends DefaultTask {
 
         //noinspection ResultOfMethodCallIgnored
         javaDirectory.mkdirs();
-        JavaGenerator javaGenerator = new JavaGenerator("std.dicom-meta-model.yaml", privateMetamodelYamlFiles, javaDirectory, "templates");
+        JavaGenerator javaGenerator = new JavaGenerator("std.dicom-meta-model.yaml", privateMetamodelYamlFiles, javaDirectory);
         javaGenerator.generateSources();
     }
 }

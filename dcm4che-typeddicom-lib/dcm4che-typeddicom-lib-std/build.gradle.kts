@@ -1,13 +1,19 @@
 import org.dcm4che.typeddicom.generator.gradleplugin.GenerateJavaSourcesTask
+import java.util.*
 
-val typeddicomVersion: String by extra { project.version as String }
+val rootProperties = Properties()
+File("./gradle.properties").inputStream().use {
+    rootProperties.load(it)
+}
 
+group = rootProperties.getProperty("group")
+version = rootProperties.getProperty("version")
 
 plugins {
     `java-library`
     `maven-publish`
     signing
-    id("org.dcm4che.typeddicom.generator.gradleplugin")
+    id("org.dcm4che.typeddicom-java-generator")
 }
 
 generateTypeddicomJavaSources {
@@ -18,10 +24,8 @@ generateTypeddicomJavaSources {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            groupId = rootProject.group.toString()
-            artifactId = rootProject.name
-            version = rootProject.version.toString()
-            
+            artifactId = project.name
+
             from(components["java"])
 
             pom {
@@ -31,12 +35,12 @@ publishing {
                 properties.set(mapOf(
                     "project.build.sourceEncoding" to "UTF-8"
                 ))
-                licenses { 
+                licenses {
                     name.set("Mozilla Public License Version 2.0")
                     url.set("https://www.mozilla.org/en-US/MPL/2.0/")
                 }
                 developers {
-                    developer { 
+                    developer {
                         id.set("Nirostar")
                         name.set("Niklas Roth")
                         email.set("36939232+nirostar@users.noreply.github.com")
@@ -47,7 +51,7 @@ publishing {
                     connection.set("scm:git:git://github.com:dcm4che/dcm4che-typeddicom.git")
                     developerConnection.set("scm:git:git@github.com:dcm4che/dcm4che-typeddicom.git")
                 }
-                issueManagement { 
+                issueManagement {
                     url.set("https://github.com/dcm4che/dcm4che-typeddicom/issues")
                     system.set("GitHub Issues")
                 }
@@ -63,7 +67,7 @@ publishing {
          *  ORG_GRADLE_PROJECT_signingKey=GPG_PRIVATE_KEY
          *  ORG_GRADLE_PROJECT_signingPassword=GPG_KEY_PASSWORD
         */
-        maven { 
+        maven {
             name = "dcm4cheMaven"
             url = uri("sftp://dcm4che.org:22/home/maven2")
             credentials(PasswordCredentials::class)
@@ -71,12 +75,12 @@ publishing {
     }
 }
 
-signing {
-    val signingKey: String? by project
-    val signingPassword: String? by project
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign(publishing.publications["mavenJava"])
-}
+// signing {
+//     val signingKey: String? by project
+//     val signingPassword: String? by project
+//     useInMemoryPgpKeys(signingKey, signingPassword)
+//     sign(publishing.publications["mavenJava"])
+// }
 
 
 repositories {
@@ -94,17 +98,10 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
     withJavadocJar()
     withSourcesJar()
-    sourceSets {
-        main {
-            java {
-                srcDir(layout.buildDirectory.dir("typeddicom"))
-            }
-        }
-    }
 }
 
 tasks.test {
@@ -124,6 +121,7 @@ tasks.named<Jar>("javadocJar").configure {
 }
 
 tasks.named<Jar>("sourcesJar").configure {
+    dependsOn(tasks.named<GenerateJavaSourcesTask>("generateJavaSourceFiles"))
     archiveFileName.set("${project.name}-sources.jar")
 }
 
@@ -133,7 +131,7 @@ tasks.withType<Jar> {
         attributes["Bundle-ManifestVersion"] = "2"
         attributes["Bundle-Name"] = "org.dcm4che.typeddicom"
         attributes["Bundle-SymbolicName"] = "org.dcm4che.typeddicom;singleton:=true"
-        attributes["Bundle-Version"] = typeddicomVersion
+        attributes["Bundle-Version"] = version
         attributes["Bundle-Vendor"] = "dcm4che"
         attributes["Bundle-ClassPath"] = "."
         attributes["Bundle-ActivationPolicy"] = "lazy"

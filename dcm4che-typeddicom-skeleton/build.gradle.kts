@@ -1,9 +1,16 @@
+import java.util.*
+
+val rootProperties = Properties()
+File("./gradle.properties").inputStream().use {
+    rootProperties.load(it)
+}
+
+group = rootProperties.getProperty("group")
+version = rootProperties.getProperty("version")
+
 plugins {
     id("java-library")
 }
-
-group = "org.dcm4che"
-version = "unspecified"
 
 repositories {
     mavenCentral()

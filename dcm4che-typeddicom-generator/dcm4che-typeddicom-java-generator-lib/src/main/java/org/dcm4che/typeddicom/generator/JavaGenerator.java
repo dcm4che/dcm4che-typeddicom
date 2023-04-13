@@ -31,11 +31,11 @@ public class JavaGenerator {
     private final File javaOutputDirectory;
     private final YAMLMapper yamlMapper;
 
-    public JavaGenerator(String stdMetaModelYamlFileResourcePath, List<File> privateMetamodelYamlFiles, File javaOutputDirectory, String templatesDirectoryResourcePath) {
+    public JavaGenerator(String stdMetaModelYamlFileResourcePath, List<File> privateMetamodelYamlFiles, File javaOutputDirectory) {
         this.stdMetaModelYamlFileResourcePath = stdMetaModelYamlFileResourcePath;
         this.privateMetamodelYamlFiles = privateMetamodelYamlFiles;
         this.javaOutputDirectory = javaOutputDirectory;
-        MustacheResolver mustacheResolver = resourceName -> getInputStreamReaderForTemplate(templatesDirectoryResourcePath, resourceName);
+        MustacheResolver mustacheResolver = resourceName -> getInputStreamReaderForTemplate(resourceName);
         mustacheFactory = new DefaultMustacheFactory(mustacheResolver);
         mustacheFactory.setObjectHandler(new MapMethodReflectionHandler());
 
@@ -44,8 +44,8 @@ public class JavaGenerator {
         yamlMapper = new YAMLMapper(YAMLFactory.builder().loaderOptions(loaderOptions).build());
     }
 
-    private InputStreamReader getInputStreamReaderForTemplate(String templatesDirectoryResourcePath, String resourceName) {
-        InputStream mustacheFile = this.getClass().getClassLoader().getResourceAsStream(templatesDirectoryResourcePath + "/" + resourceName + ".java.mustache");
+    private InputStreamReader getInputStreamReaderForTemplate(String resourceName) {
+        InputStream mustacheFile = this.getClass().getClassLoader().getResourceAsStream("templates" + "/" + resourceName + ".java.mustache");
         if (mustacheFile == null) {
             throw new MustacheNotFoundException(resourceName);
         } else {
