@@ -109,7 +109,6 @@ tasks.test {
 }
 
 tasks.named<JavaCompile>("compileJava") {
-    dependsOn(tasks.named<GenerateJavaSourcesTask>("generateJavaSourceFiles"))
 }
 
 tasks.named<Jar>("jar").configure {
@@ -121,7 +120,6 @@ tasks.named<Jar>("javadocJar").configure {
 }
 
 tasks.named<Jar>("sourcesJar").configure {
-    dependsOn(tasks.named<GenerateJavaSourcesTask>("generateJavaSourceFiles"))
     archiveFileName.set("${project.name}-sources.jar")
 }
 

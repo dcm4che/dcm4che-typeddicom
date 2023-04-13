@@ -51,21 +51,9 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
     withJavadocJar()
     withSourcesJar()
-    sourceSets {
-        main {
-            resources {
-                srcDir(layout.buildDirectory.dir("typeddicom-generated/resources"))
-            }
-        }
-    }
-}
-
-tasks.named("processResources") {
-    dependsOn(tasks.named("generateYamlFiles"))
 }
 
 tasks.withType<Jar> {
-    dependsOn(tasks.named("generateYamlFiles"))
     exclude("dicom-standard-xml/")
 }
 
