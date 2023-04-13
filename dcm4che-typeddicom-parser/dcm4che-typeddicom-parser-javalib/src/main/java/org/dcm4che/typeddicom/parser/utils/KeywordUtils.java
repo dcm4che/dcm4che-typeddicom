@@ -153,12 +153,19 @@ public class KeywordUtils {
         }
         result = result + tradMillions;
 
-        String tradHundredThousands = switch (hundredThousands) {
-            case 0 -> "";
-            case 1 -> "one thousand ";
-            default -> convertLessThanOneThousand(hundredThousands)
-                    + " thousand ";
-        };
+        String tradHundredThousands;
+        switch (hundredThousands) {
+            case 0:
+                tradHundredThousands = "";
+                break;
+            case 1:
+                tradHundredThousands = "one thousand ";
+                break;
+            default:
+                tradHundredThousands = convertLessThanOneThousand(hundredThousands)
+                        + " thousand ";
+                break;
+        }
         result = result + tradHundredThousands;
 
         String tradThousand;

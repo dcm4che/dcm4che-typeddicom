@@ -68,17 +68,29 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
 
     private boolean convertToAndAppendHTML(String qName, Attributes attributes, boolean close) {
         switch (qName) {
-            case "para" -> appendTag("p", close);
-            case "itemizedlist" -> appendTag("ul", close);
-            case "emphasis" -> appendTag("em", close);
-            case "superscript" -> appendTag("sup", close);
-            case "subscript" -> appendTag("sub", close);
-            case "orderedlist" -> appendTag("ol", close);
-            case "variablelist" -> {
+            case "para":
+                appendTag("p", close);
+                break;
+            case "itemizedlist":
+                appendTag("ul", close);
+                break;
+            case "emphasis":
+                appendTag("em", close);
+                break;
+            case "superscript":
+                appendTag("sup", close);
+                break;
+            case "subscript":
+                appendTag("sub", close);
+                break;
+            case "orderedlist":
+                appendTag("ol", close);
+                break;
+            case "variablelist":
                 appendTag("dl", close);
                 inVariableList = !close;
-            }
-            case "title" -> {
+                break;
+            case "title":
                 if (!close) {
                     appendTag("p", false);
                     appendTag("strong", false);
@@ -86,16 +98,18 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
                     appendTag("strong", true);
                     appendTag("p", true);
                 }
-            }
-            case "term" -> appendTag("dt", close);
-            case "listitem" -> {
+                break;
+            case "term":
+                appendTag("dt", close);
+                break;
+            case "listitem":
                 if (inVariableList) {
                     appendTag("dd", close);
                 } else {
                     appendTag("li", close);
                 }
-            }
-            case "xref" -> {
+                break;
+            case "xref":
                 if (!close) {
                     String xmlId = attributes.getValue("linkend");
                     appendTag(
@@ -107,11 +121,10 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
                 } else {
                     appendTag("a", true);
                 }
-            }
-            case "varlistentry" -> {
+                break;
+            case "varlistentry":
                 return true;
-            }
-            case "note" -> {
+            case "note":
                 if (!close) {
                     appendTag("div", false, Map.of("class", "note", "style", "font-style: italic; margin-left: 0.5in;"), "");
                     appendTag("strong", false, Collections.emptyMap(), "Note");
@@ -119,8 +132,8 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
                 } else {
                     appendTag("div", true);
                 }
-            }
-            case "olink" -> {
+                break;
+            case "olink":
                 if (!close) {
                     String targetptr = attributes.getValue("targetptr");
                     String targetdoc = attributes.getValue("targetdoc");
@@ -133,8 +146,8 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
                 } else {
                     appendTag("a", true);
                 }
-            }
-            case "link" -> {
+                break;
+            case "link":
                 if (!close) {
                     appendTag(
                             "a",
@@ -145,11 +158,10 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
                 } else {
                     appendTag("a", true);
                 }
-            }
-            default -> {
+                break;
+            default:
                 System.out.println("Unknown text tag: " + qName);
                 return false;
-            }
         }
         return true;
     }

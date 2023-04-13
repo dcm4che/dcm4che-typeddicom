@@ -84,18 +84,18 @@ public class JavaGenerator {
     }
 
     private void generateJavaSources(DicomMetaModelDTO dicomMetaModelDTO) throws IOException {
-        generateValueRepresentationSingleInterfaces(dicomMetaModelDTO.valueRepresentations());
-        generateValueRepresentationMultiInterfaces(dicomMetaModelDTO.valueRepresentations());
-        LOGGER.info("Generated {} Value Representation interfaces", dicomMetaModelDTO.valueRepresentations().size() * 2);
+        generateValueRepresentationSingleInterfaces(dicomMetaModelDTO.getValueRepresentations());
+        generateValueRepresentationMultiInterfaces(dicomMetaModelDTO.getValueRepresentations());
+        LOGGER.info("Generated {} Value Representation interfaces", dicomMetaModelDTO.getValueRepresentations().size() * 2);
 
-        generateDataElementWrapperClasses(dicomMetaModelDTO.dataElements());
-        LOGGER.info("Generated {} Data Element classes", dicomMetaModelDTO.dataElements().size());
+        generateDataElementWrapperClasses(dicomMetaModelDTO.getDataElements());
+        LOGGER.info("Generated {} Data Element classes", dicomMetaModelDTO.getDataElements().size());
 
-        generateModuleInterfaces(dicomMetaModelDTO.modules());
-        LOGGER.info("Generated {} Module interfaces", dicomMetaModelDTO.modules().size());
+        generateModuleInterfaces(dicomMetaModelDTO.getModules());
+        LOGGER.info("Generated {} Module interfaces", dicomMetaModelDTO.getModules().size());
 
-        generateIODClasses(dicomMetaModelDTO.iods());
-        LOGGER.info("Generated {} IOD classes", dicomMetaModelDTO.iods().size());
+        generateIODClasses(dicomMetaModelDTO.getIods());
+        LOGGER.info("Generated {} IOD classes", dicomMetaModelDTO.getIods().size());
     }
 
     private void generateValueRepresentationSingleInterfaces(Map<String, ValueRepresentationMetaInfoDTO> valueRepresentations) throws IOException {

@@ -252,7 +252,8 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
     }
 
     private Iterable<DataElementMetaInfo> resolveMacrosRecursively(TableEntry tableEntry, Context context) {
-        if (tableEntry instanceof MacroTableEntry macroTableEntry) {
+        if (tableEntry instanceof MacroTableEntry) {
+            MacroTableEntry macroTableEntry = (MacroTableEntry) tableEntry;
             String tableId = macroTableEntry.getTableId();
             Set<MacroTable> matchingMacroTables = getMatchingMacroTables(tableId);
             if (matchingMacroTables.isEmpty()) {
@@ -277,7 +278,8 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
                 }
             }
             return macroMetaInfo.getSubDataElementMetaInfos();
-        } else if (tableEntry instanceof AttributeTableEntry attributeTableEntry) {
+        } else if (tableEntry instanceof AttributeTableEntry) {
+            AttributeTableEntry attributeTableEntry = (AttributeTableEntry) tableEntry;
             Set<DataElementMetaInfo> dataElementMetaInfos = this.dataElementMetaInfos.get(attributeTableEntry.getTag());
             if (dataElementMetaInfos == null) {
                 System.out.println("Invalid attribute tag: " + attributeTableEntry.getTag());

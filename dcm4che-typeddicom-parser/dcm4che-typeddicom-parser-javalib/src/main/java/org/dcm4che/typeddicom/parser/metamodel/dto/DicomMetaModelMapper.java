@@ -2,10 +2,8 @@ package org.dcm4che.typeddicom.parser.metamodel.dto;
 
 import org.dcm4che.typeddicom.parser.metamodel.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class DicomMetaModelMapper {
@@ -34,7 +32,7 @@ public class DicomMetaModelMapper {
                 valueRepresentationMetaInfo.characterRepertoire(),
                 valueRepresentationMetaInfo.lengthOfValue(),
                 valueRepresentationMetaInfo.href(),
-                valueRepresentationMetaInfo.dataTypes().stream().toList()
+                new ArrayList<>(valueRepresentationMetaInfo.dataTypes())
         );
     }
 
@@ -50,10 +48,10 @@ public class DicomMetaModelMapper {
                 dataElementMetaInfo.getRetiredSince(),
                 dataElementMetaInfo.getContextsOfAdditionalAttributeInfo().entrySet().stream()
                         .map(this::mapAdditionalAttributeInfoContextsEntryToAdditionalAttributeInfoContextsDTO)
-                        .toList(),
+                        .collect(Collectors.toList()),
                 StreamSupport.stream(dataElementMetaInfo.getSubDataElementMetaInfos().spliterator(), false)
                         .map(DataElementMetaInfo::getKeyword)
-                        .toList()
+                        .collect(Collectors.toList())
         );
     }
 
@@ -62,12 +60,12 @@ public class DicomMetaModelMapper {
                 mapAdditionalAttributeInfoToAdditionalAttributeInfoDTO(additionalAttributeInfoContextsEntry.getKey()),
                 additionalAttributeInfoContextsEntry.getValue().stream()
                         .map(this::mapContextToContextEntryDTOs)
-                        .toList()
+                        .collect(Collectors.toList())
         );
     }
 
     private List<ContextEntryDTO> mapContextToContextEntryDTOs(Context context) {
-        return context.getContext().stream().map(this::mapContextEntryToContextEntryDTO).toList();
+        return context.getContext().stream().map(this::mapContextEntryToContextEntryDTO).collect(Collectors.toList());
     }
 
     private ContextEntryDTO mapContextEntryToContextEntryDTO(ContextEntry contextEntry) {
@@ -84,7 +82,7 @@ public class DicomMetaModelMapper {
                 moduleMetaInfo.getSectionId(),
                 moduleMetaInfo.getHref(),
                 StreamSupport.stream(moduleMetaInfo.getSubDataElementMetaInfos().spliterator(), false)
-                        .map(DataElementMetaInfo::getKeyword).toList()
+                        .map(DataElementMetaInfo::getKeyword).collect(Collectors.toList())
         );
     }
 
@@ -95,10 +93,10 @@ public class DicomMetaModelMapper {
                 informationObjectDefinitionMetaInfo.getSectionId(),
                 informationObjectDefinitionMetaInfo.getSopClasses().stream()
                         .map(this::mapSopClassToSopClassDTO)
-                        .toList(),
+                        .collect(Collectors.toList()),
                 informationObjectDefinitionMetaInfo.getModuleReferences().stream()
                         .map(ref -> ref.moduleMetaInfo().getKeyword())
-                        .toList()
+                        .collect(Collectors.toList())
         );
     }
 

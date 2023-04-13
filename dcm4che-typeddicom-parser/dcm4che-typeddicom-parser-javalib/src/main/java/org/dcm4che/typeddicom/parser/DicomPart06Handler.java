@@ -87,13 +87,26 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
             endOfDataElement();
         } else if (this.currentDataElementMetaInfo != null && "td".equals(qName)) {
             switch (currentColumn) {
-                case 1 -> this.currentDataElementMetaInfo.setTag(getRecordedText());
-                case 2 -> this.currentDataElementMetaInfo.setName(getRecordedText());
-                case 3 -> this.currentDataElementMetaInfo.setKeyword(getRecordedText().replace("\u200B", "").trim());
-                case 4 -> this.currentDataElementMetaInfo.setValueRepresentation(getRecordedText());
-                case 5 -> this.currentDataElementMetaInfo.setValueMultiplicity(getRecordedText());
-                case 6 -> this.currentDataElementMetaInfo.setComment(getRecordedText());
-                default -> throw new IllegalStateException("Unexpected value: " + currentColumn);
+                case 1:
+                    this.currentDataElementMetaInfo.setTag(getRecordedText());
+                    break;
+                case 2:
+                    this.currentDataElementMetaInfo.setName(getRecordedText());
+                    break;
+                case 3:
+                    this.currentDataElementMetaInfo.setKeyword(getRecordedText().replace("\u200B", "").trim());
+                    break;
+                case 4:
+                    this.currentDataElementMetaInfo.setValueRepresentation(getRecordedText());
+                    break;
+                case 5:
+                    this.currentDataElementMetaInfo.setValueMultiplicity(getRecordedText());
+                    break;
+                case 6:
+                    this.currentDataElementMetaInfo.setComment(getRecordedText());
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + currentColumn);
             }
         }
         super.endElement(uri, localName, qName);

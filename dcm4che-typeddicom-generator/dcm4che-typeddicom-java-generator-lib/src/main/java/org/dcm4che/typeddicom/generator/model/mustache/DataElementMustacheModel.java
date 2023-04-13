@@ -10,36 +10,62 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-public record DataElementMustacheModel(
-        String keyword,
-        String name,
-        String tag,
-        String tagConstant,
-        String valueRepresentation,
-        String valueMultiplicity,
-        String comment,
-        boolean retired,
-        String retiredSince,
-        List<AdditionalAttributeInfoContextsDTO> additionalAttributeInfo,
-        List<String> contains
-) {
-    private static final String LINE_BREAK = "<br/>";
+public final class DataElementMustacheModel {
+    private static final String LINE_BREAK = "<br>";
+    private final String keyword;
+    private final String name;
+    private final String tag;
+    private final String tagConstant;
+    private final String valueRepresentation;
+    private final String valueMultiplicity;
+    private final String comment;
+    private final boolean retired;
+    private final String retiredSince;
+    private final List<AdditionalAttributeInfoContextsDTO> additionalAttributeInfo;
+    private final List<String> contains;
+
+    public DataElementMustacheModel(
+            String keyword,
+            String name,
+            String tag,
+            String tagConstant,
+            String valueRepresentation,
+            String valueMultiplicity,
+            String comment,
+            boolean retired,
+            String retiredSince,
+            List<AdditionalAttributeInfoContextsDTO> additionalAttributeInfo,
+            List<String> contains
+    ) {
+        this.keyword = keyword;
+        this.name = name;
+        this.tag = tag;
+        this.tagConstant = tagConstant;
+        this.valueRepresentation = valueRepresentation;
+        this.valueMultiplicity = valueMultiplicity;
+        this.comment = comment;
+        this.retired = retired;
+        this.retiredSince = retiredSince;
+        this.additionalAttributeInfo = additionalAttributeInfo;
+        this.contains = contains;
+    }
 
     public DataElementMustacheModel(String keyword, DataElementMetaInfoDTO dto) {
         this(
                 keyword,
-                dto.name(),
-                dto.tag(),
-                dto.tagConstant(),
-                dto.valueRepresentation(),
-                dto.valueMultiplicity(),
-                dto.comment(),
-                dto.retired(),
-                dto.retiredSince(),
-                dto.additionalAttributeInfo(),
-                dto.contains()
+                dto.getName(),
+                dto.getTag(),
+                dto.getTagConstant(),
+                dto.getValueRepresentation(),
+                dto.getValueMultiplicity(),
+                dto.getComment(),
+                dto.getRetired(),
+                dto.getRetiredSince(),
+                dto.getAdditionalAttributeInfo(),
+                dto.getContains()
         );
     }
 
@@ -102,12 +128,12 @@ public record DataElementMustacheModel(
             for (AdditionalAttributeInfoContextsDTO additionalAttributeInfoSetEntry : additionalAttributeInfo) {
                 html.append("<li><strong>Described in the contexts:</strong><ul>");
                 html.append(additionalAttributeInfoSetEntry.getContextsHTML());
-                html.append("</ul>as follows: <br/>");
-                AdditionalAttributeInfoDTO additionalAttributeInfo = additionalAttributeInfoSetEntry.additionalAttributeInfoDTO();
-                html.append("<strong>Attribute Name:</strong> ").append(additionalAttributeInfo.name()).append(LINE_BREAK);
-                html.append("<strong>Type:</strong> ").append(additionalAttributeInfo.type()).append(LINE_BREAK);
+                html.append("</ul>as follows: <br>");
+                AdditionalAttributeInfoDTO additionalAttributeInfo = additionalAttributeInfoSetEntry.getAdditionalAttributeInfoDTO();
+                html.append("<strong>Attribute Name:</strong> ").append(additionalAttributeInfo.getName()).append(LINE_BREAK);
+                html.append("<strong>Type:</strong> ").append(additionalAttributeInfo.getType()).append(LINE_BREAK);
                 html.append("<strong>Attribute Description:</strong> ")
-                        .append(additionalAttributeInfo.attributeDescription()).append(LINE_BREAK);
+                        .append(additionalAttributeInfo.getAttributeDescription()).append(LINE_BREAK);
                 html.append("</li>");
             }
             html.append("</ul>");
@@ -140,4 +166,88 @@ public record DataElementMustacheModel(
         String indent = " ".repeat(indentationLevel * 4);
         return indent + text.replace("\n", "\n" + indent);
     }
+
+    public String keyword() {
+        return keyword;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String tag() {
+        return tag;
+    }
+
+    public String tagConstant() {
+        return tagConstant;
+    }
+
+    public String valueRepresentation() {
+        return valueRepresentation;
+    }
+
+    public String valueMultiplicity() {
+        return valueMultiplicity;
+    }
+
+    public String comment() {
+        return comment;
+    }
+
+    public boolean retired() {
+        return retired;
+    }
+
+    public String retiredSince() {
+        return retiredSince;
+    }
+
+    public List<AdditionalAttributeInfoContextsDTO> additionalAttributeInfo() {
+        return additionalAttributeInfo;
+    }
+
+    public List<String> contains() {
+        return contains;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (DataElementMustacheModel) obj;
+        return Objects.equals(this.keyword, that.keyword) &&
+                Objects.equals(this.name, that.name) &&
+                Objects.equals(this.tag, that.tag) &&
+                Objects.equals(this.tagConstant, that.tagConstant) &&
+                Objects.equals(this.valueRepresentation, that.valueRepresentation) &&
+                Objects.equals(this.valueMultiplicity, that.valueMultiplicity) &&
+                Objects.equals(this.comment, that.comment) &&
+                this.retired == that.retired &&
+                Objects.equals(this.retiredSince, that.retiredSince) &&
+                Objects.equals(this.additionalAttributeInfo, that.additionalAttributeInfo) &&
+                Objects.equals(this.contains, that.contains);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(keyword, name, tag, tagConstant, valueRepresentation, valueMultiplicity, comment, retired, retiredSince, additionalAttributeInfo, contains);
+    }
+
+    @Override
+    public String toString() {
+        return "DataElementMustacheModel[" +
+                "keyword=" + keyword + ", " +
+                "name=" + name + ", " +
+                "tag=" + tag + ", " +
+                "tagConstant=" + tagConstant + ", " +
+                "valueRepresentation=" + valueRepresentation + ", " +
+                "valueMultiplicity=" + valueMultiplicity + ", " +
+                "comment=" + comment + ", " +
+                "retired=" + retired + ", " +
+                "retiredSince=" + retiredSince + ", " +
+                "additionalAttributeInfo=" + additionalAttributeInfo + ", " +
+                "contains=" + contains + ']';
+    }
+
 }
