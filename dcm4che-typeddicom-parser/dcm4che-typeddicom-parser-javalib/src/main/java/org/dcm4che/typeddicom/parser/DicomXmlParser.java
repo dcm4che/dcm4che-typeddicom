@@ -8,7 +8,7 @@ import org.dcm4che.typeddicom.parser.metamodel.DicomMetaModel;
 import org.dcm4che.typeddicom.parser.metamodel.InformationObjectDefinitionMetaInfo;
 import org.dcm4che.typeddicom.parser.metamodel.ValueRepresentationMetaInfo;
 import org.dcm4che.typeddicom.parser.metamodel.dto.DicomMetaModelDTO;
-import org.dcm4che.typeddicom.parser.metamodel.dto.DicomMetaModelMapper;
+import org.dcm4che.typeddicom.parser.metamodel.DicomMetaModelMapper;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;

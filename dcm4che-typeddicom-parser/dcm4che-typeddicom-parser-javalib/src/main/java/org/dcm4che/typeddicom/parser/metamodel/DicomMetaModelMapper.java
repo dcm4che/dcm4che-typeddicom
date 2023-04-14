@@ -1,6 +1,6 @@
-package org.dcm4che.typeddicom.parser.metamodel.dto;
+package org.dcm4che.typeddicom.parser.metamodel;
 
-import org.dcm4che.typeddicom.parser.metamodel.*;
+import org.dcm4che.typeddicom.parser.metamodel.dto.*;
 
 import java.util.*;
 import java.util.stream.Collectors;

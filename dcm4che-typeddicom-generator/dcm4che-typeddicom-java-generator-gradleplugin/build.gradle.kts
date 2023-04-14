@@ -1,13 +1,3 @@
-import java.util.*
-
-val rootProperties = Properties()
-File("./gradle.properties").inputStream().use {
-    rootProperties.load(it)
-}
-
-group = rootProperties.getProperty("group")
-version = rootProperties.getProperty("version")
-
 plugins {
     `java-gradle-plugin`
     id("org.dcm4che.typeddicom-xml-parser")

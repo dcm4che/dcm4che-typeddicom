@@ -1,13 +1,3 @@
-import java.util.*
-
-val rootProperties = Properties()
-File("./gradle.properties").inputStream().use {
-    rootProperties.load(it)
-}
-
-group = rootProperties.getProperty("group")
-version = rootProperties.getProperty("version")
-
 plugins {
     id("java-library")
 }
@@ -22,6 +12,8 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":dcm4che-typeddicom-parser-dtos"))
+
     implementation("org.apache.commons:commons-text:1.9")
     implementation("com.github.davidmoten:word-wrap:0.1.9")
 
@@ -33,7 +25,6 @@ dependencies {
 
     implementation("com.fasterxml.jackson.core:jackson-core:2.14.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")

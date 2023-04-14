@@ -1,6 +1,8 @@
 val releasableProjects = arrayOf(
+    "dcm4che-typeddicom-parser",
     "dcm4che-typeddicom-generator",
-    "dcm4che-typeddicom-lib"
+    "dcm4che-typeddicom-lib",
+    "dcm4che-typeddicom-skeleton"
 )
 
 tasks.register("publishAllPublicationsToDcm4cheMavenRepository") {

@@ -15,13 +15,18 @@ import java.util.Map;
 import java.util.Objects;
 
 public class TypeddicomPublisherPlugin implements Plugin<Project> {
+    private static final String TYPEDDICOM_GROUP = "org.dcm4che";
+    private static final String TYPEDDICOM_VERSION = "0.5.0-SNAPSHOT";
 
-    public static final String STANDARD_PUBLICATION_NAME = "mavenJava";
-    public static final String GRADLE_PLUGIN_PUBLICATION_NAME = "pluginMaven";
+    private static final String STANDARD_PUBLICATION_NAME = "mavenJava";
+    private static final String GRADLE_PLUGIN_PUBLICATION_NAME = "pluginMaven";
     private TypeddicomPublisherPluginExtension extension;
 
     @Override
     public void apply(@NotNull Project project) {
+        project.setGroup(TYPEDDICOM_GROUP);
+        project.setVersion(TYPEDDICOM_VERSION);
+
         this.extension = project.getExtensions().create("typeddicomPublisher", TypeddicomPublisherPluginExtension.class);
 
         applyPublicationAndSigningPlugins(project);
@@ -46,7 +51,7 @@ public class TypeddicomPublisherPlugin implements Plugin<Project> {
         project.getTasks().withType(Jar.class, jar -> {
             jar.getManifest().attributes(Map.of(
                     "Implementation-Title", project.getName(),
-                    "Implementation-Version", project.getVersion()
+                    "Implementation-Version", TYPEDDICOM_VERSION
             ));
         });
     }
@@ -62,6 +67,10 @@ public class TypeddicomPublisherPlugin implements Plugin<Project> {
         MavenPublication publication = publishing.getPublications().maybeCreate(publicationName, MavenPublication.class);
 
         publication.setArtifactId(project.getName());
+
+        if (!Objects.equals(publicationName, GRADLE_PLUGIN_PUBLICATION_NAME)) {
+            publication.from(project.getComponents().getByName("java"));
+        }
 
         publication.pom(pom -> {
             pom.getName().set(extension.getPomName());

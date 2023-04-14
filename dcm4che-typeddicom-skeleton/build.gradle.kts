@@ -1,15 +1,13 @@
-import java.util.*
-
-val rootProperties = Properties()
-File("./gradle.properties").inputStream().use {
-    rootProperties.load(it)
-}
-
-group = rootProperties.getProperty("group")
-version = rootProperties.getProperty("version")
-
 plugins {
     id("java-library")
+    id("org.dcm4che.typeddicom-publisher")
+}
+
+typeddicomPublisher {
+    pomName.set("dcm4che-typeddicom-skeleton")
+    pomDescription.set("This contains the skeleton implementation of the Java classes for typeddicom libraries. It " +
+            "isn't very useful on it's own. (see dcm4che-typeddicom-lib-std for a full fledged implementation of the " +
+            "DICOM standard.");
 }
 
 repositories {
