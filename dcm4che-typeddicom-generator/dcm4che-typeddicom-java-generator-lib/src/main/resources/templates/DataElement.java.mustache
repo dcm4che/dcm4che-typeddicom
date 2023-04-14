@@ -261,6 +261,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
     {{#sequence}}
 
     public interface Builder<SELF extends Builder<SELF, T>, T extends {{keyword}}.Holder> extends org.dcm4che.typeddicom.Builder<SELF, T> {
+        @SuppressWarnings("unchecked") // SELF should always be the Builder itself
         default SELF set{{keyword}}(Item.Builder... itemBuilders) {
             final SimpleHolder simpleHolder = new SimpleHolder(this.getAttributes());
             simpleHolder.remove{{keyword}}();
@@ -280,6 +281,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
          *         on its .asXXXX() methods. This allows fluent object creation in the form of <br>
          *         {@code XXXIOD xxxIOD = new XXXIOD().setYYYY().asYYYY(xxxxValue).setZZZZ().asZZZZ(zzzzValue);}
          */
+        @SuppressWarnings("unchecked") // SELF should always be the Builder itself
         default {{valueRepresentationWrapper}}.Setter<SELF, {{keyword}}> set{{keyword}}() {
             return new {{valueRepresentationWrapper}}.Setter<>((SELF) this, new {{keyword}}(this.getAttributes()));
         }
