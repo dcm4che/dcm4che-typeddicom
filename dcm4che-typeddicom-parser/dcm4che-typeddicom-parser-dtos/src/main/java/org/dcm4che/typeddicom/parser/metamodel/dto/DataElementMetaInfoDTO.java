@@ -2,6 +2,7 @@ package org.dcm4che.typeddicom.parser.metamodel.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,8 +41,8 @@ public final class DataElementMetaInfoDTO {
         this.comment = comment;
         this.retired = retired;
         this.retiredSince = retiredSince;
-        this.additionalAttributeInfo = additionalAttributeInfo;
-        this.contains = contains;
+        this.additionalAttributeInfo = additionalAttributeInfo != null ? additionalAttributeInfo : new ArrayList<>();
+        this.contains = contains != null ? contains : new ArrayList<>();
     }
 
     public String getName() {

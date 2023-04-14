@@ -124,7 +124,7 @@ public final class DataElementMustacheModel {
         html.append("<strong>Tag:</strong> ").append(tag).append(LINE_BREAK);
         html.append("<strong>Value Representation:</strong> ").append(valueRepresentation).append(LINE_BREAK);
         html.append("<strong>Value Multiplicity:</strong> ").append(valueMultiplicity).append(LINE_BREAK);
-        if (comment.length() > 0) {
+        if (comment != null && comment.length() > 0) {
             html.append("<strong>Comment:</strong> ").append(comment).append(LINE_BREAK);
         }
     }
@@ -188,7 +188,7 @@ public final class DataElementMustacheModel {
     }
 
     public String privateCreatorConstant() {
-        return privateCreatorConstant;
+        return privateCreatorConstant == null || privateCreatorConstant.isBlank() ? "null" : privateCreatorConstant;
     }
 
     public String tag() {
