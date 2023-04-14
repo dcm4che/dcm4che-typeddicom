@@ -55,6 +55,10 @@ java {
 
 tasks.withType<Jar> {
     exclude("dicom-standard-xml/")
+    manifest {
+        attributes["Implementation-Title"] = project.name
+        attributes["Implementation-Version"] = version
+    }
 }
 
 tasks.test {

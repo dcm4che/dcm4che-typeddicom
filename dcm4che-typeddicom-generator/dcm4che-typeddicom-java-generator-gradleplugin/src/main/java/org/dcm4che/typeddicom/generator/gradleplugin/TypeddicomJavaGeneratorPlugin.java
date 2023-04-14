@@ -18,7 +18,7 @@ public class TypeddicomJavaGeneratorPlugin implements Plugin<Project> {
                 });
         target.getPluginManager().withPlugin("java-library", javaPlugin -> {
             sourceSets.named("main", sourceSet -> sourceSet.getJava().srcDir(generateJavaSourcesFileTaskProvider));
-            String version = target.getVersion().toString();
+            String version = TypeddicomJavaGeneratorPlugin.class.getPackage().getImplementationVersion();
             target.getDependencies().add("api", "org.dcm4che:dcm4che-typeddicom-skeleton:" + version);
             target.getDependencies().add("implementation", "org.dcm4che:dcm4che-core");
         });
