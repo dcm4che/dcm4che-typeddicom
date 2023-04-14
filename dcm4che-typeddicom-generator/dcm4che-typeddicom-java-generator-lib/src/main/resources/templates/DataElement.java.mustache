@@ -40,7 +40,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
     /**
      * Creates a new {{name}} object which wraps the provided <code>attributes</code>.
      *
-     * @param attributes The {@link Attributes} object to be wrapped.
+     * @param attributes the {@link Attributes} object to be wrapped.
      */
     public {{keyword}}(Attributes attributes) {
         super(attributes);
@@ -56,7 +56,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
     /**
      * Returns a new {{name}} which wraps a copy of the Attributes wrapped in this {{name}}. (see {@link Attributes#Attributes(Attributes)}
      *
-     * @return a new {{name}} which wraps a copy of the Attributes wrapped in this {{name}}. 
+     * @return a new {{name}} which wraps a copy of the Attributes wrapped in this {{name}}.
      */
     public {{keyword}} copy() {
         return super.copy({{keyword}}.class);
@@ -68,7 +68,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
     /**
      * Creates a new {{name}} object which wraps the provided <code>sequence</code>.
      *
-     * @param sequence The {@link Sequence} object to be linked.
+     * @param sequence the {@link Sequence} object to be linked.
      */
     public {{keyword}}(Sequence sequence) {
         super(sequence, {{keyword}}.Item.class);
@@ -95,7 +95,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         }
 
         /**
-         * @param attributes The Attributes to be wrapped by the {@link Builder}.
+         * @param attributes the Attributes to be wrapped by the {@link Builder}.
          *
          * @return a {@link Builder} to create {{name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
          */
@@ -106,7 +106,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         /**
          * Creates a new {{name}} Item object which wraps the provided <code>attributes</code>.
          *
-         * @param attributes The {@link Attributes} object to be wrapped.
+         * @param attributes the {@link Attributes} object to be wrapped.
          */
         public Item(Attributes attributes) {
             super(attributes);
@@ -122,7 +122,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         /**
          * Returns a new {{name}} Item which wraps a copy of the Attributes wrapped in this {{name}}. (see {@link Attributes#Attributes(Attributes)}
          *
-         * @return a new {{name}} Item which wraps a copy of the Attributes wrapped in this {{name}}. 
+         * @return a new {{name}} Item which wraps a copy of the Attributes wrapped in this {{name}}.
          */
         public Item copy() {
             return super.copy(Item.class);
@@ -150,8 +150,8 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
      */
     public interface Holder extends AttributesWrapper {
         /**
-         * @param attributes An attributes object containing the {{name}} (see {@link {{keyword}}})
-         * @return A wrapper object implementing the {@link Holder} interface. 
+         * @param attributes an attributes object containing the {{name}} (see {@link {{keyword}}})
+         * @return a wrapper object implementing the {@link Holder} interface.
          */
         static Holder wrap(Attributes attributes) {
             return AttributesWrapper.wrap(attributes, SimpleHolder.class);
@@ -165,7 +165,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
         }
 
         /**
-         * @param attributes The Attributes to be wrapped by the {@link Builder}.
+         * @param attributes the Attributes to be wrapped by the {@link Builder}.
          *
          * @return a {@link Builder} to create {{name}} Items with a fluent API. Instead of creating new Attributes it wraps the provided Attributes.
          */
@@ -194,6 +194,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
          * Adds a new {{name}}. (see {@link {{keyword}}})
          *
          * @param initialCapacity the initial capacity for the new {{name}}
+         * @return the newly created {{keyword}}.
          */
         default {{keyword}} new{{keyword}}(int initialCapacity) {
             return new {{keyword}}(getAttributes().newSequence(PRIVATE_CREATOR, TAG, initialCapacity));
@@ -203,9 +204,9 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
          * Adds a new {{name}} (see {@link {{keyword}}}) if it does not already exist.
          * (see {@link Attributes#ensureSequence(int, int)}
          *
-         * @param initialCapacity The initial capacity (see {@link java.util.ArrayList#ArrayList(int)}) if a new 
+         * @param initialCapacity the initial capacity (see {@link java.util.ArrayList#ArrayList(int)}) if a new
          *                        {{name}} is created.
-         * @return Either the already existing {{name}} (see {@link {{keyword}}}) or a new one with capacity 
+         * @return either the already existing {{name}} (see {@link {{keyword}}}) or a new one with capacity
          *         <code>initialCapacity</code>.
          */
         default {{keyword}} ensure{{keyword}}(int initialCapacity) {
@@ -216,7 +217,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
          * Adds a new {{name}} (see {@link {{keyword}}}) with initial capacity 1 (see {@link #ensure{{keyword}}(int)})
          * if it does not already exist.
          *
-         * @return Either the already existing {{name}} (see {@link {{keyword}}}) or a new one with capacity 1.
+         * @return either the already existing {{name}} (see {@link {{keyword}}}) or a new one with capacity 1.
          */
         default {{keyword}} ensure{{keyword}}() {
             return ensure{{keyword}}(1);
@@ -224,7 +225,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
 
         {{/sequence}}
         /**
-         * @return Whether it contains the {{name}} (see {@link {{keyword}}})
+         * @return whether it contains the {{name}} (see {@link {{keyword}}})
          */
         default boolean contains{{keyword}}() {
             return getAttributes().contains(PRIVATE_CREATOR, TAG);

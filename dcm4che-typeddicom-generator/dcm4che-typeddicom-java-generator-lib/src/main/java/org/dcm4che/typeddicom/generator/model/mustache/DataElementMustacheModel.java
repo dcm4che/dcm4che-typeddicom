@@ -15,6 +15,9 @@ import java.util.stream.Collectors;
 
 public final class DataElementMustacheModel {
     private static final String LINE_BREAK = "<br>";
+    private static final String JAVA_DOC_NEWLINE = "\n * ";
+    private static final int MAX_LINE_LENGTH = 120;
+    public static final String ZERO_WIDTH_CHARACTERS_REGEX = "[\n\r]";
     private final String keyword;
     private final String name;
     private final String tag;
@@ -145,16 +148,21 @@ public final class DataElementMustacheModel {
             assert element.parent() != null; // should always have a parent
             element.parent().before(element);
         }
-        for (Element element : body.select("dd:empty, p:empty, dd:matchesOwn((?is) )")) {
+        for (Element element : body.select("p:empty")) {
+            element.remove();
+        }
+        for (Element element : body.select("dd:empty, dd:matchesOwn((?is))")) {
             element.remove();
         }
     }
 
     private String javaDocify(String html, int indentationLevel) {
         String jdoc = WordWrap.from(html)
-                .maxWidth(117 - indentationLevel)
+                .maxWidth(MAX_LINE_LENGTH
+                        - JAVA_DOC_NEWLINE.replaceAll(ZERO_WIDTH_CHARACTERS_REGEX, "").length()
+                        - indentationLevel)
                 .extraWordChars("0123456789-._~:/?#[]@!$&'()*+,;%=\"<>")
-                .newLine("\n * ")
+                .newLine(JAVA_DOC_NEWLINE)
                 .breakWords(false)
                 .wrap();
         jdoc = "/**\n * " + jdoc + "\n */";
