@@ -2,7 +2,7 @@ package org.dcm4che.typeddicom.generator;
 
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheNotFoundException;
@@ -13,6 +13,7 @@ import org.dcm4che.typeddicom.generator.model.mustache.InformationObjectDefiniti
 import org.dcm4che.typeddicom.parser.metamodel.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yaml.snakeyaml.LoaderOptions;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -28,17 +29,19 @@ public class JavaGenerator {
     private final String stdMetaModelYamlFileResourcePath;
     private final List<File> privateMetamodelYamlFiles;
     private final File javaOutputDirectory;
-    private final ObjectMapper yamlMapper;
+    private final YAMLMapper yamlMapper;
 
     public JavaGenerator(String stdMetaModelYamlFileResourcePath, List<File> privateMetamodelYamlFiles, File javaOutputDirectory) {
         this.stdMetaModelYamlFileResourcePath = stdMetaModelYamlFileResourcePath;
         this.privateMetamodelYamlFiles = privateMetamodelYamlFiles;
         this.javaOutputDirectory = javaOutputDirectory;
-        MustacheResolver mustacheResolver = this::getInputStreamReaderForTemplate;
+        MustacheResolver mustacheResolver = resourceName -> getInputStreamReaderForTemplate(resourceName);
         mustacheFactory = new DefaultMustacheFactory(mustacheResolver);
         mustacheFactory.setObjectHandler(new MapMethodReflectionHandler());
 
-        yamlMapper = new ObjectMapper(new YAMLFactory());
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setCodePointLimit(MAX_YAML_FILE_SIZE);
+        yamlMapper = new YAMLMapper(YAMLFactory.builder().loaderOptions(loaderOptions).build());
     }
 
     private InputStreamReader getInputStreamReaderForTemplate(String resourceName) {
