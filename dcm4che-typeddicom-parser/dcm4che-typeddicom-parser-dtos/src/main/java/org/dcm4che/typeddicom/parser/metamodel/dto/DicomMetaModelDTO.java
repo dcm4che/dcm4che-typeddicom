@@ -1,6 +1,6 @@
 package org.dcm4che.typeddicom.parser.metamodel.dto;
 
-import com.fasterxml.jackson.annotation.JsonMerge;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
@@ -8,29 +8,26 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class DicomMetaModelDTO {
-    @JsonMerge
     private final Map<String, ValueRepresentationMetaInfoDTO> valueRepresentations;
-    @JsonMerge
     private final Map<String, DataElementMetaInfoDTO> dataElements;
-    @JsonMerge
     private final Map<String, ModuleMetaInfoDTO> modules;
-    @JsonMerge
     private final Map<String, InformationObjectDefinitionMetaInfoDTO> iods;
 
+    @JsonCreator
     public DicomMetaModelDTO(
-            @JsonProperty Map<String, ValueRepresentationMetaInfoDTO> valueRepresentations,
-            @JsonProperty Map<String, DataElementMetaInfoDTO> dataElements,
-            @JsonProperty Map<String, ModuleMetaInfoDTO> modules,
-            @JsonProperty Map<String, InformationObjectDefinitionMetaInfoDTO> iods
+            @JsonProperty("valueRepresentations") Map<String, ValueRepresentationMetaInfoDTO> valueRepresentations,
+            @JsonProperty("dataElements") Map<String, DataElementMetaInfoDTO> dataElements,
+            @JsonProperty("modules") Map<String, ModuleMetaInfoDTO> modules,
+            @JsonProperty("iods") Map<String, InformationObjectDefinitionMetaInfoDTO> iods
     ) {
-        this.valueRepresentations = valueRepresentations;
-        this.dataElements = dataElements;
-        this.modules = modules;
-        this.iods = iods;
+        this.valueRepresentations = valueRepresentations != null ? valueRepresentations : new HashMap<>();
+        this.dataElements = dataElements != null ? dataElements : new HashMap<>();
+        this.modules = modules != null ? modules : new HashMap<>();
+        this.iods = iods != null ? iods : new HashMap<>();
     }
 
     public DicomMetaModelDTO() {
-        this(new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
+        this(null, null, null, null);
     }
 
     public void addOrUpdate(String keyword, ValueRepresentationMetaInfoDTO newValue) {

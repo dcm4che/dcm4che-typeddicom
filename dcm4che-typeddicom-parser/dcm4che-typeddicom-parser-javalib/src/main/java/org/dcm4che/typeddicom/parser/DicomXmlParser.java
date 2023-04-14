@@ -1,8 +1,9 @@
 package org.dcm4che.typeddicom.parser;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.dcm4che.typeddicom.parser.metamodel.DataElementMetaInfo;
 import org.dcm4che.typeddicom.parser.metamodel.DicomMetaModel;
 import org.dcm4che.typeddicom.parser.metamodel.InformationObjectDefinitionMetaInfo;
@@ -84,11 +85,9 @@ public class DicomXmlParser {
         DicomMetaModelMapper dtoMapper = new DicomMetaModelMapper();
         DicomMetaModelDTO dicomMetaModelDTO = dtoMapper.mapDicomMetaModelToDicomMetaModelDTO(dicomMetaModel);
 
-        YAMLMapper yamlMapper = new YAMLMapper(new YAMLFactory());
-        yamlMapper.configure(YAMLGenerator.Feature.WRITE_DOC_START_MARKER, false);
-        yamlMapper.configure(YAMLGenerator.Feature.SPLIT_LINES, false);
-        yamlMapper.configure(YAMLGenerator.Feature.LITERAL_BLOCK_STYLE, true);
-        yamlMapper.configure(YAMLGenerator.Feature.MINIMIZE_QUOTES, true);
+        YAMLFactory yamlFactory = new YAMLFactory()
+                .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER);
+        ObjectMapper yamlMapper = new ObjectMapper(yamlFactory);
         try {
             yamlMapper.writeValue(new File(yamlOutputDirectory, "std.dicom-meta-model.yaml"), dicomMetaModelDTO);
         } catch (IOException e) {

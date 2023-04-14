@@ -23,9 +23,9 @@ dependencies {
 
     implementation("org.jsoup:jsoup:1.14.3")
 
-    implementation("com.fasterxml.jackson.core:jackson-core:2.14.2")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.3.3")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.3.3")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.3")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
