@@ -5,3 +5,7 @@ tasks.register("publishAllPublicationsToDcm4cheMavenRepository") {
 tasks.register("publishToMavenLocal") {
     dependsOn(project.getTasksByName("publishToMavenLocal", true).filter { it != this })
 }
+
+tasks.register("clean") {
+    dependsOn(project.getTasksByName("clean", true).filter { it != this })
+}
