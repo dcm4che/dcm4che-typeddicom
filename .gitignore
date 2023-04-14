@@ -3,6 +3,7 @@ build
 
 # IntelliJ
 .idea/
+machinet.conf
 
 # Eclipse
 .classpath
