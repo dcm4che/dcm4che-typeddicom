@@ -39,6 +39,7 @@ public class DicomMetaModelMapper {
     private DataElementMetaInfoDTO mapDataElementMetaInfoToDataElementMetaInfoDTO(DataElementMetaInfo dataElementMetaInfo) {
         return new DataElementMetaInfoDTO(
                 dataElementMetaInfo.getName(),
+                null,
                 dataElementMetaInfo.getTag(),
                 dataElementMetaInfo.getTagConstant(),
                 dataElementMetaInfo.getValueRepresentationWrapper(),

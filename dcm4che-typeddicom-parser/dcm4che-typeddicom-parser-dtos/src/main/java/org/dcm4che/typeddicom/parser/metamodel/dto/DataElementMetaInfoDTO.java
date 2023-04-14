@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public final class DataElementMetaInfoDTO {
     private final String name;
+    private final String privateCreatorConstant;
     private final String tag;
     private final String tagConstant;
     private final String valueRepresentation;
@@ -19,6 +20,7 @@ public final class DataElementMetaInfoDTO {
 
     public DataElementMetaInfoDTO(
             @JsonProperty("name") String name,
+            @JsonProperty("privateCreatorConstant") String privateCreatorConstant,
             @JsonProperty("tag") String tag,
             @JsonProperty("tagConstant") String tagConstant,
             @JsonProperty("valueRepresentation") String valueRepresentation,
@@ -30,6 +32,7 @@ public final class DataElementMetaInfoDTO {
             @JsonProperty("contains") List<String> contains
     ) {
         this.name = name;
+        this.privateCreatorConstant = privateCreatorConstant;
         this.tag = tag;
         this.tagConstant = tagConstant;
         this.valueRepresentation = valueRepresentation;
@@ -43,6 +46,10 @@ public final class DataElementMetaInfoDTO {
 
     public String getName() {
         return name;
+    }
+
+    public String getPrivateCreatorConstant() {
+        return privateCreatorConstant;
     }
 
     public String getTag() {
@@ -87,6 +94,7 @@ public final class DataElementMetaInfoDTO {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (DataElementMetaInfoDTO) obj;
         return Objects.equals(this.name, that.name) &&
+                Objects.equals(this.privateCreatorConstant, that.privateCreatorConstant) &&
                 Objects.equals(this.tag, that.tag) &&
                 Objects.equals(this.tagConstant, that.tagConstant) &&
                 Objects.equals(this.valueRepresentation, that.valueRepresentation) &&
@@ -100,13 +108,14 @@ public final class DataElementMetaInfoDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, tag, tagConstant, valueRepresentation, valueMultiplicity, comment, retired, retiredSince, additionalAttributeInfo, contains);
+        return Objects.hash(name, privateCreatorConstant, tag, tagConstant, valueRepresentation, valueMultiplicity, comment, retired, retiredSince, additionalAttributeInfo, contains);
     }
 
     @Override
     public String toString() {
         return "DataElementMetaInfoDTO[" +
                 "name=" + name + ", " +
+                "privateCreatorConstant=" + privateCreatorConstant + ", " +
                 "tag=" + tag + ", " +
                 "tagConstant=" + tagConstant + ", " +
                 "valueRepresentation=" + valueRepresentation + ", " +
@@ -117,5 +126,4 @@ public final class DataElementMetaInfoDTO {
                 "additionalAttributeInfo=" + additionalAttributeInfo + ", " +
                 "contains=" + contains + ']';
     }
-
 }

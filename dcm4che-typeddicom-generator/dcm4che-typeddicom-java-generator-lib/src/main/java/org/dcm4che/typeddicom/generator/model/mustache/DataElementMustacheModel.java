@@ -20,6 +20,7 @@ public final class DataElementMustacheModel {
     public static final String ZERO_WIDTH_CHARACTERS_REGEX = "[\n\r]";
     private final String keyword;
     private final String name;
+    private final String privateCreatorConstant;
     private final String tag;
     private final String tagConstant;
     private final String valueRepresentation;
@@ -33,6 +34,7 @@ public final class DataElementMustacheModel {
     public DataElementMustacheModel(
             String keyword,
             String name,
+            String privateCreatorConstant,
             String tag,
             String tagConstant,
             String valueRepresentation,
@@ -45,6 +47,7 @@ public final class DataElementMustacheModel {
     ) {
         this.keyword = keyword;
         this.name = name;
+        this.privateCreatorConstant = privateCreatorConstant;
         this.tag = tag;
         this.tagConstant = tagConstant;
         this.valueRepresentation = valueRepresentation;
@@ -60,6 +63,7 @@ public final class DataElementMustacheModel {
         this(
                 keyword,
                 dto.getName(),
+                dto.getPrivateCreatorConstant(),
                 dto.getTag(),
                 dto.getTagConstant(),
                 dto.getValueRepresentation(),
@@ -183,6 +187,10 @@ public final class DataElementMustacheModel {
         return name;
     }
 
+    public String privateCreatorConstant() {
+        return privateCreatorConstant;
+    }
+
     public String tag() {
         return tag;
     }
@@ -226,6 +234,7 @@ public final class DataElementMustacheModel {
         var that = (DataElementMustacheModel) obj;
         return Objects.equals(this.keyword, that.keyword) &&
                 Objects.equals(this.name, that.name) &&
+                Objects.equals(this.privateCreatorConstant, that.privateCreatorConstant) &&
                 Objects.equals(this.tag, that.tag) &&
                 Objects.equals(this.tagConstant, that.tagConstant) &&
                 Objects.equals(this.valueRepresentation, that.valueRepresentation) &&
@@ -239,7 +248,7 @@ public final class DataElementMustacheModel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(keyword, name, tag, tagConstant, valueRepresentation, valueMultiplicity, comment, retired, retiredSince, additionalAttributeInfo, contains);
+        return Objects.hash(keyword, name, privateCreatorConstant, tag, tagConstant, valueRepresentation, valueMultiplicity, comment, retired, retiredSince, additionalAttributeInfo, contains);
     }
 
     @Override
@@ -247,6 +256,7 @@ public final class DataElementMustacheModel {
         return "DataElementMustacheModel[" +
                 "keyword=" + keyword + ", " +
                 "name=" + name + ", " +
+                "privateCreatorConstant=" + privateCreatorConstant + ", " +
                 "tag=" + tag + ", " +
                 "tagConstant=" + tagConstant + ", " +
                 "valueRepresentation=" + valueRepresentation + ", " +
