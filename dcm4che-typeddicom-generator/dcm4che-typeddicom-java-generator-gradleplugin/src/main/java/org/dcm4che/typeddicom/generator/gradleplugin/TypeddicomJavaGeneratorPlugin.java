@@ -16,7 +16,7 @@ public class TypeddicomJavaGeneratorPlugin implements Plugin<Project> {
                     task.getPrivateDicomMetamodelYamlDirectory().set(extension.getPrivateDicomMetamodelYamlDirectory());
                     task.getGeneratedJavaOutputDirectory().set(extension.getGeneratedJavaOutputDirectory());
                 });
-        target.getPluginManager().withPlugin("java", javaPlugin -> {
+        target.getPluginManager().withPlugin("java-library", javaPlugin -> {
             sourceSets.named("main", sourceSet -> sourceSet.getJava().srcDir(generateJavaSourcesFileTaskProvider));
             String version = target.getVersion().toString();
             target.getDependencies().add("api", "org.dcm4che:dcm4che-typeddicom-skeleton:" + version);
