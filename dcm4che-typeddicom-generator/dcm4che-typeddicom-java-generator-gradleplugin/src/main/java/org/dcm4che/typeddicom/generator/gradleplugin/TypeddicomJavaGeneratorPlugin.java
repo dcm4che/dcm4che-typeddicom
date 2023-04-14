@@ -9,8 +9,8 @@ public class TypeddicomJavaGeneratorPlugin implements Plugin<Project> {
     public void apply(final Project target) {
         final TypeddicomJavaGeneratorPluginExtension extension =
                 target.getExtensions().create("generateTypeddicomJavaSources", TypeddicomJavaGeneratorPluginExtension.class);
-        SourceSetContainer sourceSets = (SourceSetContainer) target.getProperties().get("sourceSets");
-        sourceSets.named("main", sourceSet -> extension.getPrivateDicomMetamodelYamlDirectory().convention(sourceSet.getResources().getDestinationDirectory()));
+        SourceSetContainer sourceSets = target.getExtensions().getByType(SourceSetContainer.class);
+        sourceSets.named("main", sourceSet -> extension.getPrivateDicomMetamodelYamlDirectory().convention(target.getLayout().getProjectDirectory().dir("src/main/resources")));
         TaskProvider<GenerateJavaSourcesTask> generateJavaSourcesFileTaskProvider =
                 target.getTasks().register("generateJavaSourceFiles", GenerateJavaSourcesTask.class, task -> {
                     task.getPrivateDicomMetamodelYamlDirectory().set(extension.getPrivateDicomMetamodelYamlDirectory());
