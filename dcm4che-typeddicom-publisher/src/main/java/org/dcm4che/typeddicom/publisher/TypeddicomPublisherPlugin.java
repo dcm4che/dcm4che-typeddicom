@@ -29,7 +29,7 @@ public class TypeddicomPublisherPlugin implements Plugin<Project> {
 
         this.extension = project.getExtensions().create("typeddicomPublisher", TypeddicomPublisherPluginExtension.class);
 
-        applyPublicationAndSigningPlugins(project);
+        project.getPluginManager().apply(MavenPublishPlugin.class);
 
         addVersionInfoToJarManifest(project);
 
@@ -40,11 +40,6 @@ public class TypeddicomPublisherPlugin implements Plugin<Project> {
                 configurePublishingAndSigningExtension(project, STANDARD_PUBLICATION_NAME);
             }
         });
-    }
-
-    private static void applyPublicationAndSigningPlugins(Project project) {
-        project.getPluginManager().apply(MavenPublishPlugin.class);
-        project.getPluginManager().apply(SigningPlugin.class);
     }
 
     private static void addVersionInfoToJarManifest(Project project) {
@@ -58,7 +53,7 @@ public class TypeddicomPublisherPlugin implements Plugin<Project> {
 
     private void configurePublishingAndSigningExtension(Project project, String publicationName) {
         MavenPublication mavenPublication = configurePublishingExtensionAndReturnMavenPublication(project, publicationName);
-        configureSigningExtensionIfSigningKeyIsAvailable(project, mavenPublication);
+        applyAndConfigureSigningPluginIfSigningKeyIsAvailable(project, mavenPublication);
     }
 
     @NotNull
@@ -109,8 +104,9 @@ public class TypeddicomPublisherPlugin implements Plugin<Project> {
         return publication;
     }
 
-    private static void configureSigningExtensionIfSigningKeyIsAvailable(Project project, MavenPublication mavenPublication) {
+    private static void applyAndConfigureSigningPluginIfSigningKeyIsAvailable(Project project, MavenPublication mavenPublication) {
         if (project.hasProperty("signingKey") && project.hasProperty("signingPassword")) {
+            project.getPluginManager().apply(SigningPlugin.class);
             SigningExtension signing = project.getExtensions().getByType(SigningExtension.class);
             signing.useInMemoryPgpKeys(
                     Objects.requireNonNull(project.property("signingKey")).toString(),
