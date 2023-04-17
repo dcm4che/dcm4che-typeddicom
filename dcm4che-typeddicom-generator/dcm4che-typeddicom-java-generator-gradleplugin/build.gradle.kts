@@ -1,5 +1,8 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
-    `java-gradle-plugin`
+    id("com.gradle.plugin-publish") version "1.1.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.dcm4che.typeddicom-xml-parser")
     id("org.dcm4che.typeddicom-publisher")
 }
@@ -13,6 +16,10 @@ gradlePlugin {
     plugins {
         create("typeddicomJavaGenerator") {
             id = "org.dcm4che.typeddicom-java-generator"
+            displayName = "Typeddicom Java Generator"
+            description = "This gradle plugin provides a Task to generate Java code which provides the classes which " +
+                    "are specified in the DICOM standard. The classes can be extended with custom tags by providing a yaml " +
+                    "file containing the changes."
             implementationClass = "org.dcm4che.typeddicom.generator.gradleplugin.TypeddicomJavaGeneratorPlugin"
         }
     }
@@ -46,6 +53,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
     withJavadocJar()
     withSourcesJar()
+}
+
+tasks.named<ShadowJar>("shadowJar") {
+    relocate("org.yaml.snakeyaml", "shadowed.org.yaml.snakeyaml")
+    relocate("com.fasterxml.jackson", "shadowed.com.fasterxml.jackson")
+    archiveClassifier.set("")
 }
 
 tasks.withType<Jar> {
