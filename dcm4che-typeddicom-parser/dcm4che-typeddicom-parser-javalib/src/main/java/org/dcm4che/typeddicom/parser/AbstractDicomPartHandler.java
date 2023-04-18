@@ -14,10 +14,10 @@ import java.util.regex.Pattern;
  * This class records HTML or Text after calling the start methods and stops after calling the corresponding getters.
  */
 public abstract class AbstractDicomPartHandler extends DefaultHandler {
-    protected static final String DICOM_STANDARD_HTML_URL = "http://dicom.nema.org/medical/dicom/current/output/html";
     private final StringBuilder currentText = new StringBuilder();
     private final Pattern partNumberPattern = Pattern.compile("PS3\\.(?<part>\\d+)");
     private final StringBuilder currentHTML = new StringBuilder();
+    private String dicomStandardHtmlUrl = "http://dicom.nema.org/medical/dicom/current/output/html";
     private boolean recordText = false;
     private boolean recordHTML;
     private boolean inVariableList;
@@ -26,6 +26,10 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
     protected void startRecordingText() {
         this.currentText.setLength(0);
         this.recordText = true;
+    }
+
+    protected String getDicomStandardHtmlUrl() {
+        return dicomStandardHtmlUrl;
     }
 
     protected String getRecordedText() {
@@ -47,6 +51,9 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
+        if ("subtitle".equals(qName)) {
+            this.recordText = true;
+        }
         if ("section".equals(qName)) {
             this.currentSectionId = attributes.getValue("xml:id");
         }
@@ -58,6 +65,10 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         super.endElement(uri, localName, qName);
+        if ("subtitle".equals(qName)) {
+            String version = this.currentText.toString().replaceAll("DICOM PS\\d\\.\\d+ (\\d\\d\\d\\d[a-z]) - .*", "$1");
+            this.dicomStandardHtmlUrl = "http://dicom.nema.org/medical/dicom/" + version + "/output/html";
+        }
         if ("section".equals(qName)) {
             this.currentSectionId = null;
         }
@@ -171,7 +182,7 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
         Matcher matcher = partNumberPattern.matcher(targetdoc);
         if (matcher.find()) {
             partNumber = Integer.parseInt(matcher.group("part"));
-            return String.format("%s/part%02d.html#%s", DICOM_STANDARD_HTML_URL, partNumber, targetptr);
+            return String.format("%s/part%02d.html#%s", getDicomStandardHtmlUrl(), partNumber, targetptr);
         }else {
             throw new IllegalArgumentException("Invalid targetdoc " + targetptr + ". " +
                     "Needs to be of form 'PS3\\.(\\d+)'.");

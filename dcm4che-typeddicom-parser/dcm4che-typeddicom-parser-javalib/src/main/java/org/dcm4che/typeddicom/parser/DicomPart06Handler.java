@@ -162,7 +162,7 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
 
     @Override
     public String getBaseHrefUrl() {
-        return "http://dicom.nema.org/medical/dicom/current/output/html/part03.html";
+        return getDicomStandardHtmlUrl() + "/part06.html";
     }
 
     @Override
@@ -171,13 +171,14 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
     }
 
     private String getTagConstant(String keyword, String tag) {
-        String tagHexRegex = tag.replace("x,", "[02468ACE],").replace("x", "[0-9A-F]");
-        tagHexRegex = tagHexRegex.replace("(", "").replace(",", "").replace(")", "");
-        tagHexRegex = tagHexRegex.toLowerCase();
         Integer tagInt = tagConstants.get(keyword);
 
         String constant;
         if (tagInt != null) {
+            String tagHexRegex = tag.replace("x,", "[02468ACE],").replace("x", "[0-9A-F]");
+            tagHexRegex = tagHexRegex.replace("(", "").replace(",", "").replace(")", "");
+            tagHexRegex = tagHexRegex.toLowerCase();
+
             String tagHex = Integer.toString(tagInt, 16);
             tagHex = "0".repeat(8 - tagHex.length()) + tagHex;
             if (tagHex.matches(tagHexRegex)) {
@@ -191,5 +192,4 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
         }
         return constant;
     }
-
 }

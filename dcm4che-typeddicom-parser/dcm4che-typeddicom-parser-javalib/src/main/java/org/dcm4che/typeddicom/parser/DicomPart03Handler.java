@@ -140,7 +140,7 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
 
     @Override
     public String getBaseHrefUrl() {
-        return "http://dicom.nema.org/medical/dicom/current/output/html/part03.html";
+        return getDicomStandardHtmlUrl() + "/part03.html";
     }
 
     @Override
@@ -248,7 +248,7 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
         if (html == null) {
             return null;
         }
-        return html.replaceAll("(?s).*?<a href=\"http://dicom.nema.org/medical/dicom/current/output/html/part03.html#([^\"]*)\">.*$", "$1");
+        return html.replaceAll("(?s).*?<a href=\"" + getDicomStandardHtmlUrl() + "/part03.html#([^\"]*)\">.*$", "$1");
     }
 
     private Iterable<DataElementMetaInfo> resolveMacrosRecursively(TableEntry tableEntry, Context context) {

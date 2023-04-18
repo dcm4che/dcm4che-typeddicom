@@ -17,7 +17,7 @@ public class DicomPart04Handler extends MemorizeTablesDicomPartHandler {
 
     @Override
     public String getBaseHrefUrl() {
-        return DICOM_STANDARD_HTML_URL + "/part04.html";
+        return getDicomStandardHtmlUrl() + "/part04.html";
     }
 
     public DicomPart04Handler(Set<InformationObjectDefinitionMetaInfo> iods) {
@@ -66,7 +66,7 @@ public class DicomPart04Handler extends MemorizeTablesDicomPartHandler {
         sopClassName = cleanHTMLText(sopClassName);
         String sopClassUID = standardSOPClassesTable.getTableCell(row, "SOP Class UID").getContent();
         sopClassUID = cleanHTMLText(sopClassUID);
-        final String iodTargetPtr = getIODTargetPointer(standardSOPClassesTable.getTableCell(row, "IOD Specification (defined in\n )"));
+        final String iodTargetPtr = getIODTargetPointer(standardSOPClassesTable.getTableCell(row, "IOD Specification (defined in )"));
         InformationObjectDefinitionMetaInfo matchingIOD = this.iods.stream()
                 .filter(iod -> iodTargetPtr.equals(getParentSectionId(iod)))
                 .findFirst()
@@ -76,7 +76,7 @@ public class DicomPart04Handler extends MemorizeTablesDicomPartHandler {
 
     private String getIODTargetPointer(TableCell tableCell) {
         String iodTargetPtr = tableCell.getContent();
-        iodTargetPtr = iodTargetPtr.replaceAll(".*href=\"http://dicom.nema.org/medical/dicom/current/output/html/part03.html#(sect_[^\"]+)\".*", "$1");
+        iodTargetPtr = iodTargetPtr.replaceAll(".*href=\"" + getDicomStandardHtmlUrl() + "/part03.html#(sect_[^\"]+)\".*", "$1");
         iodTargetPtr = cleanHTMLText(iodTargetPtr);
         return iodTargetPtr;
     }
