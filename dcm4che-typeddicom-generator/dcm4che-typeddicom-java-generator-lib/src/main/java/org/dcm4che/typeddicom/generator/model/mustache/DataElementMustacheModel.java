@@ -7,6 +7,7 @@ import org.dcm4che.typeddicom.parser.metamodel.dto.AdditionalAttributeInfoContex
 import org.dcm4che.typeddicom.parser.metamodel.dto.AdditionalAttributeInfoDTO;
 import org.dcm4che.typeddicom.parser.metamodel.dto.DataElementMetaInfoDTO;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.util.List;
@@ -107,10 +108,18 @@ public final class DataElementMustacheModel {
         StringBuilder htmlBuilder = new StringBuilder();
         appendGeneralInfo(htmlBuilder);
         appendContextInfo(htmlBuilder);
-        Element body = Jsoup.parse(htmlBuilder.toString()).body();
+        Document jsoupDoc = Jsoup.parse(htmlBuilder.toString());
+        Document.OutputSettings outputSettings = new Document.OutputSettings();
+        outputSettings.prettyPrint(true);
+        jsoupDoc.select("br").after("\\n");
+        jsoupDoc.select("p").before("\\n");
+        jsoupDoc.outputSettings(outputSettings);
+        Element body = jsoupDoc.body();
         sanitizeJDocHtml(body);
         String htmlString = body.html();
+        htmlString = htmlString.replace("\\n", "\n");
         htmlString = htmlString.replace("\n<br>", "<br>\n");
+        htmlString = htmlString.replaceAll("</p>(?!\\n)", "</p>\n");
         if (retired) {
             htmlString += "\n\n@deprecated ";
             htmlString += comment;
@@ -135,7 +144,7 @@ public final class DataElementMustacheModel {
             for (AdditionalAttributeInfoContextsDTO additionalAttributeInfoSetEntry : additionalAttributeInfo) {
                 html.append("<li><strong>Described in the contexts:</strong><ul>");
                 html.append(additionalAttributeInfoSetEntry.getContextsHTML());
-                html.append("</ul>as follows: <br>");
+                html.append("</ul>as follows:").append(LINE_BREAK);
                 AdditionalAttributeInfoDTO additionalAttributeInfo = additionalAttributeInfoSetEntry.getAdditionalAttributeInfoDTO();
                 html.append("<strong>Attribute Name:</strong> ").append(additionalAttributeInfo.getName()).append(LINE_BREAK);
                 html.append("<strong>Type:</strong> ").append(additionalAttributeInfo.getType()).append(LINE_BREAK);
