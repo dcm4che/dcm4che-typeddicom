@@ -23,14 +23,29 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v2
       with:
-        java-version: '17'
-        distribution: 'adopt'
+        java-version: '11'
+        distribution: 'temurin'
     - name: Build with Gradle
       uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
       with:
         arguments: build
     - uses: actions/upload-artifact@v2
       with:
-        name: Artifacts
+        name: Standard Library
         path: dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std/build/libs
+        retention-days: 7
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Generator Gradle Plugin
+        path: dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-gradleplugin/build/libs
+        retention-days: 7
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Library Skeleton
+        path: dcm4che-typeddicom-skeleton/build/libs
+        retention-days: 7
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Parser DTOs
+        path: dcm4che-typeddicom-parser/dcm4che-typeddicom-parser-dtos/build/libs
         retention-days: 7
