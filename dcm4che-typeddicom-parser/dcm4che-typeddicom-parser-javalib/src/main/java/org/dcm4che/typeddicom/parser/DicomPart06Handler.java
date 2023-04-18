@@ -2,12 +2,17 @@ package org.dcm4che.typeddicom.parser;
 
 import org.dcm4che.typeddicom.parser.metamodel.DataElementMetaInfo;
 import org.dcm4che.typeddicom.parser.metamodel.ValueRepresentationMetaInfo;
+import org.dcm4che3.data.Tag;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class parses the 6th part of the DICOM Standard XML
@@ -20,6 +25,7 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
     private int currentColumn = 0;
     private DataElementMetaInfo currentDataElementMetaInfo = null;
     private boolean inAttributeRegistryTableBody = false;
+    private Map<String, Integer> tagConstants;
 
     public DicomPart06Handler(Map<String, ValueRepresentationMetaInfo> valueRepresentationsMap) {
         this(valueRepresentationsMap, new HashSet<>());
@@ -31,6 +37,24 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
     }
 
 
+    @Override
+    public void startDocument() throws SAXException {
+        tagConstants = Arrays.stream(Tag.class.getDeclaredFields())
+                .filter(field -> field.getType().equals(int.class))
+                .filter(field -> Modifier.isStatic(field.getModifiers()))
+                .collect(
+                        Collectors.toMap(
+                                Field::getName,
+                                field -> {
+                                    try {
+                                        return field.getInt(null);
+                                    } catch (IllegalAccessException e) {
+                                        throw new RuntimeException("Could not access Tag." + field.getName() + " with reflection.");
+                                    }
+                                }
+                        )
+                );
+    }
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -111,7 +135,7 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
             this.currentDataElementMetaInfo.setRetiredSince(retiredSince);
         }
 
-        currentDataElementMetaInfo.setTagConstant(getTagConstant(currentDataElementMetaInfo.getTag()));
+        currentDataElementMetaInfo.setTagConstant(getTagConstant(currentDataElementMetaInfo.getKeyword(), currentDataElementMetaInfo.getTag()));
 
         String valueRepresentation = currentDataElementMetaInfo.getValueRepresentation();
         if (!valueRepresentation.equals("See Note")) {
@@ -146,8 +170,26 @@ public class DicomPart06Handler extends AbstractDicomPartHandler {
         return "DICOM Standard Part 6";
     }
 
-    private String getTagConstant(String tag) {
-        return "0x" + tag.replace("(", "").replace(",", "").replace(")", "").replace("x", "0");
+    private String getTagConstant(String keyword, String tag) {
+        String tagHexRegex = tag.replace("x,", "[02468ACE],").replace("x", "[0-9A-F]");
+        tagHexRegex = tagHexRegex.replace("(", "").replace(",", "").replace(")", "");
+        tagHexRegex = tagHexRegex.toLowerCase();
+        Integer tagInt = tagConstants.get(keyword);
+
+        String constant;
+        if (tagInt != null) {
+            String tagHex = Integer.toString(tagInt, 16);
+            tagHex = "0".repeat(8 - tagHex.length()) + tagHex;
+            if (tagHex.matches(tagHexRegex)) {
+                constant = "Tag." + keyword;
+            } else {
+                constant = "0x" + tagHex;
+            }
+        } else {
+            String tagHex = tag.replace("(", "").replace(",", "").replace(")", "").replace("x", "0");
+            constant = "0x" + tagHex;
+        }
+        return constant;
     }
 
 }
