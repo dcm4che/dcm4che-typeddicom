@@ -3,11 +3,9 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven {
-        url = uri("http://maven.scijava.org/content/repositories/public/")
-        isAllowInsecureProtocol = true
+        url = uri("https://www.dcm4che.org/maven2/")
     }
 }
 
