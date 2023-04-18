@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * This class parses the 3th part of the DICOM Standard XML
- * (http://dicom.nema.org/medical/dicom/current/source/docbook/part03/part03.xml)
+ * (https://dicom.nema.org/medical/dicom/current/source/docbook/part03/part03.xml)
  */
 public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
     private static final String FUNCTIONAL_GROUP_MACRO_REFERENCE = "FUNCTIONAL GROUP MACRO";
@@ -87,8 +87,8 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
         if ("caption".equals(qName)) {
             // check for table caption of module definitions
             String recordedText = getRecordedText();
-            // ignore the weird stuff happening in http://dicom.nema.org/medical/dicom/current/output/html/part03.html#table_C.36.25-2
-            // because it would ruin the module derived from http://dicom.nema.org/medical/dicom/current/output/html/part03.html#table_C.36.25-1
+            // ignore the weird stuff happening in https://dicom.nema.org/medical/dicom/current/output/html/part03.html#table_C.36.25-2
+            // because it would ruin the module derived from https://dicom.nema.org/medical/dicom/current/output/html/part03.html#table_C.36.25-1
             // (same caption) as well as the example tables
             if (!currentTableId.equals("table_C.36.25-2") &&
                     !recordedText.contains("Example Module Table") &&
@@ -187,7 +187,7 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
             moduleMap.put(sectionId, module);
         }
         if (moduleMap.containsKey(sectionId)) {
-            // don't remove if it is leave reference (happens at http://dicom.nema.org/medical/dicom/current/output/html/part03.html#sect_C.36.25)
+            // don't remove if it is leave reference (happens at https://dicom.nema.org/medical/dicom/current/output/html/part03.html#sect_C.36.25)
             if (moduleMap.get(sectionId) != null && !sectionId.equals(moduleMap.get(sectionId).getSectionId())) {
                 moduleMap.put(sectionId, null);
             }

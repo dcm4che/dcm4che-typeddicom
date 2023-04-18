@@ -17,7 +17,7 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
     private final StringBuilder currentText = new StringBuilder();
     private final Pattern partNumberPattern = Pattern.compile("PS3\\.(?<part>\\d+)");
     private final StringBuilder currentHTML = new StringBuilder();
-    private String dicomStandardHtmlUrl = "http://dicom.nema.org/medical/dicom/current/output/html";
+    private String dicomStandardHtmlUrl = "https://dicom.nema.org/medical/dicom/current/output/html";
     private boolean recordText = false;
     private boolean recordHTML;
     private boolean inVariableList;
@@ -67,7 +67,7 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
         super.endElement(uri, localName, qName);
         if ("subtitle".equals(qName)) {
             String version = this.currentText.toString().replaceAll("DICOM PS\\d\\.\\d+ (\\d\\d\\d\\d[a-z]) - .*", "$1");
-            this.dicomStandardHtmlUrl = "http://dicom.nema.org/medical/dicom/" + version + "/output/html";
+            this.dicomStandardHtmlUrl = "https://dicom.nema.org/medical/dicom/" + version + "/output/html";
         }
         if ("section".equals(qName)) {
             this.currentSectionId = null;

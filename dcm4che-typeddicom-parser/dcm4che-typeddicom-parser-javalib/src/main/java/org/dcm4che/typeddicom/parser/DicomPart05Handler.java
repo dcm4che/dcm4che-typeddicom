@@ -16,7 +16,7 @@ import java.util.Set;
 
 /**
  * This class parses the 5th part of the DICOM Standard XML
- * (http://dicom.nema.org/medical/dicom/current/source/docbook/part05/part05.xml) and extracts the Value Representations
+ * (https://dicom.nema.org/medical/dicom/current/source/docbook/part05/part05.xml) and extracts the Value Representations
  * from there.
  */
 public class DicomPart05Handler extends AbstractDicomPartHandler {
