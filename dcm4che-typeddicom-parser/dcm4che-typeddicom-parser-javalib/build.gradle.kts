@@ -19,7 +19,7 @@ dependencies {
 
     implementation("org.apache.commons:commons-lang3:3.12.0")
 
-    implementation("org.dcm4che:dcm4che-core:5.23.3")
+    implementation("org.dcm4che:dcm4che-core:5.29.0")
 
     implementation("org.jsoup:jsoup:1.14.3")
 
