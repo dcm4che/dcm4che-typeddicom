@@ -1,6 +1,7 @@
 package org.dcm4che.typeddicom.parser.metamodel.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonMerge;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -11,6 +12,7 @@ public final class ModuleMetaInfoDTO {
     private final String name;
     private final String sectionId;
     private final String href;
+    @JsonMerge
     private final List<String> contains;
 
     public ModuleMetaInfoDTO(

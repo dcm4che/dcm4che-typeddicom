@@ -1,6 +1,7 @@
 package org.dcm4che.typeddicom.parser.metamodel.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonMerge;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public final class ValueRepresentationMetaInfoDTO {
     private final String characterRepertoire;
     private final String lengthOfValue;
     private final String href;
+    @JsonMerge
     private final List<String> dataTypes;
 
     public ValueRepresentationMetaInfoDTO(

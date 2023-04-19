@@ -1,5 +1,6 @@
 package org.dcm4che.typeddicom.parser.metamodel.dto;
 
+import com.fasterxml.jackson.annotation.JsonMerge;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -16,7 +17,9 @@ public final class DataElementMetaInfoDTO {
     private final String comment;
     private final boolean retired;
     private final String retiredSince;
+    @JsonMerge
     private final List<AdditionalAttributeInfoContextsDTO> additionalAttributeInfo;
+    @JsonMerge
     private final List<String> contains;
 
     public DataElementMetaInfoDTO(

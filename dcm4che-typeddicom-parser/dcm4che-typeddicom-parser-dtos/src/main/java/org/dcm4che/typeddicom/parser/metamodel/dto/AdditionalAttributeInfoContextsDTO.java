@@ -1,6 +1,7 @@
 package org.dcm4che.typeddicom.parser.metamodel.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonMerge;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Objects;
 
 public final class AdditionalAttributeInfoContextsDTO {
     private final AdditionalAttributeInfoDTO additionalAttributeInfoDTO;
+    @JsonMerge
     private final List<List<ContextEntryDTO>> contexts;
 
     public AdditionalAttributeInfoContextsDTO(
