@@ -26,9 +26,10 @@ public interface AttributesWrapper {
     /**
      * Returns a new Attributes wrapper instance which wraps a copy of the attributes contained in this 
      * Attributes wrapper. (see {@link Attributes#Attributes(Attributes)}
-     * 
-     * @param wrapperClass The class to wrap the new Attributes object in.
-     * @return a new instance of an Attributes wrapper implementation which wraps a copy of the attributes contained in 
+     *
+     * @param <T> the Type of the class to wrap new Attributes object in.
+     * @param wrapperClass the class to wrap the new Attributes object in.
+     * @return a new instance of an Attributes wrapper implementation which wraps a copy of the attributes contained in
      * this Attributes wrapper.
      */
     default <T extends AttributesWrapper> T copy(Class<T> wrapperClass) {
