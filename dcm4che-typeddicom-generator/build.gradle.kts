@@ -9,3 +9,7 @@ tasks.register("publishToMavenLocal") {
 tasks.register("clean") {
     dependsOn(project.getTasksByName("clean", true).filter { it != this })
 }
+
+tasks.register("build") {
+    dependsOn(project.getTasksByName("build", true).filter { it != this })
+}
