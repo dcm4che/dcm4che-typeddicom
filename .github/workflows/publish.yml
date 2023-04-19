@@ -32,161 +32,48 @@ jobs:
       - name: Build package
         run: gradle build
 
-
-      - name: Publish skeleton library bin jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload release assets
+        uses: actions/github-script@v2
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-skeleton/build/libs/dcm4che-typeddicom-skeleton.jar
-          asset_name: dcm4che-typeddicom-skeleton/dcm4che-typeddicom-skeleton-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish skeleton library javadoc jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-skeleton/build/libs/dcm4che-typeddicom-skeleton-javadoc.jar
-          asset_name: dcm4che-typeddicom-skeleton/dcm4che-typeddicom-skeleton-javadoc-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish skeleton library sources jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-skeleton/build/libs/dcm4che-typeddicom-skeleton-sources.jar
-          asset_name: dcm4che-typeddicom-skeleton/dcm4che-typeddicom-skeleton-sources-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-
-      - name: Publish standard library bin jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std/build/libs/dcm4che-typeddicom-lib-std.jar
-          asset_name: dcm4che-typeddicom-lib-std/dcm4che-typeddicom-lib-std-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish standard library javadoc jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std/build/libs/dcm4che-typeddicom-lib-std-javadoc.jar
-          asset_name: dcm4che-typeddicom-lib-std/dcm4che-typeddicom-lib-std-javadoc-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish standard library sources jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std/build/libs/dcm4che-typeddicom-lib-std-sources.jar
-          asset_name: dcm4che-typeddicom-lib-std/dcm4che-typeddicom-lib-std-sources-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-
-      - name: Publish parser DTOs library bin jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-parser/dcm4che-typeddicom-parser-dtos/build/libs/dcm4che-typeddicom-parser-dtos.jar
-          asset_name: dcm4che-typeddicom-parser-dtos/dcm4che-typeddicom-parser-dtos-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish parser DTOs library javadoc jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-parser/dcm4che-typeddicom-parser-dtos/build/libs/dcm4che-typeddicom-parser-dtos-javadoc.jar
-          asset_name: dcm4che-typeddicom-parser-dtos/dcm4che-typeddicom-parser-dtos-javadoc-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish parser DTOs library sources jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-parser/dcm4che-typeddicom-parser-dtos/build/libs/dcm4che-typeddicom-parser-dtos-sources.jar
-          asset_name: dcm4che-typeddicom-parser-dtos/dcm4che-typeddicom-parser-dtos-sources-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-
-      - name: Publish java generator library bin jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-lib/build/libs/dcm4che-typeddicom-java-generator-lib.jar
-          asset_name: dcm4che-typeddicom-java-generator-lib/dcm4che-typeddicom-java-generator-lib-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish java generator library javadoc jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-lib/build/libs/dcm4che-typeddicom-java-generator-lib-javadoc.jar
-          asset_name: dcm4che-typeddicom-java-generator-lib/dcm4che-typeddicom-java-generator-lib-javadoc-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish java generator library sources jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-lib/build/libs/dcm4che-typeddicom-java-generator-lib-sources.jar
-          asset_name: dcm4che-typeddicom-java-generator-lib/dcm4che-typeddicom-java-generator-lib-sources-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-
-      - name: Publish java generator gradle plugin bin jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-gradleplugin/build/libs/dcm4che-typeddicom-java-generator-gradleplugin.jar
-          asset_name: dcm4che-typeddicom-java-generator-gradleplugin/dcm4che-typeddicom-java-generator-gradleplugin-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish java generator gradle plugin javadoc jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-gradleplugin/build/libs/dcm4che-typeddicom-java-generator-gradleplugin-javadoc.jar
-          asset_name: dcm4che-typeddicom-java-generator-gradleplugin/dcm4che-typeddicom-java-generator-gradleplugin-javadoc-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish java generator gradle plugin sources jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-gradleplugin/build/libs/dcm4che-typeddicom-java-generator-gradleplugin-sources.jar
-          asset_name: dcm4che-typeddicom-java-generator-gradleplugin/dcm4che-typeddicom-java-generator-gradleplugin-sources-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
+          github-token: ${{github.token}}
+          script: |
+            console.log('environment', process.versions);
+            
+            const fs = require('fs').promises;
+            
+            const { repo: { owner, repo }, sha } = context;
+            console.log({ owner, repo, sha });
+            
+            var fs = require('fs');
+            
+            const publishableSubProjects = [
+              'dcm4che-typeddicom-skeleton',
+              'dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std',
+              'dcm4che-typeddicom-parser/dcm4che-typeddicom-parser-dtos',
+              'dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-lib',
+              'dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-gradleplugin'
+            ];
+            for (project of publishableSubProjects) {
+              fs.readdir("./" + project + '/build/libs', (err, files) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                  files.forEach(file => {
+                    // do whatever filtering you want here, I'm just uploading all the files
+                    const releaseAssetName = file.replace(/(.*?)(-\d+\.\d+\.\d+(-SNAPSHOT)?)?(-(javadoc|sources))?.jar/, "$1/$1-${{ steps.get_release.outputs.tag_name }}$4.jar");
+                  
+                    console.log('uploading ' + file + ' > ' + releaseAssetName);
+                    await github.repos.uploadReleaseAsset({
+                      owner,
+                      repo,
+                      release_id: steps.get_release.outputs.id,
+                      name: releaseAssetName,
+                      data: await fs.readFile(`./${file}`)
+                    });
+                  });
+                }
+              });
+            }
 
       - name: Publish package to dcm4che Maven Repository
         run: gradle publishAllPublicationsToDcm4cheMavenRepository
