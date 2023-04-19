@@ -44,8 +44,6 @@ jobs:
             const { repo: { owner, repo }, sha } = context;
             console.log({ owner, repo, sha });
             
-            var fs = require('fs');
-            
             const publishableSubProjects = [
               'dcm4che-typeddicom-skeleton',
               'dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std',
