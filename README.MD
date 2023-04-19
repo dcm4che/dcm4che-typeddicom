@@ -5,9 +5,15 @@ This library creates typed wrappers around dcm4che attributes to make DICOM obje
 We tried our best to mimic a lot of the DICOM standard in this library but due to the complexity and openness of the standard we cannot possibly cover everything.
 If you encounter unsupported fields you can always use the `getAttributes()` method and use dcm4che means to get whatever you want from the data.
 
+## Dependencies
+This library is based on the 
+* [DICOM Standard Version 2022d](https://dicom.nema.org/medical/dicom/2022d/output/chtml/part01/ps3.1.html).
+* [dcm4che version 5.29.0](https://github.com/dcm4che/dcm4che/releases/tag/5.29.0)
+
 ## How to add it to your project
-### Gradle
-#### Groovy
+### Standard Library
+#### Gradle
+##### Groovy
 ```groovy
 repositories {
     // Add dicom4che repository
@@ -19,11 +25,11 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation 'org.dcm4che:dcm4che-typeddicom:0.4.4-SNAPSHOT'
+    implementation 'org.dcm4che:dcm4che-typeddicom-lib-std:0.5.0-SNAPSHOT'
 }
 ```
 
-#### Kotlin
+##### Kotlin
 ```kotlin
 repositories {
     // Add dicom4che repository
@@ -35,11 +41,11 @@ repositories {
 
 ```kotlin
 dependencies {
-    implementation("org.dcm4che:dcm4che-typeddicom:0.4.4-SNAPSHOT")
+    implementation("org.dcm4che:dcm4che-typeddicom-lib-std:0.5.0-SNAPSHOT")
 }
 ```
 
-### Maven
+#### Maven
 
 ```xml
 <!-- Add dicom4che repository -->
@@ -54,18 +60,51 @@ dependencies {
 <dependency>
     <groupId>org.dcm4che</groupId>
     <artifactId>dcm4che-typeddicom</artifactId>
-    <version>0.4.4-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
 </dependency>
 ```
+### Use private tags with the gradle plugin
+
+In the ```build.gradle``` put:
+```groovy
+plugins {
+    id 'java-library'
+    id 'org.dcm4che.typeddicom-java-generator' version '0.5.0-SNAPSHOT'
+}
+
+generateTypeddicomJavaSources {
+    privateDicomMetamodelYamlDirectory = layout.projectDirectory.dir("src/main/resources") // default - so this is optional when using this directory
+    generatedJavaOutputDirectory = layout.buildDirectory.dir("typeddicom") // default - so this is optional when using this directory
+}
+```
+or put this into ```build.gradle.kts```:
+```kotlin
+plugins {
+    id("java-library")
+    id("org.dcm4che.typeddicom-java-generator") version "0.5.0-SNAPSHOT"
+}
+generateTypeddicomJavaSources {
+    privateDicomMetamodelYamlDirectory.set(layout.projectDirectory.dir("src/main/resources")) // default - so this is optional when using this directory
+    generatedJavaOutputDirectory.set(layout.buildDirectory.dir("typeddicom")) // default - so this is optional when using this directory
+}
+```
+Put your custom yaml file into the specified ```src/main/resources``` folder and populate it with your custom tags. Examples for this are plenty in ```dcm4che-typeddicom-java-generator-gradleplugin-<version>.jar/std.dicom-meta-model.yaml```.
+
+* ```gradle generateJavaSourceFiles``` will generate the source files in the specified ```build/typeddicom``` folder.
+* You can do anything as with the usual `java-library` projects (see https://docs.gradle.org/current/userguide/java_library_plugin.html). The ```generateJavaSourceFiles``` task is properly integrated with them and will run when needed. 
 
 ## How to build it yourself
-Run ```.\gradlew jar```. The JAR-file is then located under ```typeddicom-lib/build/libs/typeddicom-lib.jar```.
-
-You can also run ```.\gradlew publishToMavenLocal``` to install it to your local Maven repository.
+Run ```.\gradlew build```. The JAR-files are then located under: 
+* ```dcm4che-typeddicom-skeleton\build\libs``` for the skeleton java library containing interfaces and abstract classes which are implemented and extended by the generated classes.
+* ```dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std\build\libs``` contains an easily usable library for all standard dicom IODs, Modules and Attributes.
+* ```dcm4che-typeddicom-parser/dcm4che-typeddicom-parser-dtos\build\libs``` contains the DTOs which are needed to parse the metadata representation of the dicom standard.
+* ```dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-lib\build\libs``` contains a library to generate a typeddicom implementation with custom adaptations using additional yaml files.
+* ```dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-gradleplugin\build\libs``` contains the plugin which generates a typeddicom java implementation from a provided private tags file.
+You can also run ```.\gradlew publishToMavenLocal``` to install all packages to your local Maven repository.
 ## How to use
 ### Reading fields
 Instead of
-```
+```java
 Attributes attributes = readDicomFile("GSPS.dcm");
 
 int[] untypedPixelAspectRatio = attributes.getSequence(Tag.DisplayedAreaSelectionSequence)
@@ -74,7 +113,7 @@ int[] untypedPixelAspectRatio = attributes.getSequence(Tag.DisplayedAreaSelectio
 
 ```
 you can now use
-```
+```java
 Attributes attributes = readDicomFile("GSPS.dcm");
 
 GrayscaleSoftcopyPresentationStateIOD gsps = new GrayscaleSoftcopyPresentationStateIOD(attributes);
@@ -88,7 +127,7 @@ Where everything is checked for type-safety.
 ### Synthesizing Dicom Attributes
 A fluent API was implemented to make DICOM attributes synthesizing easily read and writable.
 Instead of
-```
+```java
 Attributes gspsClassic = new Attributes();
 gspsClassic.setString(Tag.PatientName, VR.PN, "Niklas");
 Sequence referencedSeriesSequence = gspsClassic.newSequence(Tag.ReferencedSeriesSequence, 1);
@@ -114,7 +153,7 @@ displayedAreaSelectionSequenceItem.setInt(Tag.PresentationPixelAspectRatio, VR.I
 displayedAreaSelectionSequence.add(displayedAreaSelectionSequenceItem);
 ```
 you can now use
-```
+```java
 GrayscaleSoftcopyPresentationStateIOD gsps = GrayscaleSoftcopyPresentationStateIOD.builder()
     .setPatientName().asString("Niklas")
     .setReferencedSeriesSequence(
@@ -140,4 +179,3 @@ GrayscaleSoftcopyPresentationStateIOD gsps = GrayscaleSoftcopyPresentationStateI
 ```
 ### JavaDocs
 Check out the javadocs. They should represent the stuff written in the DICOM Standard.
-
