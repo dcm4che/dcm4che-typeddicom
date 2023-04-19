@@ -61,7 +61,7 @@ jobs:
                     const releaseAssetName = file.replace(/(.*?)(-\d+\.\d+\.\d+(-SNAPSHOT)?)?(-(javadoc|sources))?.jar/, "$1/$1-${{ steps.get_release.outputs.tag_name }}$4.jar");
                   
                     console.log('uploading ' + file + ' > ' + releaseAssetName);
-                    await github.repos.uploadReleaseAsset({
+                    github.repos.uploadReleaseAsset({
                       owner,
                       repo,
                       release_id: steps.get_release.outputs.id,
