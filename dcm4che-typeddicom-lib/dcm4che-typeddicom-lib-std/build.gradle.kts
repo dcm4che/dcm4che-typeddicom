@@ -41,18 +41,6 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.named<Jar>("jar").configure {
-    archiveFileName.set("${project.name}.jar")
-}
-
-tasks.named<Jar>("javadocJar").configure {
-    archiveFileName.set("${project.name}-javadoc.jar")
-}
-
-tasks.named<Jar>("sourcesJar").configure {
-    archiveFileName.set("${project.name}-sources.jar")
-}
-
 tasks.withType<Jar> {
     manifest {
         attributes["Manifest-Version"] = "1.0"
