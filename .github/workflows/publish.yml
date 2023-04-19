@@ -33,13 +33,12 @@ jobs:
         run: gradle build
 
       - name: Upload release assets
-        uses: actions/github-script@v2
+        uses: actions/github-script@v6
         with:
-          github-token: ${{github.token}}
           script: |
             console.log('environment', process.versions);
             
-            const fs = require('fs').promises;
+            const fs = require('fs');
             
             const { repo: { owner, repo }, sha } = context;
             console.log({ owner, repo, sha });
@@ -51,22 +50,23 @@ jobs:
               'dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-lib',
               'dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-gradleplugin'
             ];
-            for (project of publishableSubProjects) {
-              fs.readdir("./" + project + '/build/libs', (err, files) => {
+            for (let project of publishableSubProjects) {
+              fs.readdir(`./${project}/build/libs`, (err, files) => {
                 if (err) {
                   console.log(err);
                 } else {
                   files.forEach(file => {
-                    // do whatever filtering you want here, I'm just uploading all the files
-                    const releaseAssetName = file.replace(/(.*?)(-\d+\.\d+\.\d+(-SNAPSHOT)?)?(-(javadoc|sources))?.jar/, "$1/$1-${{ steps.get_release.outputs.tag_name }}$4.jar");
-                  
-                    console.log('uploading ' + file + ' > ' + releaseAssetName);
-                    github.repos.uploadReleaseAsset({
+                    const releaseAssetName = file.replace(/(.*?)(-\d+\.\d+\.\d+(-SNAPSHOT)?)?(-(javadoc|sources))?.jar/, "$1-${{ steps.get_release.outputs.tag_name }}$4.jar");
+                    const filePath = `./${project}/build/libs/${file}`
+          
+                    console.log('uploading ' + filePath + ' > ' + releaseAssetName);
+          
+                    github.rest.repos.uploadReleaseAsset({
                       owner,
                       repo,
-                      release_id: steps.get_release.outputs.id,
+                      release_id: "${{ steps.get_release.outputs.id }}",
                       name: releaseAssetName,
-                      data: await fs.readFile(`./${file}`)
+                      data: fs.readFileSync(filePath)
                     });
                   });
                 }
