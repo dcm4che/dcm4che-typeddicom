@@ -1,6 +1,7 @@
 package org.dcm4che.typeddicom.generator;
 
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
@@ -79,7 +80,11 @@ public class JavaGenerator {
     private void updateWithPrivateMetaModelYamlFiles(DicomMetaModelDTO dicomMetaModelDTO, List<File> privateMetamodelYamlFiles) throws IOException {
         ObjectReader updateReader = this.yamlMapper.readerForUpdating(dicomMetaModelDTO);
         for (File metamodelYamlFile : privateMetamodelYamlFiles) {
-            updateReader.readValue(metamodelYamlFile);
+            try {
+                updateReader.readValue(metamodelYamlFile);
+            } catch (MismatchedInputException e) {
+                LOGGER.warn("Invalid yaml file {}", metamodelYamlFile.getPath());
+            }
         }
     }
 
