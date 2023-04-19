@@ -3,6 +3,7 @@ package org.dcm4che.typeddicom.publisher;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.credentials.PasswordCredentials;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.publish.PublishingExtension;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin;
@@ -31,6 +32,8 @@ public class TypeddicomPublisherPlugin implements Plugin<Project> {
 
         project.getPluginManager().apply(MavenPublishPlugin.class);
 
+        addJavadocAndSourcesJarToJavaPluginExtension(project);
+
         addVersionInfoToJarManifest(project);
 
         project.getGradle().projectsEvaluated(gradle -> {
@@ -40,6 +43,12 @@ public class TypeddicomPublisherPlugin implements Plugin<Project> {
                 configurePublishingAndSigningExtension(project, STANDARD_PUBLICATION_NAME);
             }
         });
+    }
+
+    private static void addJavadocAndSourcesJarToJavaPluginExtension(@NotNull Project project) {
+        JavaPluginExtension javaPluginExtension = project.getExtensions().getByType(JavaPluginExtension.class);
+        javaPluginExtension.withJavadocJar();
+        javaPluginExtension.withSourcesJar();
     }
 
     private static void addVersionInfoToJarManifest(Project project) {
