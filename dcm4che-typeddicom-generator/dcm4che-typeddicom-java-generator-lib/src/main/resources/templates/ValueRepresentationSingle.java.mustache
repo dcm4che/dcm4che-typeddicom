@@ -1,0 +1,35 @@
+// Auto generated
+package org.dcm4che.typeddicom.valuerepresentations;
+
+import org.dcm4che.typeddicom.AbstractSetter;
+import org.dcm4che.typeddicom.AttributesWrapper;
+import org.dcm4che.typeddicom.Builder;
+import org.dcm4che3.data.VR;
+
+/**
+ * <strong>Name:</strong> {{value.name}} <br>
+ * <strong>Tag:</strong> {{value.tag}} <br>
+ * <strong>Definition:</strong> {{{value.definition}}} <br>
+ * <strong>Character Repertoire:</strong> {{{value.characterRepertoire}}} <br>
+ * <strong>Length of Value:</strong> {{{value.lengthOfValue}}} <br>
+ *
+ * @see <a href="{{value.href}}">DICOM Standard Part 5 - {{value.name}}</a>
+ */
+public interface {{key}}Wrapper extends {{value.implementsInterfaces}} {
+    /**
+     * The <a href="https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html">DICOM Value 
+     * Representation (VR)</a> associated with this interface.
+     */
+    VR VALUE_REPRESENTATION = VR.{{value.tag}};
+
+    @Override
+    default VR getValueRepresentation() {
+        return VALUE_REPRESENTATION;
+    }
+
+    class Setter<B extends Builder<B, ? extends AttributesWrapper>, D extends {{key}}Wrapper> extends AbstractSetter<B, D> implements {{{value.setterImplementsInterfaces}}} {
+        public Setter(B builder, D dataElementWrapper) {
+            super(builder, dataElementWrapper);
+        }
+    }
+}

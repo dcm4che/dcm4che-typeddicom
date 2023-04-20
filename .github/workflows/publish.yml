@@ -12,55 +12,66 @@ jobs:
     environment: publishToDcm4cheMaven
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Get release
         id: get_release
-        uses: bruceadams/get-release@v1.2.3
+        uses: bruceadams/get-release@v1.3.2
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Set up Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'adopt'
+          java-version: '11'
+          distribution: 'temurin'
 
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+        uses: gradle/wrapper-validation-action@v1
 
       - name: Build package
         run: gradle build
 
-      - name: Publish bin jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload release assets
+        uses: actions/github-script@v6
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib.jar
-          asset_name: dcm4che-typeddicom-lib-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish javadoc jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib-javadoc.jar
-          asset_name: dcm4che-typeddicom-lib-javadoc-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
-
-      - name: Publish sources jar to GitHub
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./dcm4che-typeddicom-lib/build/libs/dcm4che-typeddicom-lib-sources.jar
-          asset_name: dcm4che-typeddicom-lib-sources-${{ steps.get_release.outputs.tag_name }}.jar
-          asset_content_type: application/jar
+          script: |
+            console.log('environment', process.versions);
+            
+            const fs = require('fs');
+            
+            const { repo: { owner, repo }, sha } = context;
+            console.log({ owner, repo, sha });
+            
+            const publishableSubProjects = [
+              'dcm4che-typeddicom-skeleton',
+              'dcm4che-typeddicom-lib/dcm4che-typeddicom-lib-std',
+              'dcm4che-typeddicom-parser/dcm4che-typeddicom-parser-dtos',
+              'dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-lib',
+              'dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-gradleplugin'
+            ];
+            for (let project of publishableSubProjects) {
+              fs.readdir(`./${project}/build/libs`, (err, files) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                  files.forEach(file => {
+                    const releaseAssetName = file.replace(/(.*?)(-\d+\.\d+\.\d+(-SNAPSHOT)?)?(-(javadoc|sources))?.jar/, "$1-${{ steps.get_release.outputs.tag_name }}$4.jar");
+                    const filePath = `./${project}/build/libs/${file}`
+          
+                    console.log('uploading ' + filePath + ' > ' + releaseAssetName);
+          
+                    github.rest.repos.uploadReleaseAsset({
+                      owner,
+                      repo,
+                      release_id: "${{ steps.get_release.outputs.id }}",
+                      name: releaseAssetName,
+                      data: fs.readFileSync(filePath)
+                    });
+                  });
+                }
+              });
+            }
 
       - name: Publish package to dcm4che Maven Repository
         run: gradle publishAllPublicationsToDcm4cheMavenRepository

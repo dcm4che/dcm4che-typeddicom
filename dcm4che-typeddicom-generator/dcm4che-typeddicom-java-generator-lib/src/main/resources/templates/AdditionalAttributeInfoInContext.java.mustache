@@ -1,0 +1,17 @@
+{{^entrySet.empty}}
+ * <ul>
+{{#entrySet}}
+ *     <li> <strong> Described in the contexts:</strong>
+ *         <ul>
+{{#value}}
+ *             <li>{{{contextHTML}}}</li>
+{{/value}}
+ *         </ul>
+ *         as follows: <br>
+ *         <strong>Attribute Name:</strong> {{key.name}} <br>
+ *         <strong>Type:</strong> {{key.type}} <br>
+ *         <strong>Attribute Description: </strong> {{{key.attributeDescription}}} <br>
+ *     </li>
+{{/entrySet}}
+ * </ul>
+{{/entrySet.empty}}
