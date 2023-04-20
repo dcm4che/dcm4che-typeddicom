@@ -25,7 +25,7 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation 'org.dcm4che:dcm4che-typeddicom-lib-std:0.5.0-SNAPSHOT'
+    implementation 'org.dcm4che:dcm4che-typeddicom-lib-std:0.5.0'
 }
 ```
 
@@ -41,7 +41,7 @@ repositories {
 
 ```kotlin
 dependencies {
-    implementation("org.dcm4che:dcm4che-typeddicom-lib-std:0.5.0-SNAPSHOT")
+    implementation("org.dcm4che:dcm4che-typeddicom-lib-std:0.5.0")
 }
 ```
 
@@ -60,7 +60,7 @@ dependencies {
 <dependency>
     <groupId>org.dcm4che</groupId>
     <artifactId>dcm4che-typeddicom</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.5.0</version>
 </dependency>
 ```
 ### Use private tags with the gradle plugin
@@ -69,7 +69,7 @@ In the ```build.gradle``` put:
 ```groovy
 plugins {
     id 'java-library'
-    id 'org.dcm4che.typeddicom-java-generator' version '0.5.0-SNAPSHOT'
+    id 'org.dcm4che.typeddicom-java-generator' version '0.5.0'
 }
 
 generateTypeddicomJavaSources {
@@ -81,7 +81,7 @@ or put this into ```build.gradle.kts```:
 ```kotlin
 plugins {
     id("java-library")
-    id("org.dcm4che.typeddicom-java-generator") version "0.5.0-SNAPSHOT"
+    id("org.dcm4che.typeddicom-java-generator") version "0.5.0"
 }
 generateTypeddicomJavaSources {
     privateDicomMetamodelYamlDirectory.set(layout.projectDirectory.dir("src/main/resources")) // default - so this is optional when using this directory
