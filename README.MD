@@ -67,6 +67,15 @@ dependencies {
 
 In the ```build.gradle``` put:
 ```groovy
+buildscript {
+    repositories {
+        // Add dicom4che repository
+        maven {
+            url "https://www.dcm4che.org/maven2/"
+        }
+    }
+}
+
 plugins {
     id 'java-library'
     id 'org.dcm4che.typeddicom-java-generator' version '0.5.1-SNAPSHOT'
@@ -79,10 +88,20 @@ generateTypeddicomJavaSources {
 ```
 or put this into ```build.gradle.kts```:
 ```kotlin
+buildscript {
+    repositories {
+        // Add dicom4che repository
+        maven {
+            url = uri("https://www.dcm4che.org/maven2/")
+        }
+    }
+}
+
 plugins {
     id("java-library")
     id("org.dcm4che.typeddicom-java-generator") version "0.5.1-SNAPSHOT"
 }
+
 generateTypeddicomJavaSources {
     privateDicomMetamodelYamlDirectory.set(layout.projectDirectory.dir("src/main/resources")) // default - so this is optional when using this directory
     generatedJavaOutputDirectory.set(layout.buildDirectory.dir("typeddicom")) // default - so this is optional when using this directory
