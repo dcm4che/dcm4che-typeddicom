@@ -17,7 +17,7 @@ import java.util.Objects;
 
 public class TypeddicomPublisherPlugin implements Plugin<Project> {
     private static final String TYPEDDICOM_GROUP = "org.dcm4che";
-    private static final String TYPEDDICOM_VERSION = "0.5.0";
+    private static final String TYPEDDICOM_VERSION = "0.5.1-SNAPSHOT";
 
     private static final String STANDARD_PUBLICATION_NAME = "mavenJava";
     private static final String GRADLE_PLUGIN_PUBLICATION_NAME = "pluginMaven";
