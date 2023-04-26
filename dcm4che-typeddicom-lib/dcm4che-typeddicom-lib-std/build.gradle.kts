@@ -39,18 +39,24 @@ tasks.test {
     useJUnitPlatform()
 }
 
+// Remove non-numeric version info for Bundle version
+val bundleVersion = "$version".replace(Regex(".*(\\d+\\.\\d+\\.\\d+).*"), "$1")
+
 tasks.withType<Jar> {
     manifest {
         attributes["Manifest-Version"] = "1.0"
         attributes["Bundle-ManifestVersion"] = "2"
-        attributes["Bundle-Name"] = "org.dcm4che.typeddicom"
-        attributes["Bundle-SymbolicName"] = "org.dcm4che.typeddicom;singleton:=true"
-        attributes["Bundle-Version"] = version
+        attributes["Bundle-Name"] = "org.dcm4che.dcm4che-typeddicom-lib-std"
+        attributes["Bundle-SymbolicName"] = "org.dcm4che.dcm4che-typeddicom-lib-std;singleton:=true"
+        attributes["Bundle-Version"] = bundleVersion
         attributes["Bundle-Vendor"] = "dcm4che"
         attributes["Bundle-ClassPath"] = "."
         attributes["Bundle-ActivationPolicy"] = "lazy"
+        attributes["Require-Bundle"] =
+            "org.dcm4che.dcm4che-typeddicom-skeleton; bundle-version=\"${bundleVersion}\"; visibility:=reexport"
         attributes["Export-Package"] =
-            "org.dcm4che.typeddicom, org.dcm4che.typeddicom.dataelements, org.dcm4che.typeddicom.iods, org.dcm4che.typeddicom.modules, org.dcm4che.typeddicom.valuerepresentations"
+            "org.dcm4che.typeddicom, org.dcm4che.typeddicom.dataelements, org.dcm4che.typeddicom.iods, " +
+                    "org.dcm4che.typeddicom.modules, org.dcm4che.typeddicom.valuerepresentations"
         attributes["Import-Package"] = "org.dcm4che3.data"
     }
 }

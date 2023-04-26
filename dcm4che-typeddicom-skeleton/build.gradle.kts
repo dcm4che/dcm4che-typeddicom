@@ -28,6 +28,25 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
+// Remove non-numeric version info for Bundle version
+val bundleVersion = "$version".replace(Regex(".*(\\d+\\.\\d+\\.\\d+).*"), "$1")
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Manifest-Version"] = "1.0"
+        attributes["Bundle-ManifestVersion"] = "2"
+        attributes["Bundle-Name"] = "org.dcm4che.dcm4che-typeddicom-skeleton"
+        attributes["Bundle-SymbolicName"] = "org.dcm4che.dcm4che-typeddicom-skeleton;singleton:=true"
+        attributes["Bundle-Version"] = bundleVersion
+        attributes["Bundle-Vendor"] = "dcm4che"
+        attributes["Bundle-ClassPath"] = "."
+        attributes["Bundle-ActivationPolicy"] = "lazy"
+        attributes["Export-Package"] =
+            "org.dcm4che.typeddicom, org.dcm4che.typeddicom.valuerepresentations"
+        attributes["Import-Package"] = "org.dcm4che3.data"
+    }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
