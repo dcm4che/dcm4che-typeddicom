@@ -25,7 +25,7 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation 'org.dcm4che:dcm4che-typeddicom-lib-std:0.5.1'
+    implementation 'org.dcm4che:dcm4che-typeddicom-lib-std:0.5.2-SNAPSHOT'
 }
 ```
 
@@ -41,7 +41,7 @@ repositories {
 
 ```kotlin
 dependencies {
-    implementation("org.dcm4che:dcm4che-typeddicom-lib-std:0.5.1")
+    implementation("org.dcm4che:dcm4che-typeddicom-lib-std:0.5.2-SNAPSHOT")
 }
 ```
 
@@ -60,7 +60,7 @@ dependencies {
 <dependency>
     <groupId>org.dcm4che</groupId>
     <artifactId>dcm4che-typeddicom</artifactId>
-    <version>0.5.1</version>
+    <version>0.5.2-SNAPSHOT</version>
 </dependency>
 ```
 ### Use private tags with the gradle plugin
@@ -78,7 +78,7 @@ buildscript {
 
 plugins {
     id 'java-library'
-    id 'org.dcm4che.typeddicom-java-generator' version '0.5.1'
+    id 'org.dcm4che.typeddicom-java-generator' version '0.5.2-SNAPSHOT'
 }
 
 generateTypeddicomJavaSources {
@@ -99,7 +99,7 @@ buildscript {
 
 plugins {
     id("java-library")
-    id("org.dcm4che.typeddicom-java-generator") version "0.5.1"
+    id("org.dcm4che.typeddicom-java-generator") version "0.5.2-SNAPSHOT"
 }
 
 generateTypeddicomJavaSources {
