@@ -52,7 +52,7 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
         if ("subtitle".equals(qName)) {
-            this.recordText = true;
+            this.startRecordingText();
         }
         if ("section".equals(qName)) {
             this.currentSectionId = attributes.getValue("xml:id");
