@@ -22,13 +22,6 @@ public class InformationObjectDefinitionMetaInfo {
         this.sectionId = sectionId;
     }
 
-
-    public String getImplementsModuleBuilders() {
-        return moduleReferences.stream()
-                .map(ref -> ref.moduleMetaInfo().getKeyword() + ".Builder<Builder, " + keyword + ">")
-                .collect(Collectors.joining(", "));
-    }
-
     public String getName() {
         return name;
     }

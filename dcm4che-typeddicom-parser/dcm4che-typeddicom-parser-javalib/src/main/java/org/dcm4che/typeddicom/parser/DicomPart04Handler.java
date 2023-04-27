@@ -3,7 +3,6 @@ package org.dcm4che.typeddicom.parser;
 import org.dcm4che.typeddicom.parser.metamodel.InformationObjectDefinitionMetaInfo;
 import org.dcm4che.typeddicom.parser.table.Table;
 import org.dcm4che.typeddicom.parser.table.TableCell;
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import java.util.Set;
@@ -12,8 +11,6 @@ public class DicomPart04Handler extends MemorizeTablesDicomPartHandler {
     private static final String STANDARD_SOP_CLASSES_TABLE_CAPTION = "Standard SOP Classes";
     private static final String ZERO_WIDTH_SPACE = "\u200B";
     private final Set<InformationObjectDefinitionMetaInfo> iods;
-    private boolean inStandardSOPClassesTable = false;
-    private int standardSOPClassTableRow = 0;
 
     @Override
     public String getBaseHrefUrl() {
@@ -27,26 +24,6 @@ public class DicomPart04Handler extends MemorizeTablesDicomPartHandler {
     @Override
     protected String getLabelPrefix() {
         return "DICOM Standard Part 4";
-    }
-
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        super.startElement(uri, localName, qName, attributes);
-        // if ("table".equals(qName) && STANDARD_SOP_CLASSES_TABLE_ID.equals(attributes.getValue("xml:id"))) {
-        //     this.inStandardSOPClassesTable = true;
-        // } else if (inStandardSOPClassesTable && "tr".equals(qName)) {
-        //     startOfStandardSOPClassTableRow();
-        // }
-    }
-
-    @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-        super.endElement(uri, localName, qName);
-        // if ("table".equals(qName)) {
-        //     this.inStandardSOPClassesTable = false;
-        // } else if (inStandardSOPClassesTable && "tr".equals(qName)) {
-        //     endOfStandardSOPClassTableRow();
-        // }
     }
 
     @Override

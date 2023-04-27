@@ -132,8 +132,6 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
                 lastReferenceInFirstColumn = lastReference;
             }
             handleEndOfTableCell();
-        } else if ("th".equals(qName)) {
-            String columnHead = getRecordedText();
         }
         super.endElement(uri, localName, qName);
     }
