@@ -158,6 +158,26 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
                     appendTag("a", true);
                 }
                 break;
+            case "figure":
+            case "mediaobject":
+            case "imageobject":
+                break; // Unnecessary wrappers for HTML
+            case "imagedata":
+                if (!close) {
+                    String fileref = attributes.getValue("fileref");
+                    String urlForFileRef = getUrlForFileRef(fileref);
+                    appendTag("a", false, Collections.singletonMap("href", urlForFileRef), "");
+                    appendTag(
+                            "img",
+                            false,
+                            Collections.singletonMap("src", urlForFileRef),
+                            ""
+                    );
+                } else {
+                    appendTag("img", true);
+                    appendTag("a", true);
+                }
+                break;
             case "link":
                 if (!close) {
                     appendTag(
@@ -191,6 +211,11 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
 
     public String getUrlFromXmlId(String xmlId) {
         return this.getBaseHrefUrl() + "#" + xmlId;
+    }
+
+    private String getUrlForFileRef(String fileref) {
+        String baseHrefUrl = getBaseHrefUrl();
+        return baseHrefUrl.substring(0, baseHrefUrl.lastIndexOf('/') + 1) + fileref;
     }
 
     private void appendTag(String tag, boolean close) {

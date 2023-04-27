@@ -33,6 +33,7 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
     private String lastReferenceInFirstColumn;
     private boolean isInTableRow = false;
     private String tableEntryHref = null;
+    private InformationObjectDefinitionMetaInfo currentIod = null;
 
     public DicomPart03Handler(Map<String, Set<DataElementMetaInfo>> dataElementMetaInfos) {
         this(new HashSet<>(), new HashSet<>(), dataElementMetaInfos);
@@ -79,6 +80,8 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
             lastReference = attributes.getValue("linkend");
         } else if (isInTableRow && tableEntryHref == null && "para".equals(qName)) {
             tableEntryHref = getUrlFromXmlId(attributes.getValue("xml:id"));
+        } else if ("title".equals(qName)) {
+            startRecordingText();
         }
     }
 
@@ -86,25 +89,37 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if ("caption".equals(qName)) {
             // check for table caption of module definitions
-            String recordedText = getRecordedText();
+            String tableCaption = getRecordedText();
             // ignore the weird stuff happening in https://dicom.nema.org/medical/dicom/current/output/html/part03.html#table_C.36.25-2
             // because it would ruin the module derived from https://dicom.nema.org/medical/dicom/current/output/html/part03.html#table_C.36.25-1
             // (same caption) as well as the example tables
             if (!currentTableId.equals("table_C.36.25-2") &&
-                    !recordedText.contains("Example Module Table") &&
-                    !recordedText.contains("Example Macro Attributes") &&
-                    !recordedText.contains("Example Module Table Without The Use of An Attribute Macro")) {
-                if (recordedText.endsWith(" Module Attributes") || recordedText.endsWith(" Module Table")) {
-                    String moduleName = recordedText.replace(" Attributes", "").trim();
+                    !tableCaption.contains("Example Module Table") &&
+                    !tableCaption.contains("Example Macro Attributes") &&
+                    !tableCaption.contains("Example Module Table Without The Use of An Attribute Macro")) {
+                if (tableCaption.endsWith(" Module Attributes") || tableCaption.endsWith(" Module Table")) {
+                    String moduleName = tableCaption.replace(" Attributes", "").trim();
                     this.currentModule = new ModuleTable(
                             this.currentSectionId,
                             moduleName,
                             getUrlFromXmlId(this.currentSectionId)
                     );
-                } else if (recordedText.contains("Macro Attributes")) {
-                    String macroName = recordedText.replace(" Attributes", "").trim();
+                } else if (tableCaption.contains("Macro Attributes")) {
+                    String macroName = tableCaption.replace(" Attributes", "").trim();
                     this.currentMacro = new MacroTable(macroName, currentTableId, getUrlFromXmlId(currentTableId));
                 }
+            }
+
+            if (tableCaption.matches(".* IOD Modules\\W*$") && currentIod != null) {
+                // For some IODs the description section title misses the actual IOD name, it is added here to find
+                // back later when analysing the recorded tables.
+                String name = tableCaption.replaceAll("Modules\\W*$", "").trim();
+                currentIod.setName(name);
+                currentIod.setKeyword(KeywordUtils.sanitizeAsJavaIdentifier(name));
+
+                // Only add currentIod if it also has a modules table to skip examples and retired stuff
+                iods.add(currentIod);
+                currentIod = null;
             }
         } else if ((this.currentModule != null || this.currentMacro != null) && "table".equals(qName)) {
             // table ends (add module meta info to set)
@@ -132,8 +147,24 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
                 lastReferenceInFirstColumn = lastReference;
             }
             handleEndOfTableCell();
+        } else if ("section".equals(qName) && this.currentIod != null && this.currentIod.getDescription() == null) {
+            this.currentIod.setDescription(this.getRecordedHTML());
         }
         super.endElement(uri, localName, qName);
+        if ("title".equals(qName)) {
+            String title = getRecordedText();
+            if (title.matches(".*IOD Description\\W*$")) {
+                String iodName = title.replaceAll("Description\\W*$", "").trim();
+                String parentSectionId = this.currentSectionId.replaceAll("\\.\\d+$", "");
+                this.currentIod = new InformationObjectDefinitionMetaInfo(
+                        iodName,
+                        KeywordUtils.sanitizeAsJavaIdentifier(iodName),
+                        getBaseHrefUrl() + "#" + parentSectionId,
+                        parentSectionId
+                );
+                this.startRecordingHTML();
+            }
+        }
     }
 
     @Override
@@ -160,12 +191,19 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
 
         for (Table table : this.getTables()) {
             if (table.getCaption().endsWith(" IOD Modules")) {
-                String name = table.getCaption().replaceAll("Modules", "").trim();
-                InformationObjectDefinitionMetaInfo iod = new InformationObjectDefinitionMetaInfo(
-                        name,
-                        KeywordUtils.sanitizeAsJavaIdentifier(name),
-                        table.getHref(),
-                        table.getSectionId());
+                String name = table.getCaption().replaceAll("Modules$", "").trim();
+                String keyword = KeywordUtils.sanitizeAsJavaIdentifier(name);
+                InformationObjectDefinitionMetaInfo iod = iods.stream()
+                        .filter(iodElement -> iodElement.getKeyword().equals(keyword))
+                        .findAny()
+                        .orElse(
+                                new InformationObjectDefinitionMetaInfo(
+                                        name,
+                                        keyword,
+                                        table.getHref(),
+                                        table.getSectionId()
+                                )
+                        );
                 for (int r = 0; r < table.getRows(); r++) {
                     TableCell referenceCell = table.getTableCell(r, "Reference");
                     if (referenceCell != null) {
@@ -174,7 +212,6 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
                         iod.getModuleReferences().add(new IODModuleReference(moduleMetaInfo));
                     }
                 }
-                iods.add(iod);
             }
         }
     }
@@ -255,7 +292,7 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
             String tableId = macroTableEntry.getTableId();
             Set<MacroTable> matchingMacroTables = getMatchingMacroTables(tableId);
             if (matchingMacroTables.isEmpty()) {
-                System.out.println("Invalid macro key: " + tableId);
+                System.out.println("Invalid macro keyword: " + tableId);
                 return Collections.emptyList();
             }
             MacroMetaInfo macroMetaInfo = macros.get(tableId);

@@ -45,7 +45,7 @@ public class DicomPart04Handler extends MemorizeTablesDicomPartHandler {
         sopClassUID = cleanHTMLText(sopClassUID);
         final String iodTargetPtr = getIODTargetPointer(standardSOPClassesTable.getTableCell(row, "IOD Specification (defined in )"));
         InformationObjectDefinitionMetaInfo matchingIOD = this.iods.stream()
-                .filter(iod -> iodTargetPtr.equals(getParentSectionId(iod)))
+                .filter(iod -> iodTargetPtr.equals(iod.getSectionId()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("There is no IOD with section id " + iodTargetPtr));
         matchingIOD.addSopClass(sopClassName, sopClassUID);
@@ -56,10 +56,6 @@ public class DicomPart04Handler extends MemorizeTablesDicomPartHandler {
         iodTargetPtr = iodTargetPtr.replaceAll(".*href=\"" + getDicomStandardHtmlUrl() + "/part03.html#(sect_[^\"]+)\".*", "$1");
         iodTargetPtr = cleanHTMLText(iodTargetPtr);
         return iodTargetPtr;
-    }
-
-    private String getParentSectionId(InformationObjectDefinitionMetaInfo iod) {
-        return iod.getSectionId().replaceAll("(sect_.*).\\d+", "$1");
     }
 
     private String cleanHTMLText(String htmlText) {
