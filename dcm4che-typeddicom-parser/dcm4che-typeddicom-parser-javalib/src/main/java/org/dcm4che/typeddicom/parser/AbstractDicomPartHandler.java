@@ -170,11 +170,10 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
                     appendTag(
                             "img",
                             false,
-                            Collections.singletonMap("src", urlForFileRef),
+                            Map.of("src", urlForFileRef, "alt", fileref),
                             ""
                     );
                 } else {
-                    appendTag("img", true);
                     appendTag("a", true);
                 }
                 break;
