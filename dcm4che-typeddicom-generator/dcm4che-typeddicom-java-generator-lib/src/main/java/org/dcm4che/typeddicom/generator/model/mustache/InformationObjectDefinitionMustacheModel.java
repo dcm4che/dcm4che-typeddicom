@@ -79,7 +79,6 @@ public final class InformationObjectDefinitionMustacheModel {
         return modules;
     }
 
-    @JsonIgnore
     public String getClassJavaDoc() {
         String javadocHtml = "<strong>Name:</strong> " + name + " <br>\n" +
                 "<strong>Description:</strong> <br>\n" + description + "\n" +

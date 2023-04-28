@@ -72,12 +72,10 @@ public final class DataElementMustacheModel {
         );
     }
 
-    @JsonIgnore
     public boolean isSequence() {
         return valueRepresentation.equals("Sequence");
     }
 
-    @JsonIgnore
     public String getValueRepresentationWrapper() {
         if (valueMultiplicity().equals("1")) {
             return valueRepresentation + "Wrapper";
@@ -86,19 +84,16 @@ public final class DataElementMustacheModel {
         }
     }
 
-    @JsonIgnore
     public String implementsBuilderInterfaces() {
         return contains.stream()
                 .map(key -> key + ".Builder<Builder, Item>")
                 .collect(Collectors.joining(", "));
     }
 
-    @JsonIgnore
     public String implementsHolderInterfaces() {
         return contains.stream().map(key -> key + ".Holder").collect(Collectors.joining(", "));
     }
 
-    @JsonIgnore
     public String classJavaDoc() {
         StringBuilder htmlBuilder = new StringBuilder();
         appendGeneralInfo(htmlBuilder);
