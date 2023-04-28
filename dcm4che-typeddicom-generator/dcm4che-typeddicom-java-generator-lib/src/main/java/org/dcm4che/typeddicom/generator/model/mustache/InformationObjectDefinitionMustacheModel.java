@@ -1,5 +1,7 @@
 package org.dcm4che.typeddicom.generator.model.mustache;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.dcm4che.typeddicom.generator.JavaDocUtils;
 import org.dcm4che.typeddicom.parser.metamodel.dto.InformationObjectDefinitionMetaInfoDTO;
 import org.dcm4che.typeddicom.parser.metamodel.dto.SOPClassDTO;
 
@@ -75,6 +77,16 @@ public final class InformationObjectDefinitionMustacheModel {
 
     public List<String> modules() {
         return modules;
+    }
+
+    @JsonIgnore
+    public String getClassJavaDoc() {
+        String javadocHtml = "<strong>Name:</strong> " + name + " <br>\n" +
+                "<strong>Description:</strong> <br>\n" + description + "\n" +
+                "\n" +
+                "@see <a href=\"" + href + "\">DICOM Standard Part 3 - " + name + "</a>";
+
+        return JavaDocUtils.javaDocify(javadocHtml, 0);
     }
 
     @Override
