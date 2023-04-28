@@ -148,7 +148,8 @@ public class DicomPart03Handler extends MemorizeTablesDicomPartHandler {
             }
             handleEndOfTableCell();
         } else if ("section".equals(qName) && this.currentIod != null && this.currentIod.getDescription() == null) {
-            this.currentIod.setDescription(this.getRecordedHTML());
+            String description = HtmlUtils.cleanUpHtml(this.getRecordedHTML());
+            this.currentIod.setDescription(description);
         }
         super.endElement(uri, localName, qName);
         if ("title".equals(qName)) {

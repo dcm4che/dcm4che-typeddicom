@@ -3,12 +3,10 @@ package org.dcm4che.typeddicom.generator.model.mustache;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.davidmoten.text.utils.WordWrap;
+import org.dcm4che.typeddicom.parser.HtmlUtils;
 import org.dcm4che.typeddicom.parser.metamodel.dto.AdditionalAttributeInfoContextsDTO;
 import org.dcm4che.typeddicom.parser.metamodel.dto.AdditionalAttributeInfoDTO;
 import org.dcm4che.typeddicom.parser.metamodel.dto.DataElementMetaInfoDTO;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +16,7 @@ public final class DataElementMustacheModel {
     private static final String LINE_BREAK = "<br>";
     private static final String JAVA_DOC_NEWLINE = "\n * ";
     private static final int MAX_LINE_LENGTH = 120;
-    public static final String ZERO_WIDTH_CHARACTERS_REGEX = "[\n\r]";
+    private static final String ZERO_WIDTH_CHARACTERS_REGEX = "[\n\r]";
     private final String keyword;
     private final String name;
     private final String privateCreatorConstant;
@@ -108,18 +106,8 @@ public final class DataElementMustacheModel {
         StringBuilder htmlBuilder = new StringBuilder();
         appendGeneralInfo(htmlBuilder);
         appendContextInfo(htmlBuilder);
-        Document jsoupDoc = Jsoup.parse(htmlBuilder.toString());
-        Document.OutputSettings outputSettings = new Document.OutputSettings();
-        outputSettings.prettyPrint(true);
-        jsoupDoc.select("br").after("\\n");
-        jsoupDoc.select("p").before("\\n");
-        jsoupDoc.outputSettings(outputSettings);
-        Element body = jsoupDoc.body();
-        sanitizeJDocHtml(body);
-        String htmlString = body.html();
-        htmlString = htmlString.replace("\\n", "\n");
-        htmlString = htmlString.replace("\n<br>", "<br>\n");
-        htmlString = htmlString.replaceAll("</p>(?!\\n)", "</p>\n");
+        String string = htmlBuilder.toString();
+        String htmlString = HtmlUtils.cleanUpHtml(string);
         if (retired) {
             htmlString += "\n\n@deprecated ";
             htmlString += comment;
@@ -153,19 +141,6 @@ public final class DataElementMustacheModel {
                 html.append("</li>");
             }
             html.append("</ul>");
-        }
-    }
-
-    private void sanitizeJDocHtml(Element body) {
-        for (Element element : body.select("dl > p")) {
-            assert element.parent() != null; // should always have a parent
-            element.parent().before(element);
-        }
-        for (Element element : body.select("p:empty")) {
-            element.remove();
-        }
-        for (Element element : body.select("dd:empty, dd:matchesOwn((?is))")) {
-            element.remove();
         }
     }
 

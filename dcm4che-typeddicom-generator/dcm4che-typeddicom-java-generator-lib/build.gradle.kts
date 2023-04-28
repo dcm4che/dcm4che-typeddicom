@@ -28,8 +28,6 @@ dependencies {
 
     implementation("org.dcm4che:dcm4che-core:5.29.0")
 
-    implementation("org.jsoup:jsoup:1.14.3")
-
     implementation("com.fasterxml.jackson.core:jackson-core:2.14.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.2")
