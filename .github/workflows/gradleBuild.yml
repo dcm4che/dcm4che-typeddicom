@@ -36,6 +36,11 @@ jobs:
         retention-days: 7
     - uses: actions/upload-artifact@v3
       with:
+        name: Generator Library
+        path: dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-gradleplugin/build/libs
+        retention-days: 7
+    - uses: actions/upload-artifact@v3
+      with:
         name: Generator Gradle Plugin
         path: dcm4che-typeddicom-generator/dcm4che-typeddicom-java-generator-gradleplugin/build/libs
         retention-days: 7
