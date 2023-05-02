@@ -1,6 +1,6 @@
-import org.dcm4che.typeddicom.AttributesWrapper;
 import org.dcm4che.typeddicom.UniversalAttributesWrapper;
 import org.dcm4che.typeddicom.dataelements.DisplayedAreaSelectionSequence;
+import org.dcm4che.typeddicom.dataelements.PixelAspectRatio;
 import org.dcm4che.typeddicom.dataelements.ReferencedImageSequence;
 import org.dcm4che.typeddicom.dataelements.ReferencedSeriesSequence;
 import org.dcm4che.typeddicom.iods.CRImageIOD;
@@ -153,5 +153,13 @@ class SimpleTests {
         assertEquals(0.1, rendererEnvironment.getAttributes()
                 .getSequence(HPStateTag_CREATOR, HPStateTag_SpatialTransformSequence)
                 .get(0).getDouble(HPStateTag_CREATOR, HPStateTag_ViewZoom, VR.FD, 0, 0));
+    }
+
+    @Test
+    void callingBuildOnHolderBuilderReturnsAValidObjectContainingTheAttribute() {
+        int[] ratio = {1, 1};
+        PixelAspectRatio.Holder.Builder pixelAspectRatioHolderBuilder = PixelAspectRatio.Holder.builder()
+                .setPixelAspectRatio().asInts(ratio);
+        assertArrayEquals(ratio, pixelAspectRatioHolderBuilder.build().getPixelAspectRatio().getInts());
     }
 }

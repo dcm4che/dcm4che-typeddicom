@@ -238,7 +238,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
             getAttributes().remove(PRIVATE_CREATOR, TAG);
         }
 
-        class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, SimpleHolder>, {{keyword}}.Builder<Builder, SimpleHolder> {
+        class Builder extends AbstractAttributesWrapper implements org.dcm4che.typeddicom.Builder<Builder, Holder>, {{keyword}}.Builder<Builder, Holder> {
             private Builder() {
                 super();
             }
@@ -248,7 +248,7 @@ public class {{keyword}} extends {{#sequence}}SequenceWrapper<{{keyword}}, {{key
             }
 
             @Override
-            public SimpleHolder build() {
+            public Holder build() {
                 return super.copy(SimpleHolder.class);
             }
         }
