@@ -2,13 +2,11 @@ package org.dcm4che.typeddicom.generator.model.mustache;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.davidmoten.text.utils.WordWrap;
+import org.dcm4che.typeddicom.generator.JavaDocUtils;
+import org.dcm4che.typeddicom.parser.HtmlUtils;
 import org.dcm4che.typeddicom.parser.metamodel.dto.AdditionalAttributeInfoContextsDTO;
 import org.dcm4che.typeddicom.parser.metamodel.dto.AdditionalAttributeInfoDTO;
 import org.dcm4che.typeddicom.parser.metamodel.dto.DataElementMetaInfoDTO;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,9 +14,6 @@ import java.util.stream.Collectors;
 
 public final class DataElementMustacheModel {
     private static final String LINE_BREAK = "<br>";
-    private static final String JAVA_DOC_NEWLINE = "\n * ";
-    private static final int MAX_LINE_LENGTH = 120;
-    public static final String ZERO_WIDTH_CHARACTERS_REGEX = "[\n\r]";
     private final String keyword;
     private final String name;
     private final String privateCreatorConstant;
@@ -77,12 +72,10 @@ public final class DataElementMustacheModel {
         );
     }
 
-    @JsonIgnore
     public boolean isSequence() {
         return valueRepresentation.equals("Sequence");
     }
 
-    @JsonIgnore
     public String getValueRepresentationWrapper() {
         if (valueMultiplicity().equals("1")) {
             return valueRepresentation + "Wrapper";
@@ -91,40 +84,27 @@ public final class DataElementMustacheModel {
         }
     }
 
-    @JsonIgnore
     public String implementsBuilderInterfaces() {
         return contains.stream()
                 .map(key -> key + ".Builder<Builder, Item>")
                 .collect(Collectors.joining(", "));
     }
 
-    @JsonIgnore
     public String implementsHolderInterfaces() {
         return contains.stream().map(key -> key + ".Holder").collect(Collectors.joining(", "));
     }
 
-    @JsonIgnore
     public String classJavaDoc() {
         StringBuilder htmlBuilder = new StringBuilder();
         appendGeneralInfo(htmlBuilder);
         appendContextInfo(htmlBuilder);
-        Document jsoupDoc = Jsoup.parse(htmlBuilder.toString());
-        Document.OutputSettings outputSettings = new Document.OutputSettings();
-        outputSettings.prettyPrint(true);
-        jsoupDoc.select("br").after("\\n");
-        jsoupDoc.select("p").before("\\n");
-        jsoupDoc.outputSettings(outputSettings);
-        Element body = jsoupDoc.body();
-        sanitizeJDocHtml(body);
-        String htmlString = body.html();
-        htmlString = htmlString.replace("\\n", "\n");
-        htmlString = htmlString.replace("\n<br>", "<br>\n");
-        htmlString = htmlString.replaceAll("</p>(?!\\n)", "</p>\n");
+        String string = htmlBuilder.toString();
+        String htmlString = HtmlUtils.cleanUpHtml(string);
         if (retired) {
             htmlString += "\n\n@deprecated ";
             htmlString += comment;
         }
-        return javaDocify(htmlString, 0);
+        return JavaDocUtils.javaDocify(htmlString, 0);
     }
 
     private void appendGeneralInfo(StringBuilder html) {
@@ -154,38 +134,6 @@ public final class DataElementMustacheModel {
             }
             html.append("</ul>");
         }
-    }
-
-    private void sanitizeJDocHtml(Element body) {
-        for (Element element : body.select("dl > p")) {
-            assert element.parent() != null; // should always have a parent
-            element.parent().before(element);
-        }
-        for (Element element : body.select("p:empty")) {
-            element.remove();
-        }
-        for (Element element : body.select("dd:empty, dd:matchesOwn((?is))")) {
-            element.remove();
-        }
-    }
-
-    private String javaDocify(String html, int indentationLevel) {
-        String jdoc = WordWrap.from(html)
-                .maxWidth(MAX_LINE_LENGTH
-                        - JAVA_DOC_NEWLINE.replaceAll(ZERO_WIDTH_CHARACTERS_REGEX, "").length()
-                        - indentationLevel)
-                .extraWordChars("0123456789-._~:/?#[]@!$&'()*+,;%=\"<>")
-                .newLine(JAVA_DOC_NEWLINE)
-                .breakWords(false)
-                .wrap();
-        jdoc = "/**\n * " + jdoc + "\n */";
-        jdoc = indent(jdoc, indentationLevel);
-        return jdoc;
-    }
-
-    private String indent(String text, int indentationLevel) {
-        String indent = " ".repeat(indentationLevel * 4);
-        return indent + text.replace("\n", "\n" + indent);
     }
 
     public String keyword() {

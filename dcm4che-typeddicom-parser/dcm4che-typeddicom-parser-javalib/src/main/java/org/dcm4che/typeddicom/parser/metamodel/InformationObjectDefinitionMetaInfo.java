@@ -7,13 +7,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class InformationObjectDefinitionMetaInfo {
-    private final String name;
-    private final String keyword;
+    private String name;
+    private String keyword;
     private final String href;
     
     private final String sectionId;
     private final Set<SOPClass> sopClasses = new HashSet<>();
     private final List<IODModuleReference> moduleReferences = new ArrayList<>();
+    private String description = null;
 
     public InformationObjectDefinitionMetaInfo(String name, String keyword, String href, String sectionId) {
         this.name = name;
@@ -22,15 +23,16 @@ public class InformationObjectDefinitionMetaInfo {
         this.sectionId = sectionId;
     }
 
-
-    public String getImplementsModuleBuilders() {
-        return moduleReferences.stream()
-                .map(ref -> ref.moduleMetaInfo().getKeyword() + ".Builder<Builder, " + keyword + ">")
-                .collect(Collectors.joining(", "));
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {
         return name;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 
     public String getKeyword() {
@@ -55,5 +57,13 @@ public class InformationObjectDefinitionMetaInfo {
 
     public String getSectionId() {
         return sectionId;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

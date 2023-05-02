@@ -52,7 +52,7 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
         if ("subtitle".equals(qName)) {
-            this.recordText = true;
+            this.startRecordingText();
         }
         if ("section".equals(qName)) {
             this.currentSectionId = attributes.getValue("xml:id");
@@ -158,6 +158,25 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
                     appendTag("a", true);
                 }
                 break;
+            case "figure":
+            case "mediaobject":
+            case "imageobject":
+                break; // Unnecessary wrappers for HTML
+            case "imagedata":
+                if (!close) {
+                    String fileref = attributes.getValue("fileref");
+                    String urlForFileRef = getUrlForFileRef(fileref);
+                    appendTag("a", false, Collections.singletonMap("href", urlForFileRef), "");
+                    appendTag(
+                            "img",
+                            false,
+                            Map.of("src", urlForFileRef, "alt", fileref),
+                            ""
+                    );
+                } else {
+                    appendTag("a", true);
+                }
+                break;
             case "link":
                 if (!close) {
                     appendTag(
@@ -191,6 +210,11 @@ public abstract class AbstractDicomPartHandler extends DefaultHandler {
 
     public String getUrlFromXmlId(String xmlId) {
         return this.getBaseHrefUrl() + "#" + xmlId;
+    }
+
+    private String getUrlForFileRef(String fileref) {
+        String baseHrefUrl = getBaseHrefUrl();
+        return baseHrefUrl.substring(0, baseHrefUrl.lastIndexOf('/') + 1) + fileref;
     }
 
     private void appendTag(String tag, boolean close) {

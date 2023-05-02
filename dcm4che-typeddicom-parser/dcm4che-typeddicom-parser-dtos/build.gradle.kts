@@ -16,6 +16,8 @@ repositories {
 dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.14.2")
 
+    implementation("org.jsoup:jsoup:1.14.3")
+
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

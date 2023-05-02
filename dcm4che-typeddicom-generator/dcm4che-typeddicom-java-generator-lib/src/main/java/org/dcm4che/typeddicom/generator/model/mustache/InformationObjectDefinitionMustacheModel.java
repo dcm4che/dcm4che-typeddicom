@@ -1,5 +1,7 @@
 package org.dcm4che.typeddicom.generator.model.mustache;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.dcm4che.typeddicom.generator.JavaDocUtils;
 import org.dcm4che.typeddicom.parser.metamodel.dto.InformationObjectDefinitionMetaInfoDTO;
 import org.dcm4che.typeddicom.parser.metamodel.dto.SOPClassDTO;
 
@@ -12,6 +14,7 @@ public final class InformationObjectDefinitionMustacheModel {
     private final String name;
     private final String href;
     private final String sectionId;
+    private final String description;
     private final List<SOPClassDTO> sopClasses;
     private final List<String> modules;
 
@@ -20,6 +23,7 @@ public final class InformationObjectDefinitionMustacheModel {
             String name,
             String href,
             String sectionId,
+            String description,
             List<SOPClassDTO> sopClasses,
             List<String> modules
     ) {
@@ -27,12 +31,14 @@ public final class InformationObjectDefinitionMustacheModel {
         this.name = name;
         this.href = href;
         this.sectionId = sectionId;
+        this.description = description;
         this.sopClasses = sopClasses;
         this.modules = modules;
     }
 
     public InformationObjectDefinitionMustacheModel(String key, InformationObjectDefinitionMetaInfoDTO dto) {
-        this(key, dto.getName(), dto.getHref(), dto.getSectionId(), dto.getSopClasses(), dto.getModules());
+        this(key, dto.getName(), dto.getHref(), dto.getSectionId(), dto.getDescription(), dto.getSopClasses(),
+                dto.getModules());
     }
 
     public String getImplementsModules() {
@@ -61,12 +67,25 @@ public final class InformationObjectDefinitionMustacheModel {
         return sectionId;
     }
 
+    public String description() {
+        return description;
+    }
+
     public List<SOPClassDTO> sopClasses() {
         return sopClasses;
     }
 
     public List<String> modules() {
         return modules;
+    }
+
+    public String getClassJavaDoc() {
+        String javadocHtml = "<strong>Name:</strong> " + name + " <br>\n" +
+                "<strong>Description:</strong> <br>\n" + description + "\n" +
+                "\n" +
+                "@see <a href=\"" + href + "\">DICOM Standard Part 3 - " + name + "</a>";
+
+        return JavaDocUtils.javaDocify(javadocHtml, 0);
     }
 
     @Override
@@ -78,13 +97,14 @@ public final class InformationObjectDefinitionMustacheModel {
                 Objects.equals(this.name, that.name) &&
                 Objects.equals(this.href, that.href) &&
                 Objects.equals(this.sectionId, that.sectionId) &&
+                Objects.equals(this.description, that.description) &&
                 Objects.equals(this.sopClasses, that.sopClasses) &&
                 Objects.equals(this.modules, that.modules);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(keyword, name, href, sectionId, sopClasses, modules);
+        return Objects.hash(keyword, name, href, sectionId, description, sopClasses, modules);
     }
 
     @Override
@@ -94,9 +114,8 @@ public final class InformationObjectDefinitionMustacheModel {
                 "name=" + name + ", " +
                 "href=" + href + ", " +
                 "sectionId=" + sectionId + ", " +
+                "description=" + description + ", " +
                 "sopClasses=" + sopClasses + ", " +
                 "modules=" + modules + ']';
     }
-
-
 }

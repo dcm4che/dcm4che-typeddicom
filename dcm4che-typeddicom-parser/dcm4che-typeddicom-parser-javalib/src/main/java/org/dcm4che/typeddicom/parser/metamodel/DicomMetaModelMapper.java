@@ -92,6 +92,7 @@ public class DicomMetaModelMapper {
                 informationObjectDefinitionMetaInfo.getName(),
                 informationObjectDefinitionMetaInfo.getHref(),
                 informationObjectDefinitionMetaInfo.getSectionId(),
+                informationObjectDefinitionMetaInfo.getDescription(),
                 informationObjectDefinitionMetaInfo.getSopClasses().stream()
                         .map(this::mapSopClassToSopClassDTO)
                         .collect(Collectors.toList()),

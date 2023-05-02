@@ -10,6 +10,7 @@ public final class InformationObjectDefinitionMetaInfoDTO {
     private final String name;
     private final String href;
     private final String sectionId;
+    private final String description;
     @JsonMerge
     private final List<SOPClassDTO> sopClasses;
     @JsonMerge
@@ -19,12 +20,14 @@ public final class InformationObjectDefinitionMetaInfoDTO {
             @JsonProperty("name") String name,
             @JsonProperty("href") String href,
             @JsonProperty("sectionId") String sectionId,
+            @JsonProperty("description") String description,
             @JsonProperty("sopClasses") List<SOPClassDTO> sopClasses,
             @JsonProperty("modules") List<String> modules
     ) {
         this.name = name;
         this.href = href;
         this.sectionId = sectionId;
+        this.description = description;
         this.sopClasses = sopClasses;
         this.modules = modules;
     }
@@ -39,6 +42,10 @@ public final class InformationObjectDefinitionMetaInfoDTO {
 
     public String getSectionId() {
         return sectionId;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public List<SOPClassDTO> getSopClasses() {
@@ -57,13 +64,14 @@ public final class InformationObjectDefinitionMetaInfoDTO {
         return Objects.equals(this.name, that.name) &&
                 Objects.equals(this.href, that.href) &&
                 Objects.equals(this.sectionId, that.sectionId) &&
+                Objects.equals(this.description, that.description) &&
                 Objects.equals(this.sopClasses, that.sopClasses) &&
                 Objects.equals(this.modules, that.modules);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, href, sectionId, sopClasses, modules);
+        return Objects.hash(name, href, sectionId, description, sopClasses, modules);
     }
 
     @Override
@@ -72,8 +80,8 @@ public final class InformationObjectDefinitionMetaInfoDTO {
                 "name=" + name + ", " +
                 "href=" + href + ", " +
                 "sectionId=" + sectionId + ", " +
+                "description=" + description + ", " +
                 "sopClasses=" + sopClasses + ", " +
                 "modules=" + modules + ']';
     }
-
 }
