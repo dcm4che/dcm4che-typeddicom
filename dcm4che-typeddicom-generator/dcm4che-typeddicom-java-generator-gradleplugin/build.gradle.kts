@@ -1,5 +1,8 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     id("com.gradle.plugin-publish") version "1.1.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.dcm4che.typeddicom-xml-parser")
     id("org.dcm4che.typeddicom-publisher")
 }
@@ -43,6 +46,12 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+}
+
+tasks.named<ShadowJar>("shadowJar") {
+    isEnableRelocation = true
+    relocate("org.dcm4che.typeddicom.generator.gradleplugin", "org.dcm4che.typeddicom.generator.gradleplugin")
+    archiveClassifier.set("")
 }
 
 tasks.withType<Jar> {

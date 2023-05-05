@@ -1,10 +1,9 @@
+import org.dcm4che.typeddicom.AttributesWrapper;
 import org.dcm4che.typeddicom.UniversalAttributesWrapper;
-import org.dcm4che.typeddicom.dataelements.DisplayedAreaSelectionSequence;
-import org.dcm4che.typeddicom.dataelements.PixelAspectRatio;
-import org.dcm4che.typeddicom.dataelements.ReferencedImageSequence;
-import org.dcm4che.typeddicom.dataelements.ReferencedSeriesSequence;
+import org.dcm4che.typeddicom.dataelements.*;
 import org.dcm4che.typeddicom.iods.CRImageIOD;
 import org.dcm4che.typeddicom.iods.GrayscaleSoftcopyPresentationStateIOD;
+import org.dcm4che.typeddicom.modules.ImagePixelModule;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.Tag;
@@ -15,9 +14,9 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SimpleTests {
     public static final String HPStateTag_CREATOR = "AGFA-AG_HPState";
@@ -161,5 +160,51 @@ class SimpleTests {
         PixelAspectRatio.Holder.Builder pixelAspectRatioHolderBuilder = PixelAspectRatio.Holder.builder()
                 .setPixelAspectRatio().asInts(ratio);
         assertArrayEquals(ratio, pixelAspectRatioHolderBuilder.build().getPixelAspectRatio().getInts());
+    }
+
+    @Test
+    void afterAddingAnUnknownTag_theMethodGetUnknownTagReturnsThisTag() {
+        Attributes attributes = new Attributes();
+        int tag = 0x0000_0001;
+        attributes.setString(tag, VR.ST, "Test");
+        PixelAspectRatio.Holder pixelAspectRatioHolder = PixelAspectRatio.Holder.wrap(attributes);
+        int[] unknownAttributeTags = pixelAspectRatioHolder.getUnknownAttributeTags();
+        assertArrayEquals(new int[]{tag}, unknownAttributeTags);
+    }
+
+    @Test
+    void aHolderOnlyContainsItsTagInTheArrayOfKnownTags() {
+        PixelAspectRatio.Holder pixelAspectRatioHolder = PixelAspectRatio.Holder.builder().build();
+        int[] knownAttributeTags = pixelAspectRatioHolder.getKnownAttributeTags();
+        assertArrayEquals(new int[]{PixelAspectRatio.TAG}, knownAttributeTags);
+    }
+
+    @Test
+    void aModuleContainsItsTagsInTheArrayOfKnownTags() {
+        ImagePixelModule imagePixelModule = ImagePixelModule.wrap(new Attributes());
+        assertThatAttributesWrappersKnownAttributesContainTheseTags(imagePixelModule,
+                PixelAspectRatio.TAG,
+                SamplesPerPixel.TAG,
+                Columns.TAG,
+                Rows.TAG);
+    }
+
+    @Test
+    void anIodContainsItsTagsInTheArrayOfKnownTags() {
+        CRImageIOD crImageIod = CRImageIOD.builder().build();
+        assertThatAttributesWrappersKnownAttributesContainTheseTags(crImageIod,
+                PixelAspectRatio.TAG,
+                SamplesPerPixel.TAG,
+                Columns.TAG,
+                Rows.TAG,
+                PatientName.TAG,
+                PatientID.TAG);
+    }
+
+    void assertThatAttributesWrappersKnownAttributesContainTheseTags(AttributesWrapper attributesWrapper, int... tags) {
+        int[] knownAttributeTags = attributesWrapper.getKnownAttributeTags();
+        for (int tag : tags) {
+            assertTrue(Arrays.stream(knownAttributeTags).anyMatch((knownTag -> knownTag == tag)), "Expected " + tag + " in the array of knownTags.");
+        }
     }
 }

@@ -1,6 +1,7 @@
 // Auto generated
 package org.dcm4che.typeddicom.modules;
 
+import org.dcm4che.typeddicom.AttributesWrapper;
 import org.dcm4che.typeddicom.AbstractAttributesWrapper;
 {{#value.contains}}
 import org.dcm4che.typeddicom.dataelements.{{.}};
@@ -13,7 +14,7 @@ import org.dcm4che3.data.Attributes;
  * @see <a href="{{value.href}}">DICOM Standard Part 3 - {{value.name}}</a>
  *
  */
-public interface {{key}} extends {{{value.implementsHolderInterfaces}}} {
+public interface {{key}} extends AttributesWrapper, {{{value.implementsHolderInterfaces}}} {
     public static {{key}} wrap(Attributes attributes) {
         return new SimpleWrapper(attributes);
     }
