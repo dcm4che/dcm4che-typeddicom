@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xl="http://www.w3.org/1999/xlink" label="PS3.5" version="5.0" xml:id="PS3.5">
   <title>PS3.5</title>
-  <subtitle>DICOM PS3.5 2022d - Data Structures and Encoding</subtitle>
+  <subtitle>DICOM PS3.5 2022e - Data Structures and Encoding</subtitle>
   <info>
     <author>
       <orgname>DICOM Standards Committee</orgname>
@@ -8214,7 +8214,7 @@
           </itemizedlist>
         </listitem>
       </orderedlist>
-      <para xml:id="para_ce6f5e16-cce6-4cc0-a193-665980c733ce">This DICOM JPIP Referenced Transfer Syntax shall be identified by a UID of Value "1.2.840.10008.1.2.4.94 ".</para>
+      <para xml:id="para_ce6f5e16-cce6-4cc0-a193-665980c733ce">This DICOM JPIP Referenced Transfer Syntax shall be identified by a UID of Value "1.2.840.10008.1.2.4.94".</para>
     </section>
     <section label="A.7" status="2" xml:id="sect_A.7">
       <title>DICOM JPIP Referenced Deflate Transfer Syntax (Explicit VR)</title>

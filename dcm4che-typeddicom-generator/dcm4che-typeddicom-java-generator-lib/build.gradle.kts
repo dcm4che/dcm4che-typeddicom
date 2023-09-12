@@ -26,7 +26,7 @@ dependencies {
 
     implementation("org.apache.commons:commons-lang3:3.12.0")
 
-    implementation("org.dcm4che:dcm4che-core:5.29.0")
+    implementation("org.dcm4che:dcm4che-core:5.31.0")
 
     implementation("com.fasterxml.jackson.core:jackson-core:2.14.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.2")
