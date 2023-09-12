@@ -1,7 +1,7 @@
 import org.dcm4che.typeddicom.AttributesWrapper;
 import org.dcm4che.typeddicom.UniversalAttributesWrapper;
 import org.dcm4che.typeddicom.dataelements.*;
-import org.dcm4che.typeddicom.iods.CRImageIOD;
+import org.dcm4che.typeddicom.iods.ComputedRadiographyImageIOD;
 import org.dcm4che.typeddicom.iods.GrayscaleSoftcopyPresentationStateIOD;
 import org.dcm4che.typeddicom.modules.ImagePixelModule;
 import org.dcm4che3.data.Attributes;
@@ -53,7 +53,7 @@ class SimpleTests {
     @Test
     void afterSettingADoubleArrayItShouldContainTheNewValues() throws IOException {
         GrayscaleSoftcopyPresentationStateIOD gsps = new GrayscaleSoftcopyPresentationStateIOD(readDicomFile("GSPS.dcm"));
-        CRImageIOD crImage = new CRImageIOD(readDicomFile("CRImage_PS.dcm"));
+        ComputedRadiographyImageIOD crImage = new ComputedRadiographyImageIOD(readDicomFile("CRImage_PS.dcm"));
         double[] pixelSpacing = crImage.getPixelSpacing().getDoubles();
         for (DisplayedAreaSelectionSequence.Item item : gsps.getDisplayedAreaSelectionSequence()) {
             item.getPresentationPixelSpacing().setDoubles(pixelSpacing);
@@ -191,7 +191,7 @@ class SimpleTests {
 
     @Test
     void anIodContainsItsTagsInTheArrayOfKnownTags() {
-        CRImageIOD crImageIod = CRImageIOD.builder().build();
+        ComputedRadiographyImageIOD crImageIod = ComputedRadiographyImageIOD.builder().build();
         assertThatAttributesWrappersKnownAttributesContainTheseTags(crImageIod,
                 PixelAspectRatio.TAG,
                 SamplesPerPixel.TAG,

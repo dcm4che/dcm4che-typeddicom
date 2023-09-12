@@ -21,7 +21,7 @@ public interface StringDataElementMultiWrapper extends DataElementWrapper {
     }
 
     interface Setter<B extends Builder<B, ?>, D extends StringDataElementMultiWrapper> extends org.dcm4che.typeddicom.Setter<B, D> {
-        default B asString(String... strings) {
+        default B asStrings(String... strings) {
             getDataElementWrapper().setStrings(strings);
             return getBuilder();
         }

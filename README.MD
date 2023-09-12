@@ -7,8 +7,8 @@ If you encounter unsupported fields you can always use the `getAttributes()` met
 
 ## Dependencies
 This library is based on the 
-* [DICOM Standard Version 2022d](https://dicom.nema.org/medical/dicom/2022d/output/chtml/part01/ps3.1.html).
-* [dcm4che version 5.29.0](https://github.com/dcm4che/dcm4che/releases/tag/5.29.0)
+* [DICOM Standard Version 2022e](https://dicom.nema.org/medical/dicom/2022e/output/chtml/part01/ps3.1.html).
+* [dcm4che version 5.31.0](https://github.com/dcm4che/dcm4che/releases/tag/5.31.0)
 
 ## How to add it to your project
 ### Standard Library
@@ -25,7 +25,7 @@ repositories {
 
 ```groovy
 dependencies {
-    implementation 'org.dcm4che:dcm4che-typeddicom-lib-std:0.5.4'
+    implementation 'org.dcm4che:dcm4che-typeddicom-lib-std:0.5.5'
 }
 ```
 
@@ -41,7 +41,7 @@ repositories {
 
 ```kotlin
 dependencies {
-    implementation("org.dcm4che:dcm4che-typeddicom-lib-std:0.5.4")
+    implementation("org.dcm4che:dcm4che-typeddicom-lib-std:0.5.5")
 }
 ```
 
@@ -60,7 +60,7 @@ dependencies {
 <dependency>
     <groupId>org.dcm4che</groupId>
     <artifactId>dcm4che-typeddicom</artifactId>
-    <version>0.5.4</version>
+    <version>0.5.5</version>
 </dependency>
 ```
 ### Use private tags with the gradle plugin
@@ -78,7 +78,7 @@ buildscript {
 
 plugins {
     id 'java-library'
-    id 'org.dcm4che.typeddicom-java-generator' version '0.5.4'
+    id 'org.dcm4che.typeddicom-java-generator' version '0.5.5'
 }
 
 generateTypeddicomJavaSources {
@@ -99,7 +99,7 @@ buildscript {
 
 plugins {
     id("java-library")
-    id("org.dcm4che.typeddicom-java-generator") version "0.5.4"
+    id("org.dcm4che.typeddicom-java-generator") version "0.5.5"
 }
 
 generateTypeddicomJavaSources {
